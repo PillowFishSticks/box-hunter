@@ -77,7 +77,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .qb .qc{font:400 9px/1 "Num";padding:1px 3px;background:var(--good);color:#fff;border:1px solid var(--ink)}
 .qb span{white-space:nowrap;overflow:hidden}
 #quickNone{font:400 7px/1.2 "Pix";color:var(--muted);padding:1px}
-#upBtn{position:relative;width:100%;padding:4px;font-size:9px}
+#upBtn{position:relative;width:100%;padding:7px 4px;font-size:11px}
 #sellBiz{position:relative;width:100%;padding:3px;font-size:8px;animation:shine 1.6s steps(2) infinite}
 @keyframes shine{50%{filter:brightness(1.15)}}
 /* right column */
@@ -113,7 +113,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #findName{font:700 10px/1.1 "Silk";color:#fff;text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
 #findSub{font:700 9px/1.2 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
 #toast{left:50%;top:52px;transform:translateX(-50%);padding:3px 6px;font:700 9px/1.1 "Pix";white-space:nowrap;z-index:8;display:none}
-#ev{left:134px;top:30px;width:196px;padding:2px 4px;font:700 8px/1.1 "Pix";z-index:4;animation:shine 1s steps(2) infinite}
+#ev{left:134px;top:30px;width:196px;padding:2px 4px;font:700 7px/1.15 "Pix";z-index:4;animation:shine 1s steps(2) infinite}
 #ev[hidden]{display:none}
 #tip{position:absolute;z-index:9;pointer-events:none;padding:2px 4px;font:400 7px/1.25 "Pix";max-width:130px;display:none}
 #tip b{font-weight:700}
@@ -215,7 +215,6 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   </div>
   <div id="left">
     <div class="panel" id="shop"><h3>Box shop <span class="k">B</span><span id="qty"></span></h3><div id="boxList"></div></div>
-    <div class="panel" id="quick"><h3>Quick buy</h3><div id="quickList"></div></div>
     <button class="btn gold" id="upBtn">🧰 All upgrades <span class="k">U</span></button>
     <button class="btn gold" id="sellBiz" hidden>🏷️ Sell the business</button>
   </div>
@@ -367,7 +366,7 @@ const UPG=[
  {id:"sortSpd",g:"deliv",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
  {id:"baler",g:"shop",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
  {id:"balSpd",g:"shop",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
- {id:"acct",g:"staff",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys quick-buy upgrades":"not hired",d:"Auto-upgrade: buys the top Quick buy upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
+ {id:"acct",g:"staff",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
  {id:"slicer",g:"mach",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
  {id:"arm",g:"mach",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
  {id:"spinner",g:"mach",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
@@ -547,7 +546,7 @@ function eventsTick(dt){for(const k of ["lucky","carboot","van","swap"])if(EV[k]
   if(S.opL.parcel<10)return;S.evT-=dt;if(S.evT>0)return;S.evT=120+rnd(0,150);
   const k=["van","carboot","auction","lucky"][ri(4)];
   if(k==="van"){EV.van=8;FX.toast("🚐 A mystery van! Click it in the window!");}
-  else if(k==="carboot"){EV.carboot=60;FX.toast("🚗 Car boot Sunday: shelves sell 3× faster for 60s!");}
+  else if(k==="carboot"){EV.carboot=60;FX.toast("🚗 Car boot Sunday! Shelved finds sell 3× faster for a minute");}
   else if(k==="lucky"){EV.lucky=30;FX.toast("🍀 Lucky hour: double luck for 30s!");}
   else{const b=BOXES[Math.min(bestUnlocked().tier+1,7)];const p=priceOf(b)*rnd(.55,1.35);if(p<=S.cash*1.5){EV.auction={b:b.id,p,t:20};FX.toast("📦 Customs auction! A sealed box is up for grabs.");}}}
 function grabMysteryVan(){if(EV.van<=0)return false;EV.van=0;const b=bestUnlocked();S.spec.unshift(b.id);FX.toast(`🚐 Free special ${b.n.toLowerCase()}! It's waiting by the mat.`);FX.sound("goal");return true;}
@@ -590,7 +589,7 @@ const has=id=>lv(id)>0;
 const GOALS=[
  {t:"Buy a parcel in the Box shop (left)",e:"📦",n:1,p:()=>S.opL.parcel||S.queue.length?1:0,rew:2},
  {t:"Open 5 boxes",e:"🔪",n:5,p:()=>S.stats.boxes,rew:3},
- {t:"Buy an upgrade (Quick buy)",e:"⬆️",n:1,p:()=>Object.values(S.lv).reduce((a,b)=>a+b,0),rew:5},
+ {t:"Buy an upgrade (🧰 All upgrades)",e:"⬆️",n:1,p:()=>Object.values(S.lv).reduce((a,b)=>a+b,0),rew:5},
  {t:"Click the empties heap to bin it",e:"🗑️",n:1,p:()=>S.stats.binned||0,rew:3},
  {t:"Buy 5 boxes at once (×5)",e:"5️⃣",n:1,p:()=>S.stats.multi,rew:5},
  {t:"Find something Rare (blue)",e:"💎",n:1,p:()=>ITEMS.some(i=>i.r>=2&&S.found[i.id])?1:0,rew:5},
@@ -997,8 +996,8 @@ function render(){if(SIM)return;
     const p=priceOf(b),ok=S.cash>=p-1e-9;el.className="bx"+(S.vanBox===b.id&&lv("van")?" van":"");vt.textContent=lv("van")?(S.vanBox===b.id?"🚚":""):"";
     const s2=`${fmtN(S.opL[b.id]||0)} opened`;if(sm.textContent!==s2)sm.textContent=s2;const lab=money(p);if(bb.textContent!==lab)bb.textContent=lab;bb.className="bb"+(ok?" ok":"");}
   // quick buy
-  const qp=quickPicks(3),qk=qp.map(q=>q.u.id+lv(q.u.id)).join(",");const ql=$("#quickList");
-  if(qk!==quickKey){quickKey=qk;ql.innerHTML="";if(!qp.length)ql.innerHTML=`<div id="quickNone">Nothing affordable yet. Open boxes and sell finds.</div>`;
+  const ql=$("#quickList"),qp=ql?quickPicks(3):[],qk=qp.map(q=>q.u.id+lv(q.u.id)).join(",");
+  if(ql&&qk!==quickKey){quickKey=qk;ql.innerHTML="";if(!qp.length)ql.innerHTML=`<div id="quickNone">Nothing affordable yet. Open boxes and sell finds.</div>`;
     for(const q of qp){const b=document.createElement("button");b.className="qb";b.title=q.u.d;b.innerHTML=`<span class="qe">${q.u.e}</span><span>${q.u.n}${q.u.max>1?" "+(lv(q.u.id)+1):""}</span><span class="qc">${q.u.cur==="parts"?"⚙"+fmtN(q.c):money(q.c)}</span>`;b.onclick=()=>{if(buyUp(q.u)){checkGoals();render();}};ql.appendChild(b);}}
   $("#upBtn").dataset.n=UPG.filter(u=>upAvail(u)&&!upMaxed(u)&&canAfford(u)).length+STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length;
   const st=starsNow();const sb=$("#sellBiz");sb.hidden=st<1;if(!sb.hidden)sb.textContent=`🏷️ Sell the business: +${st}⭐`;
@@ -1024,10 +1023,10 @@ function render(){if(SIM)return;
   const g=GOALS[S.goal]||GOALS.at(-1),gp=g.n?Math.min(g.n,g.p()):0;if($("#goalTxt").textContent!==g.t){$("#goalTxt").textContent=g.t;$("#goal .gi").textContent=g.e;}
   $("#goalBar i").style.width=(g.n?100*gp/g.n:100)+"%";$("#goalN").textContent=g.n>1?(g.cash?`${money(gp)}/${money(g.n)}`:`${fmtN(gp)}/${fmtN(g.n)}`):"";$("#goalRew").textContent=g.rew?`+${money(g.rew)}`:"";
   // event button
-  const ev=$("#ev");if(EV.van>0){ev.hidden=false;ev.textContent=`🚐 Mystery van! Grab it (${Math.ceil(EV.van)}s)`;ev.dataset.k="van";}
-  else if(EV.auction){ev.hidden=false;ev.textContent=`📦 Customs auction: ${BI[EV.auction.b].n} for ${money(EV.auction.p)} (${Math.ceil(EV.auction.t)}s)`;ev.dataset.k="auc";}
-  else if(EV.carboot>0){ev.hidden=false;ev.textContent=`🚗 Car boot Sunday: shelves ×3 (${Math.ceil(EV.carboot)}s)`;ev.dataset.k="";}
-  else if(EV.lucky>0){ev.hidden=false;ev.textContent=`🍀 Lucky hour: double luck (${Math.ceil(EV.lucky)}s)`;ev.dataset.k="";}else ev.hidden=true;
+  const ev=$("#ev");if(EV.van>0){ev.hidden=false;ev.textContent=`🚐 Bonus event: click here for a free special box (${Math.ceil(EV.van)}s left)`;ev.dataset.k="van";}
+  else if(EV.auction){ev.hidden=false;ev.textContent=`📦 Bonus event: a sealed box for ${money(EV.auction.p)}. Click to see (${Math.ceil(EV.auction.t)}s)`;ev.dataset.k="auc";}
+  else if(EV.carboot>0){ev.hidden=false;ev.textContent=`🚗 Bonus event: things on your shelves sell 3× faster for ${Math.ceil(EV.carboot)}s`;ev.dataset.k="";}
+  else if(EV.lucky>0){ev.hidden=false;ev.textContent=`🍀 Bonus event: double luck on every box for ${Math.ceil(EV.lucky)}s`;ev.dataset.k="";}else ev.hidden=true;
   $("#sndBtn").textContent=S.muted?"🔇":"🔊";$("#musBtn").style.opacity=S.music?1:.45;
   if(!$("#upModal").hidden)renderUps();if(!$("#card").hidden)renderCard();
   hint();}
