@@ -711,7 +711,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.3.0";
+const VERSION="1.3.1";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -1201,7 +1201,8 @@ function render(){if(SIM)return;
   // tray
   const tk=S.tray.map(e=>e.i).join(",")+"|"+(popIdx??"");const tl=$("#trayList");
   if(tl.dataset.k!==tk){tl.dataset.k=tk;tl.innerHTML="";if(!S.tray.length)tl.innerHTML=`<div id="trayEmpty">Finds land here. Click one to sell it, shelve it, file it in the album or scrap it for parts.</div>`;
-    S.tray.forEach((e,j)=>{const it=II[e.i],b=document.createElement("button");b.className="ti"+(popIdx===j?" sel":"");b.style.borderLeftColor=RAR[it.r].c;
+    // owner: one list, priciest first (j stays the real tray index for the pop-up)
+    S.tray.map((e,j)=>[e,j]).sort((A,B)=>itemVal(B[0])-itemVal(A[0])).forEach(([e,j])=>{const it=II[e.i],b=document.createElement("button");b.className="ti"+(popIdx===j?" sel":"");b.style.borderLeftColor=RAR[it.r].c;
       b.innerHTML=`<span class="te">${it.e}</span><span>${needsAlbum(e.i)?"📖 ":""}${it.n}</span><span class="tv">${money(itemVal(e))}</span>`;b.onclick=()=>openPop(j,b);tl.appendChild(b);});}
   $("#trayN").textContent=S.tray.length?`${S.tray.length}/${TRAY}`:"";
   const qn=S.queue.length+S.spec.length,qt=`QUEUE<br><b>${qn}/${queueCap()}</b>`;if($("#qTag").innerHTML!==qt)$("#qTag").innerHTML=qt;
