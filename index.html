@@ -134,11 +134,12 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #tip .tl{display:grid;grid-template-columns:auto 1fr;gap:1px 5px;font-size:8px}
 #tip .tl span:nth-child(odd){font-weight:700;color:#6b4a26}
 #tip .lk{color:#9b2a24;font-weight:700;margin-top:2px}
-#pop{position:absolute;z-index:7;width:138px;padding:4px;display:flex;flex-direction:column;gap:2px}
+#pop{position:absolute;z-index:7;width:120px;padding:4px;display:flex;flex-direction:column;gap:2px}
 #pop[hidden]{display:none}
 #pop .ph{font:700 7px/1.1 "Pix";display:flex;gap:2px;align-items:center}
 #pop .btn{display:grid;grid-template-columns:1fr auto;text-align:left;font-size:8px;padding:2px 4px;gap:0 4px}
 #pop .btn em{font:400 10px/1 "Num";font-style:normal}
+#pop .btn small:empty{display:none}
 #pop .btn small{grid-column:1/-1;font:400 6.5px/1.15 "Pix";color:#5a4a30}
 #pop .btn.go small{color:#e8ffe0}
 #pop .ph{font-size:8px;margin-bottom:1px}
@@ -248,15 +249,15 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
 <body>
 <div id="stage">
   <canvas id="cv" width="480" height="270"></canvas>
-  <div class="ui panel" id="till" title="Cash · parts (⚙, from scrapping) · reputation stars (⭐, from selling the business)"><span class="coin"></span><span id="cashV">£0</span><span id="subV"></span></div>
+  <div class="ui panel" id="till"><span class="coin"></span><span id="cashV">£0</span><span id="subV"></span></div>
   <div class="ui panel" id="goal"><span class="gi">🎯</span><div id="goalTxt"></div><div id="goalRow"><div id="goalBar"><i></i></div><span id="goalN"></span><span id="goalRew"></span></div></div>
   <div class="ui" id="tools">
-    <button class="btn" id="helpBtn" title="How to play">?</button>
-    <button class="btn" id="albBtn" title="Album and collection (C)">📖</button>
-    <button class="btn" id="sndBtn" title="Sound">🔊</button>
-    <button class="btn" id="musBtn" title="Music">🎵</button>
-    <button class="btn" id="saveBtn" title="Save, settings and stats">💾</button>
-    <button class="btn" id="fsBtn" title="Fullscreen (F)">⛶</button>
+    <button class="btn" id="helpBtn">?</button>
+    <button class="btn" id="albBtn">📖</button>
+    <button class="btn" id="sndBtn">🔊</button>
+    <button class="btn" id="musBtn">🎵</button>
+    <button class="btn" id="saveBtn">💾</button>
+    <button class="btn" id="fsBtn">⛶</button>
   </div>
   <div id="left">
     <div class="panel" id="shop"><h3>Box shop <span class="k">B</span><span id="qty"></span></h3><div id="boxList"></div></div>
@@ -268,22 +269,22 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="ui panel" id="tray">
     <div id="trayHead"><h3>Your finds</h3><span id="trayN"></span></div>
     <div id="trayList"></div>
-    <div id="trayBtns"><button class="btn" id="sellJunk" title="Sell junk and commons (J)">Sell junk</button><button class="btn gold" id="sellAll" title="Sell everything (S)">Sell all <span class="k">S</span></button></div>
+    <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk</button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
   </div>
   <div class="ui panel" id="biz"><h3>Your business <span id="relics"></span></h3><div id="bizList"></div></div>
-  <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div><div class="ui tag" id="sTag">🪟 SHOP WINDOW · customers buy these</div>
+  <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div>
   <div class="ui" id="find"><div id="findName"></div><div id="findSub"></div></div>
   <div class="ui" id="hint"></div>
   <div class="panel" id="tip"></div>
   <div class="panel" id="pop" hidden></div>
   <div class="panel" id="card" hidden><button class="btn x" id="cardX">✕</button><h4 id="cardH"></h4><p id="cardP"></p><div id="cardList"></div></div>
-  <div class="modal" id="upModal" hidden><div class="panel"><h2>🧰 Upgrades</h2><div class="tabs" id="upTabs"></div><div id="upBody"><div><div id="upIntro"></div><div id="upList" class="scroll"></div></div><div id="upDet"></div></div><button class="btn mx" id="upClose" title="Close (Esc)">✕</button></div></div>
-  <div class="modal" id="albModal" hidden><div class="panel"><h2>📖 Album</h2><div class="tabs" id="albTabs"></div><div id="albBody" class="scroll"></div><button class="btn mx" id="albClose" title="Close (Esc)">✕</button></div></div>
+  <div class="modal" id="upModal" hidden><div class="panel"><h2>🧰 Upgrades</h2><div class="tabs" id="upTabs"></div><div id="upBody"><div><div id="upList" class="scroll"></div></div><div id="upDet"></div></div><button class="btn mx" id="upClose">✕</button></div></div>
+  <div class="modal" id="albModal" hidden><div class="panel"><h2>📖 Album</h2><div class="tabs" id="albTabs"></div><div id="albBody" class="scroll"></div><button class="btn mx" id="albClose">✕</button></div></div>
   <div class="modal" id="bizModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>🏷️ Sell the business?</h2><div id="bizBody" class="scroll"></div><div class="mrow"><button class="btn" id="bizNo">Not yet</button><button class="btn gold" id="bizYes">Sell it</button></div></div></div>
   <div class="modal" id="saveModal" hidden><div class="panel"><h2>💾 Save, settings &amp; stats</h2><div id="statBox" class="stat scroll"></div>
     <div class="row2"><button class="btn" id="oneClick"></button><button class="btn" id="expBtn">Copy save code</button><button class="btn" id="impBtn">Load a save code</button><button class="btn" id="bakBtn">Restore backup</button><button class="btn red" id="rstBtn">Reset everything</button></div>
     <textarea id="saveTxt" placeholder="Save codes start with BH1: — paste one here and press Load"></textarea>
-    <button class="btn mx" id="saveClose" title="Close (Esc)">✕</button></div></div>
+    <button class="btn mx" id="saveClose">✕</button></div></div>
   <div class="modal" id="awayModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>☕ While you were away</h2><div id="awayBody" class="stat"></div><div class="mrow"><button class="btn go" id="awayClose">Lovely</button></div></div></div>
   <div class="modal" id="aucModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>📦 Customs auction</h2><p id="aucTxt"></p><div class="mrow"><button class="btn" id="aucNo">Pass</button><button class="btn go" id="aucYes">Buy it</button></div></div></div>
   <div class="modal" id="introModal" hidden><div class="panel" style="width:270px"><button class="btn mx" data-x>✕</button><h2 id="inH"></h2><div id="inB" class="stat"></div><div class="mrow"><button class="btn go" id="inOk">Got it</button></div></div></div>
@@ -1087,9 +1088,9 @@ function render(){if(SIM)return;
     ["3","🔪","Open",(lv("autocut")?"Cutter":"You: cut")+(ns?` +${ns}🧑‍🔧`:"")+(mach?" +⚙":""),lv("autocut"),"open","Open the box on the mat. The auto-cutter does it; staff and machines open extra boxes from the queue."],
     ["4","💰","Sell",lv("sorter")?"Sorter":"You: finds",lv("sorter"),"sell","Sell, shelve, file or scrap your finds. The sorter does it by your rules."],
     ["5","🗑️","Bin",lv("baler")?"Baler":"You: heap",lv("baler"),"sell","Bin the empty boxes. The baler does it for you."],
-  ];const bk=rows.map(r=>r.join()).join("|");const bl=$("#bizList");if(bl.dataset.k!==bk){bl.dataset.k=bk;bl.innerHTML="";for(const [n,i,step,t,on,tab,tip] of rows){const b=document.createElement("button");b.className="bz";b.dataset.tip=tip+" Click to upgrade it.";
+  ];const bk=rows.map(r=>r.join()).join("|");const bl=$("#bizList");if(bl.dataset.k!==bk){bl.dataset.k=bk;bl.innerHTML="";for(const [n,i,step,t,on,tab,tip] of rows){const b=document.createElement("button");b.className="bz";
       b.innerHTML=`<span class="bn">${n}</span><span class="bi">${i}</span><span class="bs">${step}</span><span class="bt">${t}</span>${on===null?"":`<em class="${on?"on":""}">${on?"AUTO":"YOU"}</em>`}`;b.onclick=()=>openUps(tab);bl.appendChild(b);}}
-  const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span title="${II[id].n}: ${II[id].d}">${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
+  const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span>${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
   // goal
   const g=GOALS[S.goal]||GOALS.at(-1),gp=g.n?Math.min(g.n,g.p()):0;if($("#goalTxt").textContent!==g.t){$("#goalTxt").textContent=g.t;$("#goal .gi").textContent=g.e;}
   $("#goalBar i").style.width=(g.n?100*gp/g.n:100)+"%";$("#goalN").textContent=g.n>1?(g.cash?`${money(gp)}/${money(g.n)}`:`${fmtN(gp)}/${fmtN(g.n)}`):"";$("#goalRew").textContent=g.rew?`+${money(g.rew)}`:"";
@@ -1113,22 +1114,22 @@ function hint(){let h="";const pad=document.body.classList.contains("pad");
 /* ---------- tray item pop-up: sell / shelve / album / scrap ---------- */
 let popIdx=null;
 function openPop(j,el){popIdx=j;const e=S.tray[j];if(!e)return closePop();const it=II[e.i];const pop=$("#pop");
-  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div><div class="pd" style="color:${RAR[it.r].c};text-shadow:0 0 1px #000">${RAR[it.r].n}</div><div class="pd">${it.d}</div>`;
+  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div><div class="pd"><b style="color:${RAR[it.r].c};text-shadow:0 0 1px #000">${RAR[it.r].n}</b> · ${it.d}</div>`;
   const add=(lab,v,sub,fn,ok=true)=>{const b=document.createElement("button");b.className="btn"+(ok?"":" off");b.innerHTML=`<span>${lab}</span><em>${v}</em><small>${sub}</small>`;b.onclick=ev=>{ev.stopPropagation();if(!ok){SFX.no();return;}fn();closePop();render();checkGoals();};pop.appendChild(b);return b;};
-  const first=add("💰 Sell now",money(itemVal(e)),"Cash straight away.",()=>{const v=sellAt(j);SFX.till();});
+  const first=add("💰 Sell",money(itemVal(e)),"",()=>{const v=sellAt(j);SFX.till();});
   const free=S.shelf.length<shelfCap(),inc=itemVal(e)*.004*(it.cursed?4:1);
-  add("🪟 Put on a shelf",free?`+${money(inc)}/s`:"full",free?`Earns every second until a customer buys it (at full price).${it.cursed?" Cursed: something odd happens!":""}`:"Your shelves are full. Buy more in Upgrades → Shop.",()=>{shelveAt(j);SFX.buy();intro("shelf");},free);
-  if(it.set){const st=SI[it.set],got=st.items.filter(i=>S.album[i]).length;add("📖 File in the album",S.album[e.i]?"got it":`${got}/${st.items.length}`,S.album[e.i]?`You already filed one for ${st.n}.`:`Part of the ${st.n} set. Finish it for ${bonusTxt(st.b)}, forever.`,()=>{fileAt(j);SFX.buy();},needsAlbum(e.i));}
-  add("⚙️ Scrap for parts","+"+partsOf(e)+" ⚙","Breaks it into parts. Parts pay for machines and some upgrades.",()=>{const p=scrapAt(j);SFX.bale();floatTxt(BX,BBOT-60,"+"+p+" ⚙","#cfe8ff");intro("parts");});
-  const s=stagePos(el);pop.hidden=false;pop.style.left=(350-140)+"px";pop.style.top=clamp(s.y-10,30,270-pop.offsetHeight-4)+"px";
+  add("🪟 Shelve",free?`+${money(inc)}/s`:"full","",()=>{shelveAt(j);SFX.buy();intro("shelf");},free);
+  if(it.set){const st=SI[it.set],got=st.items.filter(i=>S.album[i]).length;add("📖 Album",S.album[e.i]?"got it":`${got}/${st.items.length}`,st.n,()=>{fileAt(j);SFX.buy();},needsAlbum(e.i));}
+  add("⚙️ Scrap","+"+partsOf(e)+" ⚙","",()=>{const p=scrapAt(j);SFX.bale();floatTxt(BX,BBOT-60,"+"+p+" ⚙","#cfe8ff");intro("parts");});
+  const s=stagePos(el);pop.hidden=false;pop.style.left=(350-122)+"px";pop.style.top=clamp(s.y-10,30,270-pop.offsetHeight-4)+"px";
   if(document.body.classList.contains("pad")||document.body.classList.contains("key"))first.focus();render();}
 function closePop(){popIdx=null;$("#pop").hidden=true;}
 function shelfAt(x,y){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10)return k;}return -1;}
 function openShelfPop(k){const e=S.shelf[k];if(!e)return;const it=II[e.i],pop=$("#pop");popIdx=null;
-  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div><div class="pd">On a shelf: earning ${money(itemVal(e)*.004*(it.cursed?4:1))}/s until a customer buys it for ${money(itemVal(e)*(S.relics.lcat?2:1))}.</div>`;
+  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div><div class="pd">+${money(itemVal(e)*.004*(it.cursed?4:1))}/s until someone buys it</div>`;
   const add=(lab,v,sub,fn,ok=true)=>{const b=document.createElement("button");b.className="btn"+(ok?"":" off");b.innerHTML=`<span>${lab}</span><em>${v}</em><small>${sub}</small>`;b.onclick=ev=>{ev.stopPropagation();if(!ok){SFX.no();return;}fn();closePop();render();};pop.appendChild(b);};
-  add("💰 Sell it now",money(itemVal(e)),"Skip the wait and sell it yourself.",()=>{const x=S.shelf.splice(k,1)[0];if(!x)return;const v=itemVal(x);addCash(v);const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);SFX.till();});
-  add("↩️ Take it down","","Back to your finds tray.",()=>{const x=S.shelf.splice(k,1)[0];if(x){S.tray.push(x);gain([],"");}},S.tray.length<TRAY);
+  add("💰 Sell now",money(itemVal(e)),"",()=>{const x=S.shelf.splice(k,1)[0];if(!x)return;const v=itemVal(x);addCash(v);const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);SFX.till();});
+  add("↩️ Take it down","","",()=>{const x=S.shelf.splice(k,1)[0];if(x){S.tray.push(x);gain([],"");}},S.tray.length<TRAY);
   const p=shelfPos(k);pop.hidden=false;pop.style.left=clamp(p.x-70,136,340-138)+"px";pop.style.top=(p.y+12)+"px";}
 function sellAllTray(junkOnly){let tot=0,n=0;for(let j=S.tray.length;j--;){if(junkOnly&&II[S.tray[j].i].r>1)continue;if(junkOnly&&needsAlbum(S.tray[j].i))continue;tot+=sellAt(j,true);n++;}
   if(!n){toast("Nothing to sell");SFX.no();return;}const p=stagePos($("#trayList"));coinsFrom(p.x,p.y,tot,Math.min(14,3+n));SFX.till();toast(`Sold ${n} thing${n>1?"s":""} for ${money(tot)}`);closePop();render();}
@@ -1169,7 +1170,7 @@ const ORDER=["van","vanSpd","vanLoad","loader","loadSpd","bulk","autocut","autoS
 let detU=null;
 function openUps(tab){if(tab)upTab=tab;$("#upModal").hidden=false;closePop();closeCard();buildUps();renderUps();const f=$("#upList .up");if(f&&(document.body.classList.contains("pad")||document.body.classList.contains("key")))f.focus();}
 function buildUps(){const t=$("#upTabs");t.innerHTML="";for(const [id,lab] of TABS){if(id==="stars"&&!S.sales&&starsNow()<1)continue;const b=document.createElement("button");b.textContent=lab;b.className=upTab===id?"on":"";b.dataset.tab=id;b.onclick=()=>{upTab=id;buildUps();renderUps();};t.appendChild(b);}
-  const list=$("#upList");list.innerHTML="";list.classList.toggle("two",upTab==="stars");$("#upIntro").textContent=TAB_INTRO[upTab]||"";
+  const list=$("#upList");list.innerHTML="";list.classList.toggle("two",upTab==="stars");
   if(upTab==="stars"){const h=document.createElement("div");h.className="grpH";h.style.cssText="font:400 8px/1.3 Pix;color:inherit";h.innerHTML=`You have <b style="font:400 10px Num">${S.stars}⭐</b>. Every star you've ever earned also adds +1% to all values (${S.starsEver} so far = +${S.starsEver}%).`;list.appendChild(h);
     let g="";for(const u of STARU){if(u.g!==g){g=u.g;const gh=document.createElement("div");gh.className="grpH";gh.textContent=g;list.appendChild(gh);}list.appendChild(starCard(u));}
     const gh=document.createElement("div");gh.className="grpH";gh.textContent="Unlocks (from selling the business)";list.appendChild(gh);
@@ -1208,8 +1209,8 @@ function buildAlb(){const t=$("#albTabs");t.innerHTML="";for(const [id,lab] of [
   const body=$("#albBody");body.innerHTML="";
   if(albTab==="sets"){const p=document.createElement("p");p.textContent="File one of each piece (from the tray, or the sorter does it). A finished set gives a bonus forever, even after selling the business.";body.appendChild(p);
     const g=document.createElement("div");g.className="sets";for(const s of SETS){const done=setDone(s.id),d=document.createElement("div");d.className="set"+(done?" done":"");
-      d.innerHTML=`<b><span>${s.n}</span><span>${s.items.filter(i=>S.album[i]).length}/${s.items.length}</span></b><div class="pcs">${s.items.map(i=>`<span class="${S.album[i]?"":S.found[i]?"f":"m"}" title="${S.found[i]?II[i].n:"???"}">${II[i].e}</span>`).join("")}</div><small>${done?"✅ ":""}${bonusTxt(s.b)}</small>`;g.appendChild(d);}body.appendChild(g);
-    const r=document.createElement("div");r.className="colH";r.innerHTML=`Relics (one each, kept forever): ${ITEMS.filter(i=>i.relic).map(i=>`<span title="${i.n}: ${i.d}" style="font-size:10px;${S.relics[i.id]?"":"filter:brightness(0);opacity:.3"}">${i.e}</span>`).join(" ")}`;body.appendChild(r);}
+      d.innerHTML=`<b><span>${s.n}</span><span>${s.items.filter(i=>S.album[i]).length}/${s.items.length}</span></b><div class="pcs">${s.items.map(i=>`<span class="${S.album[i]?"":S.found[i]?"f":"m"}"???"}">${II[i].e}</span>`).join("")}</div><small>${done?"✅ ":""}${bonusTxt(s.b)}</small>`;g.appendChild(d);}body.appendChild(g);
+    const r=document.createElement("div");r.className="colH";r.innerHTML=`Relics (one each, kept forever): ${ITEMS.filter(i=>i.relic).map(i=>`<span style="font-size:10px;${S.relics[i.id]?"":"filter:brightness(0);opacity:.3"}">${i.e}</span>`).join(" ")}`;body.appendChild(r);}
   else{for(const b of BOXES){if(b.id==="vault"&&!S.found.star)continue;const its=b.items;const h=document.createElement("div");h.className="colH";h.textContent=`${b.e} ${b.n} · ${its.filter(i=>S.found[i.id]).length}/${its.length}${unlocked(b)?"":" · locked"}`;body.appendChild(h);
     const g=document.createElement("div");g.className="colG";for(const it of its){const d=document.createElement("div");d.className="ci"+(S.found[it.id]?"":" no")+(S.album[it.id]?" placed":"");d.style.borderBottomColor=RAR[it.r].c;d.innerHTML=`<span>${it.e}</span>`;d.title=S.found[it.id]?`${it.n} ×${S.found[it.id]}: ${it.d}`:`??? (${RAR[it.r].n})`;g.appendChild(d);}body.appendChild(g);}}}
 
@@ -1278,8 +1279,8 @@ cv.addEventListener("pointermove",e=>{const p=toStage(e);if(P.down){P.dragged+=M
 addEventListener("pointerup",()=>{P.down=false;P.lastX=P.lastY=null;});
 cv.addEventListener("pointerleave",()=>{if(!P.down)P.over=false;$("#tip").style.display="none";});
 function tipAt(x,y){const tip=$("#tip");let h="";
-  if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> (${RAR[it.r].n})<br>Earning ${money(itemVal(e)*.004*(it.cursed?4:1))}/s until a customer buys it for ${money(itemVal(e))}.${it.cursed?"<br>"+it.d:""}<br><b>Click to sell it now.</b>`;}}if(!h)h=`<b>Shop window</b> ${S.shelf.length}/${shelfCap()}<br>Click a find on the right, then Shelve`;}
-  else{const o=canvasObj(x,y);if(o==="heap")h=`<b>Empties heap</b> ${S.emp}/${heapCap()}<br>Click to bin them for ${money(S.empV)}`;else if(o==="queue")h=`<b>Box queue</b> ${S.queue.length+S.spec.length}/${queueCap()}`;else if(o==="van"&&EV.van>0)h="<b>Mystery van!</b> Click it";}
+  if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> · ${money(itemVal(e))}`;}}}
+  else{const o=canvasObj(x,y);if(o==="heap")h=`Bin for ${money(S.empV)}`;}
   if(!h){tip.style.display="none";return;}tip.innerHTML=h;tip.style.display="block";tip.style.left=clamp(x+8,0,350)+"px";tip.style.top=clamp(y-30,30,230)+"px";}
 /* ---------- first-time help: a short card the first time you meet each thing ---------- */
 const INTROS={
@@ -1294,11 +1295,13 @@ const INTROS={
   stars:["🏷️","You can sell the business",["The <b>🏷️ Sell the business</b> button (left) trades everything for <b>⭐ stars</b>.","Stars buy <b>permanent upgrades</b>, and each sale unlocks new boxes. You start again faster.","There's no rush: the longer you go, the more stars you get."]],
 };
 let introQ=[];
-function intro(k){if(SIM||!S.seen||S.seen[k]||!INTROS[k])return;S.seen[k]=1;introQ.push(k);}
+function intro(k){return;if(SIM||!S.seen||S.seen[k]||!INTROS[k])return;S.seen[k]=1;introQ.push(k);}
 function introTick(){if(!introQ.length||topModal()||!$("#title").hidden)return;const k=introQ.shift(),[e,h,ps]=INTROS[k];$("#inH").innerHTML=`<span style="font-size:14px">${e}</span>${h}`;$("#inB").innerHTML=ps.map(p=>`<p>${p}</p>`).join("");$("#introModal").hidden=false;}
 function introChecks(){if(G.st==="empty"&&S.queue.length&&!lv("loader"))intro("queue");if(S.tray.length)intro("finds");if(S.emp>=heapCap()*.5&&!lv("baler"))intro("heap");
   if(S.stats.boxes>=4)intro("chain");if(lv("staff"))intro("staff");if(Object.keys(S.ready).some(k=>!S.unl[k]))intro("unlock");if(starsNow()>=1)intro("stars");}
 $("#inOk").onclick=()=>$("#introModal").hidden=true;
+// a click anywhere outside the find pop-up closes it (clicking another find just switches to that one)
+document.addEventListener("pointerdown",e=>{const pop=$("#pop");if(pop.hidden)return;if(e.target.closest("#pop")||e.target.closest(".ti"))return;closePop();render();},true);
 
 /* ---------- tooltips: styled, for every button (replaces the browser's grey ones) ---------- */
 function upTip(u){const L=lv(u.id),mx=upMaxed(u),av=upAvail(u),c=upCost(u),cap=u.cap?Math.min(u.max,u.cap()):u.max;
@@ -1311,7 +1314,7 @@ function boxTip(b){if(b.id==="scrap")return `<h5>♻️ Old cardboard<i>free</i>
   const lock=!unlocked(b);let h=`<h5>${b.e} ${b.n}<i>${lock?"locked":money(priceOf(b))}</i></h5><p>${b.sub}</p><div class="tl"><span>Opens by</span><span>${KINDS[b.kind].toLowerCase()}</span>`;
   if(b.items&&b.items.length)h+=`<span>Finds</span><span>${b.items.filter(i=>S.found[i.id]).length}/${b.items.length} found</span>`;h+=`<span>Opened</span><span>${fmtN(S.opL[b.id]||0)}</span></div>`;
   if(lock)h+=`<div class="lk">${canUnlock(b)?`🔓 Click to unlock for ${money(licOf(b))}`:"🔒 "+lockTxt(b)}</div>`;else if(lv("van"))h+=`<p style="margin-top:3px">Click the 🚚 corner to make the van buy these.</p>`;return h;}
-function tipFor(el){if(el.closest("#upModal"))return"";if(el.dataset.u)return upTip(UI[el.dataset.u]);if(el.dataset.s)return starTip(SU[el.dataset.s]);if(el.dataset.box)return boxTip(BI[el.dataset.box]);return el.dataset.tip?`<p style="margin:0">${el.dataset.tip}</p>`:"";}
+function tipFor(el){if(el.closest("#upModal")||el.dataset.box)return"";if(el.dataset.u)return upTip(UI[el.dataset.u]);if(el.dataset.s)return starTip(SU[el.dataset.s]);if(el.dataset.box)return boxTip(BI[el.dataset.box]);return el.dataset.tip?`<p style="margin:0">${el.dataset.tip}</p>`:"";}
 let tipEl=null;
 document.addEventListener("pointerover",e=>{if(e.pointerType==="touch")return;const el=e.target.closest&&e.target.closest("[title],[data-tip],[data-u],[data-s],[data-box]");if(!el||el===cv){return;}
   if(el.title){el.dataset.tip=el.title;el.removeAttribute("title");}tipEl=el;showTip(el);});
