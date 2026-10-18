@@ -100,11 +100,15 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #trayBtns{display:flex;gap:2px;margin-top:2px}
 #trayBtns .btn{flex:1;padding:2px;font-size:7px}
 #biz{right:6px;top:176px;width:122px;height:88px;padding:3px 4px}
-.bz{display:flex;align-items:center;gap:3px;width:100%;border:0;background:none;padding:1px 0;text-align:left;font:400 7px/1.15 "Pix";position:relative}
+.bz{display:flex;align-items:center;gap:3px;width:100%;border:0;background:none;padding:2px 0;text-align:left;font:400 7px/1.15 "Pix";position:relative}
 .bz:hover{background:#fff4;}
 .bz .bi{font-size:8px;width:11px;text-align:center;flex:none}
 .bz span{white-space:nowrap;overflow:hidden}
-.bz em{font-style:normal;margin-left:auto;font:400 8px/1 "Num";color:#2f6b24}
+.bz em{font-style:normal;margin-left:auto;font:700 6px/1 "Pix";padding:1px 2px;background:#c9bda3;color:#5a4a30;border:1px solid var(--ink);flex:none}
+.bz em.on{background:var(--good);color:#fff}
+.bz .bn{font:400 8px/1 "Num";width:5px;color:var(--muted);flex:none}
+.bz .bs{font-weight:700;width:20px;flex:none}
+.bz .bt{color:#3e2a18;font-size:7px;overflow:hidden;white-space:nowrap}
 #relics{display:flex;gap:1px;margin-left:auto;font-size:8px;line-height:7px}
 /* bench overlays */
 /* crisp labels over the bench: queue and empties counts */
@@ -112,14 +116,15 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .tag b{font:400 9px/1 "Num";font-weight:400}
 .tag.full{background:var(--red);animation:blink .6s steps(2) infinite}
 .tag.warn{background:#a86a10}
+#sTag{left:224px;top:103px;width:104px;font-size:6px;background:#2a1a12d0;padding:1px 2px}
 #qTag{left:133px;top:116px;width:28px}#hTag{left:318px;top:116px;width:34px}
 #hint{left:134px;width:212px;bottom:3px;text-align:center;font:700 8px/1.15 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 1px 0 var(--ink),0 -1px 0 var(--ink);pointer-events:none}
 #find{left:134px;width:212px;top:34px;text-align:center;pointer-events:none;opacity:0;transition:opacity .15s;z-index:3}
 #find.on{opacity:1}
 #findName{font:700 10px/1.1 "Silk";color:#fff;text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
 #findSub{font:700 9px/1.2 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
-#toast{left:50%;top:52px;transform:translateX(-50%);padding:3px 6px;font:700 9px/1.1 "Pix";white-space:nowrap;z-index:8;display:none}
-#ev{left:134px;top:30px;width:196px;padding:2px 4px;font:700 7px/1.15 "Pix";z-index:4;animation:shine 1s steps(2) infinite}
+#toast{padding:3px 4px;font:700 7px/1.2 "Pix";z-index:8;display:none;background:#fff7c8}
+#ev{width:100%;padding:3px 4px;font:700 7px/1.2 "Pix";text-align:left;animation:shine 1s steps(2) infinite}
 #ev[hidden]{display:none}
 #tip{position:absolute;z-index:30;pointer-events:none;padding:4px 6px;font:400 8px/1.3 "Pix";max-width:170px;display:none;background:#fff4dc}
 #tip b{font-weight:700}
@@ -129,11 +134,15 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #tip .tl{display:grid;grid-template-columns:auto 1fr;gap:1px 5px;font-size:8px}
 #tip .tl span:nth-child(odd){font-weight:700;color:#6b4a26}
 #tip .lk{color:#9b2a24;font-weight:700;margin-top:2px}
-#pop{position:absolute;z-index:7;width:96px;padding:3px;display:flex;flex-direction:column;gap:2px}
+#pop{position:absolute;z-index:7;width:138px;padding:4px;display:flex;flex-direction:column;gap:2px}
 #pop[hidden]{display:none}
 #pop .ph{font:700 7px/1.1 "Pix";display:flex;gap:2px;align-items:center}
-#pop .btn{justify-content:space-between;font-size:7px;padding:2px 3px}
-#pop .btn em{font:400 9px/1 "Num";font-style:normal}
+#pop .btn{display:grid;grid-template-columns:1fr auto;text-align:left;font-size:8px;padding:2px 4px;gap:0 4px}
+#pop .btn em{font:400 10px/1 "Num";font-style:normal}
+#pop .btn small{grid-column:1/-1;font:400 6.5px/1.15 "Pix";color:#5a4a30}
+#pop .btn.go small{color:#e8ffe0}
+#pop .ph{font-size:8px;margin-bottom:1px}
+#pop .pd{font:400 6.5px/1.2 "Pix";color:var(--muted);margin-bottom:2px}
 /* object card (click a thing on the bench) */
 #card{position:absolute;z-index:7;width:170px;padding:4px}
 #card[hidden]{display:none}
@@ -142,12 +151,13 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #cardList{display:flex;flex-direction:column;gap:2px}
 #card .x{position:absolute;right:3px;top:3px;padding:1px 3px;font-size:7px}
 /* upgrade cards (modal + object card) */
-.up{display:grid;grid-template-columns:18px 1fr auto;gap:0 6px;align-items:center;padding:2px 5px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%;position:relative;min-height:22px}
+.up{display:grid;grid-template-columns:18px 1fr auto;gap:0 6px;align-items:center;padding:2px 5px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%;position:relative;min-height:20px}
 .up .ue{font-size:13px;line-height:1;text-align:center}
 .up b{display:block;font:700 9px/1.05 "Pix";white-space:nowrap;overflow:hidden;color:var(--ink)}
 .up b i{font:400 10px/1 "Num";font-style:normal;color:#5a3a1a;margin-left:2px}
-.up small{display:block;font:400 8px/1.05 "Pix";color:#3e2a18}
-.up .uc{font:400 12px/1 "Num";text-align:center;padding:2px 6px;border:2px solid var(--ink);background:#c9bda3;color:#6a5a40;white-space:nowrap;min-width:56px}
+.up small{display:none}
+.up.sel,.up:hover{box-shadow:inset 0 0 0 1px var(--ink),0 0 0 1px var(--gold)}
+.up .uc{font:400 11px/1 "Num";text-align:center;padding:2px 5px;border:2px solid var(--ink);background:#c9bda3;color:#6a5a40;white-space:nowrap;min-width:46px}
 .up.can .uc{background:var(--good);color:#fff}
 .up.can{background:#f3ffe6}
 .up.max{background:#e8dcc0}.up.max .uc{background:#e8dcc0}
@@ -168,9 +178,29 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .tabs button[data-n]::after{position:static;animation:none;min-width:10px;height:10px;font-size:8px;line-height:7px;border-width:1px}
 .tabs button[data-n="0"]::after{display:none}
 .tabs button.on{background:var(--cream)}
-#upModal>.panel{width:384px}
-#upList.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-#upList.two .uc{min-width:34px;padding:2px 4px}
+#upModal>.panel{width:458px}
+#upBody{display:grid;grid-template-columns:1fr 156px;gap:5px;flex:1 1 auto;min-height:0}
+#upBody>div:first-child{display:flex;flex-direction:column;min-height:0}
+#upIntro{font:400 7px/1.25 "Pix";color:#3e2a18;margin:0 0 3px;padding:2px 4px;background:#f6e6c4;border:1px dashed #9b7c4c}
+#upList{flex:1 1 auto;min-height:0;overflow-y:auto}
+#upDet{border:2px solid var(--ink);background:var(--cream);padding:5px;font:400 8px/1.3 "Pix";overflow:hidden;display:flex;flex-direction:column;gap:3px}
+#upDet h5{margin:0;font:700 10px/1.15 "Pix";display:flex;gap:4px;align-items:center}
+#upDet h5 span{font-size:15px}
+#upDet .lvl{font:400 10px/1 "Num";color:#5a3a1a}
+#upDet p{margin:0;color:#3e2a18}
+#upDet .tl{display:grid;grid-template-columns:auto 1fr;gap:2px 5px;font-size:8px}
+#upDet .tl span:nth-child(odd){font-weight:700;color:#6b4a26}
+#upDet .lk{color:#9b2a24;font-weight:700}
+#upDet .btn{margin-top:auto;font-size:9px;padding:4px}
+#rulesT{display:grid;grid-template-columns:auto repeat(4,1fr);gap:2px;align-items:center;font:700 6.5px/1 "Pix";border-top:2px dashed #9b7c4c;padding-top:4px;margin-top:2px}
+#rulesT .rh{grid-column:1/-1;font-size:7.5px;margin-bottom:1px}
+#rulesT .rn{display:flex;align-items:center;gap:2px;white-space:nowrap}
+#rulesT .rn i{width:6px;height:6px;border:1px solid var(--ink);display:inline-block}
+#rulesT button{border:1px solid var(--ink);background:#e2cba0;font:700 6px/1 "Pix";padding:2px 0;text-align:center;width:100%}
+#rulesT button.on{background:var(--ink);color:var(--cream)}
+#rulesT .ra{grid-column:1/-1;display:flex;gap:3px;align-items:center;margin-top:2px}
+#rulesT .ra button{width:auto;padding:2px 4px}
+#upList.two{grid-template-columns:1fr}
 #upList{display:grid;grid-template-columns:1fr;gap:2px;padding:2px 3px 2px 2px;align-content:start;grid-auto-rows:max-content}
 .grpH{grid-column:1/-1;font:700 7px/1 "Silk";color:var(--muted);margin-top:2px}
 #rules{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:3px;border:2px solid var(--ink);background:#e2cba0;padding:3px}
@@ -197,6 +227,9 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
 .stat{font:400 8px/1.35 "Pix"}
 .stat b{font:400 10px/1 "Num"}
 #credits .panel{width:300px;height:240px}
+#inB p{margin:0 0 4px;font:400 8px/1.35 "Pix"}
+#inB b{font-weight:700}
+#introModal h2{font:700 10px/1.2 "Pix";display:flex;gap:4px;align-items:center}
 #crawl{height:190px;overflow:hidden;position:relative;text-align:center;font:400 8px/1.6 "Pix"}
 #crawl div{position:absolute;left:0;right:0;top:100%;animation:crawl 30s linear forwards}
 @keyframes crawl{to{transform:translateY(-200%)}}
@@ -229,6 +262,8 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
     <div class="panel" id="shop"><h3>Box shop <span class="k">B</span><span id="qty"></span></h3><div id="boxList"></div></div>
     <button class="btn gold" id="upBtn">🧰 All upgrades <span class="k">U</span></button>
     <button class="btn gold" id="sellBiz" hidden>🏷️ Sell the business</button>
+    <button class="btn gold" id="ev" hidden></button>
+    <div class="panel" id="toast"></div>
   </div>
   <div class="ui panel" id="tray">
     <div id="trayHead"><h3>Your finds</h3><span id="trayN"></span></div>
@@ -236,15 +271,13 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
     <div id="trayBtns"><button class="btn" id="sellJunk" title="Sell junk and commons (J)">Sell junk</button><button class="btn gold" id="sellAll" title="Sell everything (S)">Sell all <span class="k">S</span></button></div>
   </div>
   <div class="ui panel" id="biz"><h3>Your business <span id="relics"></span></h3><div id="bizList"></div></div>
-  <button class="ui btn gold" id="ev" hidden></button>
-  <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div>
+  <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div><div class="ui tag" id="sTag">🪟 SHOP WINDOW · customers buy these</div>
   <div class="ui" id="find"><div id="findName"></div><div id="findSub"></div></div>
   <div class="ui" id="hint"></div>
-  <div class="ui panel" id="toast"></div>
   <div class="panel" id="tip"></div>
   <div class="panel" id="pop" hidden></div>
   <div class="panel" id="card" hidden><button class="btn x" id="cardX">✕</button><h4 id="cardH"></h4><p id="cardP"></p><div id="cardList"></div></div>
-  <div class="modal" id="upModal" hidden><div class="panel"><h2>🧰 Upgrades</h2><div class="tabs" id="upTabs"></div><div id="upList" class="scroll"></div><button class="btn mx" id="upClose" title="Close (Esc)">✕</button></div></div>
+  <div class="modal" id="upModal" hidden><div class="panel"><h2>🧰 Upgrades</h2><div class="tabs" id="upTabs"></div><div id="upBody"><div><div id="upIntro"></div><div id="upList" class="scroll"></div></div><div id="upDet"></div></div><button class="btn mx" id="upClose" title="Close (Esc)">✕</button></div></div>
   <div class="modal" id="albModal" hidden><div class="panel"><h2>📖 Album</h2><div class="tabs" id="albTabs"></div><div id="albBody" class="scroll"></div><button class="btn mx" id="albClose" title="Close (Esc)">✕</button></div></div>
   <div class="modal" id="bizModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>🏷️ Sell the business?</h2><div id="bizBody" class="scroll"></div><div class="mrow"><button class="btn" id="bizNo">Not yet</button><button class="btn gold" id="bizYes">Sell it</button></div></div></div>
   <div class="modal" id="saveModal" hidden><div class="panel"><h2>💾 Save, settings &amp; stats</h2><div id="statBox" class="stat scroll"></div>
@@ -253,6 +286,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
     <button class="btn mx" id="saveClose" title="Close (Esc)">✕</button></div></div>
   <div class="modal" id="awayModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>☕ While you were away</h2><div id="awayBody" class="stat"></div><div class="mrow"><button class="btn go" id="awayClose">Lovely</button></div></div></div>
   <div class="modal" id="aucModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>📦 Customs auction</h2><p id="aucTxt"></p><div class="mrow"><button class="btn" id="aucNo">Pass</button><button class="btn go" id="aucYes">Buy it</button></div></div></div>
+  <div class="modal" id="introModal" hidden><div class="panel" style="width:270px"><button class="btn mx" data-x>✕</button><h2 id="inH"></h2><div id="inB" class="stat"></div><div class="mrow"><button class="btn go" id="inOk">Got it</button></div></div></div>
   <div class="modal" id="credits" hidden><div class="panel"><button class="btn mx" data-x>✕</button><div id="crawl"></div><div class="mrow"><button class="btn go" id="credClose">Keep playing</button></div></div></div>
   <div class="modal" id="helpModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>How to play</h2>
     <div class="steps"><div><b>📦</b>Buy boxes in the <b style="display:inline;font-size:inherit">Box shop</b> (×1, ×5, ×10 at once). They queue by the mat.</div><div><b>🔪</b>Drag the cutter along the tape, or just hold on the box. Boxes you open yourself are worth 20% more.</div><div><b>💰</b>Click a find on the right to sell, shelve, file in the album or scrap for ⚙ parts.</div></div>
@@ -364,24 +398,28 @@ const UPG=[
  {id:"fast",g:"hands",e:"⚡",n:"Fast Hands",max:5,cur:"parts",cost:g15(15,2.2),f:L=>`animations −${12*L}%`,d:"Opening and reveals play faster, so you open more by hand."},
  {id:"lucky",g:"hands",e:"🍀",n:"Lucky Streak",max:5,cur:"parts",cost:g15(40,2.3),f:L=>`+${4*L}% luck per rare in a row (up to 5)`,d:"Each rare-or-better you open by hand, in a row, makes the next luckier."},
  {id:"xray",g:"hands",e:"🩻",n:"X-ray Scanner",max:2,cur:"parts",cost:L=>[60,600][L],f:L=>["off","see the glow of the box on the mat","see the glow of every queued box"][L],d:"Peek at a box's best find before you open it."},
- {id:"bulk",g:"staff",e:"📦",n:"Bulk Buy",max:3,cur:"parts",cost:L=>[30,300,3000][L],f:L=>["×1 ×5 ×10","adds ×25","adds ×100","adds Max"][L],d:"Buy bigger batches of boxes at once."},
+ {id:"bulk",g:"buy",e:"📦",n:"Bulk Buy",max:3,cur:"parts",cost:L=>[30,300,3000][L],f:L=>["×1 ×5 ×10","adds ×25","adds ×100","adds Max"][L],d:"Buy bigger batches of boxes at once."},
  // Shop
  {id:"shelf",g:"shop",e:"🪟",n:"Extra Shelves",max:21,cost:g15(30,1.6),f:L=>`${3+L} shelf spaces`,d:"Shelved finds earn money every second until a customer buys them."},
  {id:"sign",g:"shop",e:"🪧",n:"Shop Sign",max:15,cost:g15(60,1.7),f:L=>`shelves earn +${12*L}%`,d:"A proper sign brings in better customers."},
- {id:"heap",g:"shop",e:"🗑️",n:"Bigger Corner",max:10,cost:g15(20,1.8),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
+ {id:"heap",g:"sell",e:"🗑️",n:"Bigger Corner",max:10,cost:g15(20,1.8),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
  {id:"till",g:"shop",e:"🧮",n:"Sharp Till",max:10,cost:g15(100,1.9),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
  // Automation
- {id:"staff",g:"staff",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>40*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
- {id:"train",why:"Hire some staff first",g:"staff",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
- {id:"conv",why:"Hire some staff first",g:"staff",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
- {id:"van",g:"deliv",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
- {id:"vanSpd",why:"Get the delivery van first",g:"deliv",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
- {id:"vanLoad",why:"Get the delivery van first",g:"deliv",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
- {id:"sorter",g:"deliv",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
- {id:"sortSpd",why:"Hire the sorter first",g:"deliv",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
- {id:"baler",g:"shop",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
- {id:"balSpd",why:"Build the baler first",g:"shop",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
- {id:"acct",why:"Open a padded envelope first",g:"staff",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
+ {id:"loader",g:"buy",e:"🙋",n:"Loader",max:1,cost:()=>15,f:L=>L?"puts the next box on the mat":"not hired",d:"Auto-load: puts the next box from the queue onto the mat, so you don't have to click the queue."},
+ {id:"loadSpd",why:"Hire the loader first",g:"buy",e:"⏩",n:"Loader: quicker",max:8,cost:g15(40,1.8),f:L=>`a box on the mat ${loadDelayL(L).toFixed(1)}s after the last`,d:"The loader puts boxes down faster.",need:()=>lv("loader")>0},
+ {id:"autocut",g:"open",e:"🤖",n:"Auto-cutter",max:1,cost:()=>60,f:L=>L?"cuts open the box on the mat":"not built",d:"Auto-open: a little machine that cuts open the box on the mat for you. Boxes you cut yourself are still worth 20% more."},
+ {id:"autoSpd",why:"Build the auto-cutter first",g:"open",e:"⚡",n:"Auto-cutter: faster",max:10,cost:g15(90,1.7),f:L=>`starts cutting after ${autoDelayL(L).toFixed(1)}s`,d:"The auto-cutter gets going sooner and cuts faster.",need:()=>lv("autocut")>0},
+ {id:"staff",g:"open",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>40*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
+ {id:"train",why:"Hire some staff first",g:"open",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
+ {id:"conv",why:"Hire some staff first",g:"open",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
+ {id:"van",g:"buy",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
+ {id:"vanSpd",why:"Get the delivery van first",g:"buy",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
+ {id:"vanLoad",why:"Get the delivery van first",g:"buy",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
+ {id:"sorter",g:"sell",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
+ {id:"sortSpd",why:"Hire the sorter first",g:"sell",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
+ {id:"baler",g:"sell",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
+ {id:"balSpd",why:"Build the baler first",g:"sell",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
+ {id:"acct",why:"Open a padded envelope first",g:"shop",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
  {id:"slicer",why:"Open a padded envelope first",g:"mach",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
  {id:"arm",why:"Unlock lost luggage first",g:"mach",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
  {id:"spinner",why:"Unlock pallets first",g:"mach",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
@@ -391,7 +429,7 @@ const UI=Object.fromEntries(UPG.map(u=>[u.id,u]));
 const STARU=[
  {id:"hsCut",g:"Head starts",e:"🔪",n:"Sharp start",max:1,cost:()=>1,f:L=>"start with Sharper Cutter 5 and Sharp Eye 3",d:"Every run starts with good tools."},
  {id:"hsKid",g:"Head starts",e:"🧑‍🔧",n:"Old staff",max:3,cost:L=>2+2*L,f:L=>`start with ${3*L} staff`,d:"Your old staff follow you to the new lock-up."},
- {id:"hsVan",g:"Head starts",e:"🚚",n:"Van on retainer",max:1,cost:()=>3,f:L=>"start with the van, sorter and baler",d:"Automation from the first minute."},
+ {id:"hsVan",g:"Head starts",e:"🚚",n:"Van on retainer",max:1,cost:()=>3,f:L=>"start with the van, loader, auto-cutter, sorter and baler",d:"Automation from the first minute."},
  {id:"cash",g:"Head starts",e:"💷",n:"Seed money",max:6,cost:L=>1+2*L,f:L=>`start with ${money(startCash(L))}`,d:"Start each run with money in the till."},
  {id:"val",g:"Boosts",e:"💰",n:"Reputation",max:20,cost:L=>1+L,f:L=>`finds worth +${10*L}%`,d:"Your name sells. Every find is worth more."},
  {id:"odds",g:"Boosts",e:"🍀",n:"Trained eye",max:10,cost:L=>2+L,f:L=>`luck +${10*L}%`,d:"Better odds in every box."},
@@ -412,7 +450,7 @@ const KEY="boxHunter.v1";
 const fresh=()=>({v:3,cash:15,parts:0,stars:0,starsEver:0,sales:0,earned:0,runEarned:0,runT:0,playT:0,
   lv:{},slv:{},op:{},opL:{},queue:[],spec:[],tray:[],shelf:[],emp:0,empV:0,
   rules:["sell","sell","shelve","shelve","shelve"],sortAlbum:true,vanBox:"parcel",vanOn:true,acctOn:true,
-  album:{},found:{},relics:{},unl:{parcel:1},ready:{},goal:0,buyN:1,sel:"parcel",helped:false,muted:false,music:true,oneClick:false,
+  album:{},found:{},relics:{},unl:{parcel:1},ready:{},seen:{},goal:0,buyN:1,sel:"parcel",helped:false,muted:false,music:true,oneClick:false,
   streak:0,preCut:false,best:null,vaultDone:false,last:Date.now(),evT:200,stats:{boxes:0,hand:0,sold:0,shelved:0,scrapped:0,multi:0,legend:0}});
 let S=fresh(),readOnly=false,loadedRaw=null;
 function load(){try{const raw=localStorage.getItem(KEY);if(!raw)return;loadedRaw=raw;localStorage.setItem(KEY+".backup",raw);migrate(JSON.parse(raw));}catch(e){console.warn("load failed",e);readOnly=true;}}
@@ -456,6 +494,7 @@ const vanLoadL=L=>2+2*L;
 const sortTimeL=L=>1.2*Math.pow(.78,L);
 const balTimeL=L=>2.5*Math.pow(.8,L);
 const fastK=()=>1-.12*lv("fast");
+const loadDelayL=L=>1.2*Math.pow(.75,L),autoDelayL=L=>1.5*Math.pow(.8,L);
 const trainMax=()=>lv("train");
 const starsFor=e=>Math.floor(Math.pow(e/1e7,.4)*Math.pow(1.15,slv("fast")));
 const starsNow=()=>starsFor(S.runEarned);
@@ -583,12 +622,12 @@ function sellBusiness(){const st=starsNow();if(st<1)return false;S.stars+=st;S.s
   if(slv("kConv"))k("conv",Math.min(L.conv||0,slv("kConv")));
   if(slv("kMach"))for(const m of ["slicer","arm","spinner"])k(m,Math.floor((L[m]||0)/2));
   S.lv=keep;if(slv("hsCut")){S.lv.cutter=Math.max(S.lv.cutter||0,5);S.lv.eye=Math.max(S.lv.eye||0,3);}
-  if(slv("hsKid"))S.lv.staff=3*slv("hsKid");if(slv("hsVan")){S.lv.van=1;S.lv.sorter=1;S.lv.baler=1;}
+  if(slv("hsKid"))S.lv.staff=3*slv("hsKid");if(slv("hsVan")){S.lv.van=1;S.lv.sorter=1;S.lv.baler=1;S.lv.loader=1;S.lv.autocut=1;}
   Object.assign(S,{cash:startCash(slv("cash")),parts:0,runEarned:0,runT:0,op:{},queue:[],spec:[],tray:[],shelf:slv("kShelf")?S.shelf:[],emp:0,empV:0,streak:0});
   acc={staff:0,slicer:0,arm:0,spinner:0,van:0,sort:0,bal:0,acct:0};checkUnlocks();return st;}
 function buyStar(u){const L=slv(u.id),c=u.cost(L);if(L>=u.max||S.stars<c)return false;S.stars-=c;S.slv[u.id]=L+1;
   if(u.id==="hsCut"){S.lv.cutter=Math.max(lv("cutter"),5);S.lv.eye=Math.max(lv("eye"),3);}
-  if(u.id==="hsVan"){S.lv.van=Math.max(lv("van"),1);S.lv.sorter=Math.max(lv("sorter"),1);S.lv.baler=Math.max(lv("baler"),1);}
+  if(u.id==="hsVan"){for(const k of ["van","sorter","baler","loader","autocut"])S.lv[k]=Math.max(lv(k),1);}
   if(u.id==="hsKid")S.lv.staff=Math.max(lv("staff"),3*(L+1));FX.sound("goal");return true;}
 // offline / hidden-tab catch-up: run the core in 1s steps (rate k)
 function catchUp(sec,k){const before={cash:S.cash,boxes:S.stats.boxes,sold:S.stats.sold,parts:S.parts};const fxs=FX;const was=SIM;SIM=true;
@@ -601,11 +640,14 @@ function catchUp(sec,k){const before={cash:S.cash,boxes:S.stats.boxes,sold:S.sta
 const has=id=>lv(id)>0;
 const GOALS=[
  {t:"Buy a parcel in the Box shop (left)",e:"📦",n:1,p:()=>S.opL.parcel||S.queue.length?1:0,rew:2},
+ {t:"Click the queue to put it on the mat",e:"📦",n:1,p:()=>S.stats.loaded||0,rew:1},
  {t:"Open 5 boxes",e:"🔪",n:5,p:()=>S.stats.boxes,rew:3},
  {t:"Buy an upgrade (🧰 All upgrades)",e:"⬆️",n:1,p:()=>Object.values(S.lv).reduce((a,b)=>a+b,0),rew:5},
  {t:"Click the empties heap to bin it",e:"🗑️",n:1,p:()=>S.stats.binned||0,rew:3},
  {t:"Buy 5 boxes at once (×5)",e:"5️⃣",n:1,p:()=>S.stats.multi,rew:5},
  {t:"Find something Rare (blue)",e:"💎",n:1,p:()=>ITEMS.some(i=>i.r>=2&&S.found[i.id])?1:0,rew:5},
+ {t:"Hire the loader (Upgrades → Buy)",e:"🙋",n:1,p:()=>lv("loader"),rew:5},
+ {t:"Build the auto-cutter (→ Open)",e:"🤖",n:1,p:()=>lv("autocut"),rew:10},
  {t:"Hire staff to open boxes",e:"🧑‍🔧",n:1,p:()=>lv("staff"),rew:10},
  {t:"Click a find, then Shelve it",e:"🪟",n:1,p:()=>S.stats.shelved,rew:10},
  {t:"Build the baler (auto-bin)",e:"🗜️",n:1,p:()=>lv("baler"),rew:15},
@@ -720,7 +762,7 @@ function cutLine(){const b=G.box,R=boxRect(b.id,drawX??BX),{L,T,w,h,cx}=R;
   return({sheet:[L+4,T+h/2,L+w-4,T+h/2],tape:[cx,T,cx,T+h],strip:[L,T+10,L+w,T+10],knot:[cx,T+24,cx,T-2],zip:[L+8,T+h*.52,L+w-8,T+h*.52],prise:[L+4,T+6,L+w-4,T+6],padlock:[cx-16,T+h-22,cx+16,T+h-22],film:[L+8,T+6,L+w-8,T+h-6],safe:[cx-28,T+h/2,cx+28,T+h/2]})[b.kind];}
 function nextBox(){if(G.st!=="empty"||heapFull())return;let id=null,sp=false,p=0;
   if(S.spec.length){id=S.spec.shift();sp=true;}else if(S.queue.length){const q=S.queue.shift();id=q.b;p=q.p;}else return;
-  const b=BI[id];G={st:"arrive",t:0,x:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
+  const b=BI[id];S.stats.loaded=(S.stats.loaded||0)+1;G={st:"arrive",t:0,x:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
   G.res=rollBox(id,{hand:true,special:sp});const best=G.res.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);G.best=best;
   G.rattle=cursedOn("ghost")?2.4:[.4,.6,1,1.5,2.2][best];dog.sniff=1.6;dog.tx=BX+(dog.x<BX?-74:72);dog.wait=3;}
 function cutAt(x,y,speed){if(G.st!=="closed")return;const [x0,y0,x1,y1]=cutLine(),dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy);
@@ -735,12 +777,14 @@ function openIt(){if(G.box.id==="scrap"){addCash(SCRAP_PAY);coinsFrom(BX,BBOT-30
   G.seg.fill(1);G.st="open";G.t=0;SFX.pop();if(S.relics.gcut)S.preCut=!S.preCut;}
 function sliceLine(x0,y0,x1,y1){const d=Math.hypot(x1-x0,y1-y0),n=Math.max(1,Math.ceil(d/2));for(let i=1;i<=n;i++){const t=i/n;cutAt(lerp(x0,x1,t),lerp(y0,y1,t),d*60);}}
 function startAuto(){if(G.st==="closed"&&!auto)auto={t:0,L:cutLine()};}
+function loadNext(){if(G.st!=="empty")return;if(heapFull()){toast("The empties heap is full: click it to bin it first");SFX.no();return;}if(!S.queue.length&&!S.spec.length){toast("The queue is empty: buy boxes in the shop");SFX.no();return;}nextBox();checkGoals();}
 function benchAction(){
-  if(G.st==="empty"){if(heapFull())binClick();}
+  if(G.st==="empty"){if(heapFull())binClick();else loadNext();}
   else if(G.st==="closed")startAuto();
   else if(G.st==="opened")flatten();
   else if(G.st==="reveal"&&G.t>.3)collect();}
 function collect(){if(G.st!=="reveal")return;const r=G.res;G.st="fly";G.t=0;
+  if(G.byAuto)for(const e of r.items)e.m/=1.2;
   const hi=r.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);S.streak=hi>=2?S.streak+1:0;
   if(r.boxes.length){for(const x of r.boxes)S.queue.push({b:x,p:0});}
   G.flyItems=r.items.filter(e=>!e.relic).map(e=>e.i);gain(r.items,"hand");boxDone(G.box.id,true);
@@ -776,11 +820,12 @@ function update(dt){
   if(dog.idle<=12){const dx=dog.tx-dog.x;if(Math.abs(dx)>1.5){const sp=dog.sniff>0||dog.st==="happy"?55:24;dog.x+=Math.sign(dx)*Math.min(Math.abs(dx),sp*dt);dog.face=Math.sign(dx);dog.walk+=dt*(sp/6);}
     else{dog.wait-=dt;if(dog.wait<=0){dog.tx=G.st==="empty"?rnd(DOGX[0],DOGX[1]):(Math.random()<.5?rnd(DOGX[0],BX-72):rnd(BX+72,DOGX[1]));dog.wait=rnd(2,6);}}}
   const fk=fastK();
-  if(G.st==="empty")nextBox();
+  if(G.st==="empty"&&(S.queue.length||S.spec.length)){if(lv("loader")){G.t>=loadDelayL(lv("loadSpd"))*(S.spec.length?0:1)&&nextBox();}}
   if(G.st==="arrive"){G.x=lerp(G.x,BX,1-Math.pow(.0005,dt/fk));if(Math.abs(G.x-BX)<1){G.x=BX;G.st="closed";G.t=0;SFX.flap();if(S.oneClick||S.preCut)startAuto();if(S.preCut){openIt();}}}
   if(G.st==="closed"){G.wob=Math.max(0,G.wob-dt);if(Math.random()<dt*1.4*G.rattle)G.wob=.15*G.rattle;
     if(P.down&&P.onBox&&!auto&&performance.now()-P.downT>220&&P.dragged<6)startAuto();
-    if(auto){const sp=(1+.18*lv("cutter"))/fk;const t0=auto.t;auto.t=Math.min(1,auto.t+dt*sp);const [x0,y0,x1,y1]=auto.L;sliceLine(lerp(x0,x1,t0),lerp(y0,y1,t0),lerp(x0,x1,auto.t),lerp(y0,y1,auto.t));if(auto.t>=1||G.st!=="closed")auto=null;}}
+    if(lv("autocut")&&!auto&&G.box.id!=="vault"&&G.cut===0&&G.t>autoDelayL(lv("autoSpd"))){startAuto();G.byAuto=true;}
+    if(auto){const sp=(1+.18*lv("cutter")+(G.byAuto?.15*lv("autoSpd"):0))/fk;const t0=auto.t;auto.t=Math.min(1,auto.t+dt*sp);const [x0,y0,x1,y1]=auto.L;sliceLine(lerp(x0,x1,t0),lerp(y0,y1,t0),lerp(x0,x1,auto.t),lerp(y0,y1,auto.t));if(auto.t>=1||G.st!=="closed")auto=null;}}
   else auto=null;
   if(G.st==="open"&&G.t>.32*fk){G.st="glow";G.t=0;G.glowR=G.best;SFX.glow(G.best);if(G.best>=4){slow=.35;musicDip();}G.tease=G.best===3&&Math.random()<.5;}
   if(G.st==="glow"){const need=[.35,.45,.6,.8,1.25][G.best]*fk;if(G.t>need){G.st="reveal";G.t=0;slow=1;reveal();}}
@@ -845,7 +890,6 @@ function buildRoom(){const k=S.sales>=5?"w":S.sales>=1?"u":"g";if(ROOM&&roomKey=
   // window (the van pulls up outside)
   r(WIN.x-2,WIN.y-2,WIN.w+4,WIN.h+4,"#2f2a26");r(WIN.x,WIN.y,WIN.w,WIN.h,"#8fc3d3");r(WIN.x,WIN.y,WIN.w,6,"#b5dde8");r(WIN.x,WIN.y+WIN.h-10,WIN.w,10,"#6c7a70");r(WIN.x,WIN.y+WIN.h-11,WIN.w,1,"#55635a");
   // shop shelves
-  c.fillStyle=OUT;c.font='7px "SilkC"';c.textAlign="center";c.fillText("SHOP WINDOW",SHELF.x+64,SHELF.y0-22);
   for(let row=0;row<3;row++){const y=SHELF.y0+row*SHELF.dy;r(SHELF.x-2,y,132,4,"#7a4d28");r(SHELF.x-2,y+4,132,2,"#4a2c15");r(SHELF.x,y+6,3,4,"#4a2c15");r(SHELF.x+125,y+6,3,4,"#4a2c15");}
   // bench
   r(0,110,W,H-110,PAL.bench);for(let y=118;y<H;y+=12)r(0,y,W,1,PAL.bench2);for(let i=0;i<10;i++)r((i*53+17)%W,118+((i*37)%140),18,1,PAL.bench3);r(0,110,W,3,"#3e2716");
@@ -1010,7 +1054,7 @@ function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){cons
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
 function takeScrap(){if(G.st!=="empty"){toast("Finish the box on the mat first");SFX.no();return;}G={st:"arrive",t:0,x:-70,box:SCRAP,sp:false,paid:0,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:{items:[],boxes:[]},best:0,rattle:0};SFX.buy();render();}
 function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automation)");return;}if(!unlocked(b))return;S.vanBox=b.id;toast(`🚚 The van now buys ${b.n.toLowerCase()}s`);render();}
-function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-4:-5);if(next)show.push(next);return show;}
+function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-3:-4);if(next)show.push(next);return show;}
 let quickKey="";
 function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
@@ -1031,19 +1075,20 @@ function render(){if(SIM)return;
   const tk=S.tray.map(e=>e.i).join(",")+"|"+(popIdx??"");const tl=$("#trayList");
   if(tl.dataset.k!==tk){tl.dataset.k=tk;tl.innerHTML="";if(!S.tray.length)tl.innerHTML=`<div id="trayEmpty">Finds land here. Click one to sell it, shelve it, file it in the album or scrap it for parts.</div>`;
     S.tray.forEach((e,j)=>{const it=II[e.i],b=document.createElement("button");b.className="ti"+(popIdx===j?" sel":"");b.style.borderLeftColor=RAR[it.r].c;
-      b.innerHTML=`<span class="te">${it.e}</span><span>${needsAlbum(e.i)?"📖 ":""}${it.n}</span><span class="tv">${money(itemVal(e))}</span>`;b.title=`${RAR[it.r].n}: ${it.d}`;b.onclick=()=>openPop(j,b);tl.appendChild(b);});}
+      b.innerHTML=`<span class="te">${it.e}</span><span>${needsAlbum(e.i)?"📖 ":""}${it.n}</span><span class="tv">${money(itemVal(e))}</span>`;b.onclick=()=>openPop(j,b);tl.appendChild(b);});}
   $("#trayN").textContent=S.tray.length?`${S.tray.length}/${TRAY}`:"";
   const qn=S.queue.length+S.spec.length,qt=`QUEUE<br><b>${qn}/${queueCap()}</b>`;if($("#qTag").innerHTML!==qt)$("#qTag").innerHTML=qt;
   const ht=`EMPTIES<br><b>${S.emp}/${heapCap()}</b>`;const hEl=$("#hTag");if(hEl.innerHTML!==ht)hEl.innerHTML=ht;hEl.className="ui tag"+(heapFull()?" full":S.emp>=heapCap()*.7?" warn":"");
   // business panel
-  const rows=[
-    ["🪟",`Shelves ${S.shelf.length}/${shelfCap()}`,money(shelfIncome())+"/s","shop"],
-    ["🧑‍🔧",lv("staff")?`Staff ${lv("staff")}/${staffCap()}`:"No staff yet",lv("staff")?fmtRate(lv("staff")*staffRate()):"","staff"],
-    ["🚚",lv("van")?(S.vanOn?`Van: ${BI[S.vanBox].e} every ${vanTime().toFixed(1)}s`:"Van: paused"):"No van (auto-buy)","","van"],
-    ["🧹",lv("sorter")?`Sorter: ${sortTimeL(lv("sortSpd")).toFixed(1)}s a find`:"No sorter (auto-sell)","","sorter"],
-    ["🗜️",lv("baler")?`Baler: ${balTimeL(lv("balSpd")).toFixed(1)}s an empty`:"No baler (auto-bin)","","baler"],
-    ["⚙️",(lv("slicer")||lv("arm")||lv("spinner"))?`Machines ${lv("slicer")}/${lv("arm")}/${lv("spinner")}`:"No machines","","machines"],
-  ];const bk=rows.map(r=>r.join()).join("|");const bl=$("#bizList");if(bl.dataset.k!==bk){bl.dataset.k=bk;bl.innerHTML="";for(const [i,t,v,obj] of rows){const b=document.createElement("button");b.className="bz";b.innerHTML=`<span class="bi">${i}</span><span>${t}</span><em>${v}</em>`;b.onclick=()=>openCard(obj);bl.appendChild(b);}}
+  const ns=lv("staff"),mach=lv("slicer")+lv("arm")+lv("spinner");
+  const rows=[   // the chain: each step is you until you automate it
+    ["1","🚚","Buy",lv("van")?`Van ${BI[S.vanBox].e}${S.vanOn?"":" paused"}`:"You: shop",lv("van")&&S.vanOn,"buy","Buy boxes. The delivery van does it for you."],
+    ["2","🙋","Load",lv("loader")?"Loader":"You: queue",lv("loader"),"buy","Put the next box on the mat. The loader does it for you."],
+    ["3","🔪","Open",(lv("autocut")?"Cutter":"You: cut")+(ns?` +${ns}🧑‍🔧`:"")+(mach?" +⚙":""),lv("autocut"),"open","Open the box on the mat. The auto-cutter does it; staff and machines open extra boxes from the queue."],
+    ["4","💰","Sell",lv("sorter")?"Sorter":"You: finds",lv("sorter"),"sell","Sell, shelve, file or scrap your finds. The sorter does it by your rules."],
+    ["5","🗑️","Bin",lv("baler")?"Baler":"You: heap",lv("baler"),"sell","Bin the empty boxes. The baler does it for you."],
+  ];const bk=rows.map(r=>r.join()).join("|");const bl=$("#bizList");if(bl.dataset.k!==bk){bl.dataset.k=bk;bl.innerHTML="";for(const [n,i,step,t,on,tab,tip] of rows){const b=document.createElement("button");b.className="bz";b.dataset.tip=tip+" Click to upgrade it.";
+      b.innerHTML=`<span class="bn">${n}</span><span class="bi">${i}</span><span class="bs">${step}</span><span class="bt">${t}</span>${on===null?"":`<em class="${on?"on":""}">${on?"AUTO":"YOU"}</em>`}`;b.onclick=()=>openUps(tab);bl.appendChild(b);}}
   const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span title="${II[id].n}: ${II[id].d}">${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
   // goal
   const g=GOALS[S.goal]||GOALS.at(-1),gp=g.n?Math.min(g.n,g.p()):0;if($("#goalTxt").textContent!==g.t){$("#goalTxt").textContent=g.t;$("#goal .gi").textContent=g.e;}
@@ -1058,8 +1103,9 @@ function render(){if(SIM)return;
   hint();}
 function shelfIncome(){let s=0;const inc=.004*(1+.12*lv("sign"))*(1+setBonus("inc"))*(EV.carboot>0?2:1)*(cursedOn("skull")?1.5:1);for(const e of S.shelf)s+=itemVal(e)*inc*(II[e.i].cursed?4:1);return s;}
 function hint(){let h="";const pad=document.body.classList.contains("pad");
-  if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(!S.queue.length&&!S.spec.length)?(broke()?"Short of cash? Cut up some free old cardboard (top of the shop)":S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":pad?"Press Y to buy boxes":"Buy boxes in the Box shop on the left"):"";
+  if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(S.queue.length||S.spec.length)?(lv("loader")?"The loader is fetching the next box":"Click the queue (left) or the mat to put a box on the mat"):(broke()?"Short of cash? Cut up some free old cardboard (top of the shop)":S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":"Buy boxes in the Box shop on the left");
   else if(G.st==="arrive")h=G.sp?"✨ A special box! Worth double when you open it":"Here it comes...";
+  else if(G.st==="closed"&&G.byAuto)h="The auto-cutter is opening it";
   else if(G.st==="closed")h=pad?`Hold A to ${KINDS[G.box.kind].toLowerCase()}`:`Drag along the ${G.box.kind==="tape"?"tape":"line"}, or hold on the box`;
   else if(G.st==="reveal")h=pad?"Nice! Press A to keep it":"Nice! Click to keep it";
   const el=$("#hint");if(el.textContent!==h)el.textContent=h;}
@@ -1067,15 +1113,23 @@ function hint(){let h="";const pad=document.body.classList.contains("pad");
 /* ---------- tray item pop-up: sell / shelve / album / scrap ---------- */
 let popIdx=null;
 function openPop(j,el){popIdx=j;const e=S.tray[j];if(!e)return closePop();const it=II[e.i];const pop=$("#pop");
-  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div>`;
-  const add=(lab,v,fn,ok=true)=>{const b=document.createElement("button");b.className="btn"+(ok?"":" off");b.innerHTML=`${lab}<em>${v}</em>`;b.onclick=ev=>{ev.stopPropagation();if(!ok){SFX.no();return;}fn();closePop();render();checkGoals();};pop.appendChild(b);return b;};
-  const first=add("💰 Sell",money(itemVal(e)),()=>{const v=sellAt(j);SFX.till();});
-  add("🪟 Shelve",S.shelf.length<shelfCap()?`+${money(itemVal(e)*.004*(it.cursed?4:1))}/s`:"full",()=>{shelveAt(j);SFX.buy();},S.shelf.length<shelfCap());
-  if(it.set)add("📖 Album",S.album[e.i]?"have it":SI[it.set].n.split(" ")[0],()=>{fileAt(j);SFX.buy();},needsAlbum(e.i));
-  add("⚙️ Scrap","+"+partsOf(e),()=>{const p=scrapAt(j);SFX.bale();floatTxt(BX,BBOT-60,"+"+p+" ⚙","#cfe8ff");});
-  const s=stagePos(el);pop.hidden=false;pop.style.left=(s.x-61-96)+"px";pop.style.top=clamp(s.y-10,30,270-pop.offsetHeight-4)+"px";
+  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div><div class="pd" style="color:${RAR[it.r].c};text-shadow:0 0 1px #000">${RAR[it.r].n}</div><div class="pd">${it.d}</div>`;
+  const add=(lab,v,sub,fn,ok=true)=>{const b=document.createElement("button");b.className="btn"+(ok?"":" off");b.innerHTML=`<span>${lab}</span><em>${v}</em><small>${sub}</small>`;b.onclick=ev=>{ev.stopPropagation();if(!ok){SFX.no();return;}fn();closePop();render();checkGoals();};pop.appendChild(b);return b;};
+  const first=add("💰 Sell now",money(itemVal(e)),"Cash straight away.",()=>{const v=sellAt(j);SFX.till();});
+  const free=S.shelf.length<shelfCap(),inc=itemVal(e)*.004*(it.cursed?4:1);
+  add("🪟 Put on a shelf",free?`+${money(inc)}/s`:"full",free?`Earns every second until a customer buys it (at full price).${it.cursed?" Cursed: something odd happens!":""}`:"Your shelves are full. Buy more in Upgrades → Shop.",()=>{shelveAt(j);SFX.buy();intro("shelf");},free);
+  if(it.set){const st=SI[it.set],got=st.items.filter(i=>S.album[i]).length;add("📖 File in the album",S.album[e.i]?"got it":`${got}/${st.items.length}`,S.album[e.i]?`You already filed one for ${st.n}.`:`Part of the ${st.n} set. Finish it for ${bonusTxt(st.b)}, forever.`,()=>{fileAt(j);SFX.buy();},needsAlbum(e.i));}
+  add("⚙️ Scrap for parts","+"+partsOf(e)+" ⚙","Breaks it into parts. Parts pay for machines and some upgrades.",()=>{const p=scrapAt(j);SFX.bale();floatTxt(BX,BBOT-60,"+"+p+" ⚙","#cfe8ff");intro("parts");});
+  const s=stagePos(el);pop.hidden=false;pop.style.left=(350-140)+"px";pop.style.top=clamp(s.y-10,30,270-pop.offsetHeight-4)+"px";
   if(document.body.classList.contains("pad")||document.body.classList.contains("key"))first.focus();render();}
 function closePop(){popIdx=null;$("#pop").hidden=true;}
+function shelfAt(x,y){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10)return k;}return -1;}
+function openShelfPop(k){const e=S.shelf[k];if(!e)return;const it=II[e.i],pop=$("#pop");popIdx=null;
+  pop.innerHTML=`<div class="ph"><span>${it.e}</span>${it.n}</div><div class="pd">On a shelf: earning ${money(itemVal(e)*.004*(it.cursed?4:1))}/s until a customer buys it for ${money(itemVal(e)*(S.relics.lcat?2:1))}.</div>`;
+  const add=(lab,v,sub,fn,ok=true)=>{const b=document.createElement("button");b.className="btn"+(ok?"":" off");b.innerHTML=`<span>${lab}</span><em>${v}</em><small>${sub}</small>`;b.onclick=ev=>{ev.stopPropagation();if(!ok){SFX.no();return;}fn();closePop();render();};pop.appendChild(b);};
+  add("💰 Sell it now",money(itemVal(e)),"Skip the wait and sell it yourself.",()=>{const x=S.shelf.splice(k,1)[0];if(!x)return;const v=itemVal(x);addCash(v);const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);SFX.till();});
+  add("↩️ Take it down","","Back to your finds tray.",()=>{const x=S.shelf.splice(k,1)[0];if(x){S.tray.push(x);gain([],"");}},S.tray.length<TRAY);
+  const p=shelfPos(k);pop.hidden=false;pop.style.left=clamp(p.x-70,136,340-138)+"px";pop.style.top=(p.y+12)+"px";}
 function sellAllTray(junkOnly){let tot=0,n=0;for(let j=S.tray.length;j--;){if(junkOnly&&II[S.tray[j].i].r>1)continue;if(junkOnly&&needsAlbum(S.tray[j].i))continue;tot+=sellAt(j,true);n++;}
   if(!n){toast("Nothing to sell");SFX.no();return;}const p=stagePos($("#trayList"));coinsFrom(p.x,p.y,tot,Math.min(14,3+n));SFX.till();toast(`Sold ${n} thing${n>1?"s":""} for ${money(tot)}`);closePop();render();}
 
@@ -1090,7 +1144,7 @@ const CARDS={
   queue:{h:"📦 Box queue",p:"Boxes you buy wait here. You open the front one; staff and machines take the rest.",ups:["conv","bulk","haggle"]},
 };
 let cardObj=null;
-const CARD_TAB={shop:"shop",staff:"staff",van:"deliv",sorter:"deliv",baler:"shop",machines:"mach",queue:"hands"};
+const CARD_TAB={shop:"shop",staff:"open",van:"buy",sorter:"sell",baler:"sell",machines:"mach",queue:"buy"};
 function openCard(obj){openUps(CARD_TAB[obj]||"hands");}
 function openCardOld(obj){cardObj=obj;$("#card").hidden=false;closePop();renderCard(true);const c=$("#card");c.style.left="150px";c.style.top="60px";if(document.body.classList.contains("pad")||document.body.classList.contains("key")){const b=c.querySelector(".up");b&&b.focus();}}
 function closeCard(){cardObj=null;$("#card").hidden=true;}
@@ -1099,6 +1153,7 @@ function renderCard(force){const c=CARDS[cardObj];if(!c)return;$("#cardH").textC
     if(c.tog){const t=document.createElement("button");t.className="btn";t.dataset.tog=c.tog;t.onclick=()=>{S[c.tog]=!S[c.tog];render();};list.appendChild(t);}}
   for(const el of list.querySelectorAll(".up"))fillUp(el);const t=list.querySelector("[data-tog]");if(t)t.textContent=t.dataset.tog==="vanOn"?(S.vanOn?"⏸ Pause the van":"▶ Start the van"):(S.acctOn?"⏸ Pause the accountant":"▶ Start the accountant");}
 function upCard(u){const b=document.createElement("button");b.className="up";b.dataset.u=u.id;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;
+  b.onpointerenter=b.onfocus=()=>{detU=u;renderDet();};
   b.onclick=()=>{if(!upAvail(u)){toast("Not available yet");SFX.no();return;}if(upMaxed(u)){toast(u.cap&&lv(u.id)>=u.cap()?"No room: lay more conveyor belt":"Maxed");return;}if(!buyUp(u)){toast(u.cur==="parts"?`Need ⚙${fmtN(upCost(u)-S.parts)} more parts`:`Need ${money(upCost(u)-S.cash)} more`);SFX.no();return;}checkGoals();render();};fillUp(b);return b;}
 function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=upAvail(u),mx=upMaxed(u),ok=av&&!mx&&canAfford(u),c=upCost(u);
   el.className="up"+(mx?" max":ok?" can":"")+(av?"":" lockd");
@@ -1107,21 +1162,43 @@ function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=up
   const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;}
 
 /* ---------- all upgrades modal (tabs) ---------- */
-const TABS=[["hands","✋ Hands"],["shop","🪟 Shop"],["staff","🧑‍🔧 Staff"],["deliv","🚚 Van"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
+const TABS=[["hands","✋ Hands"],["buy","🚚 Buy"],["open","🔪 Open"],["sell","💰 Sell"],["shop","🪟 Shop"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
+const TAB_INTRO={hands:"Your own tools: cut faster, find rarer things, pay less for boxes.",buy:"Step 1 and 2: get boxes bought and put on the mat without clicking.",open:"Step 3: open boxes. The auto-cutter opens the one on the mat; staff open extra boxes from the queue.",
+  sell:"Step 4 and 5: the sorter handles your finds, the baler bins the empties.",shop:"Your shop window: shelved finds earn money every second until a customer buys them.",mach:"Machines open boxes too. They're paid for with ⚙ parts (scrap finds to get parts).",stars:"Permanent upgrades, paid for with ⭐ stars from selling the business. They stay forever."};
+const ORDER=["van","vanSpd","vanLoad","loader","loadSpd","bulk","autocut","autoSpd","staff","train","conv","sorter","sortSpd","baler","balSpd","heap"];
+let detU=null;
 function openUps(tab){if(tab)upTab=tab;$("#upModal").hidden=false;closePop();closeCard();buildUps();renderUps();const f=$("#upList .up");if(f&&(document.body.classList.contains("pad")||document.body.classList.contains("key")))f.focus();}
 function buildUps(){const t=$("#upTabs");t.innerHTML="";for(const [id,lab] of TABS){if(id==="stars"&&!S.sales&&starsNow()<1)continue;const b=document.createElement("button");b.textContent=lab;b.className=upTab===id?"on":"";b.dataset.tab=id;b.onclick=()=>{upTab=id;buildUps();renderUps();};t.appendChild(b);}
-  const list=$("#upList");list.innerHTML="";list.classList.toggle("two",upTab==="stars");
+  const list=$("#upList");list.innerHTML="";list.classList.toggle("two",upTab==="stars");$("#upIntro").textContent=TAB_INTRO[upTab]||"";
   if(upTab==="stars"){const h=document.createElement("div");h.className="grpH";h.style.cssText="font:400 8px/1.3 Pix;color:inherit";h.innerHTML=`You have <b style="font:400 10px Num">${S.stars}⭐</b>. Every star you've ever earned also adds +1% to all values (${S.starsEver} so far = +${S.starsEver}%).`;list.appendChild(h);
     let g="";for(const u of STARU){if(u.g!==g){g=u.g;const gh=document.createElement("div");gh.className="grpH";gh.textContent=g;list.appendChild(gh);}list.appendChild(starCard(u));}
     const gh=document.createElement("div");gh.className="grpH";gh.textContent="Unlocks (from selling the business)";list.appendChild(gh);
+    if(!detU||!detU.s)detU={s:STARU[0]};renderDet();
     for(const u of UNLOCKS){const d=document.createElement("div");d.className="up"+(S.sales>=u.n?" max":" lockd");d.innerHTML=`<span class="ue">${S.sales>=u.n?"✅":"🔒"}</span><span><b>${u.t}</b><small>after selling ${u.n}×</small></span><span></span>`;list.appendChild(d);}return;}
-  for(const u of UPG)if(u.g===upTab)list.appendChild(upCard(u));
-  if(upTab==="deliv"){const r=document.createElement("div");r.id="rules";r.innerHTML=`<div class="rl" style="grid-column:1/-1;text-align:left">🧹 Sorter rules: click to change what happens to each rarity</div>`;
+  const ups=UPG.filter(u=>u.g===upTab).sort((a,b)=>(ORDER.indexOf(a.id)+1||99)-(ORDER.indexOf(b.id)+1||99));for(const u of ups)list.appendChild(upCard(u));
+  if(!detU||detU.g!==upTab)detU=ups.find(u=>upAvail(u)&&!upMaxed(u)&&canAfford(u))||ups[0];renderDet();
+  if(false){const r=document.createElement("div");r.id="rules";r.innerHTML=`<div class="rl" style="grid-column:1/-1;text-align:left">🧹 Sorter rules: click to change what happens to each rarity</div>`;
     RAR.forEach((rr,i)=>{const w=document.createElement("div");w.innerHTML=`<div class="rl"><span style="display:inline-block;width:6px;height:6px;background:${rr.c};border:1px solid #2a1a12;margin-right:2px"></span>${rr.n}</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.rules[i];b.onclick=()=>{const o=["keep","sell","shelve","scrap"];S.rules[i]=o[(o.indexOf(S.rules[i])+1)%4];b.textContent=S.rules[i];};w.appendChild(b);r.appendChild(w);});
     const w=document.createElement("div");w.innerHTML=`<div class="rl">Album</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.sortAlbum?"file":"skip";b.onclick=()=>{S.sortAlbum=!S.sortAlbum;b.textContent=S.sortAlbum?"file":"skip";};w.appendChild(b);r.appendChild(w);list.appendChild(r);}}
-function starCard(u){const b=document.createElement("button");b.className="up";b.dataset.s=u.id;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;b.onclick=()=>{if(buyStar(u)){buildUps();renderUps();render();checkGoals();}else SFX.no();};fillStar(b);return b;}
+function starCard(u){const b=document.createElement("button");b.className="up";b.dataset.s=u.id;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;b.onpointerenter=b.onfocus=()=>{detU={s:u};renderDet();};b.onclick=()=>{if(buyStar(u)){buildUps();renderUps();render();checkGoals();}else SFX.no();};fillStar(b);return b;}
 function fillStar(el){const u=SU[el.dataset.s],L=slv(u.id),mx=L>=u.max,c=u.cost(L),ok=!mx&&S.stars>=c;el.className="up"+(mx?" max":ok?" can":"");el.querySelector("b").innerHTML=`${u.n} <i>${u.max>1?`${L}/${u.max}`:L?"✓":""}</i>`;el.querySelector("small").textContent=u.f(mx||L===0&&u.max===1?Math.max(L,1):L+1);el.querySelector(".uc").textContent=mx?"MAX":c+"⭐";}
-function renderUps(){for(const el of $("#upList").querySelectorAll(".up[data-u]"))fillUp(el);for(const el of $("#upList").querySelectorAll(".up[data-s]"))fillStar(el);
+function renderDet(){const d=$("#upDet");if(!d||!detU)return;let h="",buy=null;
+  if(detU.s){const u=detU.s,L=slv(u.id),mx=L>=u.max,c=u.cost(L);h=`<h5><span>${u.e}</span>${u.n}</h5><div class="lvl">${u.max>1?`level ${L}/${u.max}`:L?"owned":"not bought"}</div><p>${u.d}</p><div class="tl">${L?`<span>Now</span><span>${u.f(L)}</span>`:""}${mx?"":`<span>${L?"Next":"Gives"}</span><span>${u.f(L+1)}</span><span>Cost</span><span>${c} ⭐</span>`}</div>`;
+    if(!mx)buy={t:S.stars>=c?`Buy for ${c} ⭐`:`Need ${c-S.stars} more ⭐`,ok:S.stars>=c,fn:()=>{if(buyStar(u)){buildUps();renderUps();render();checkGoals();}}};}
+  else{const u=detU,L=lv(u.id),mx=upMaxed(u),av=upAvail(u),c=upCost(u),cap=u.cap?Math.min(u.max,u.cap()):u.max;
+    h=`<h5><span>${u.e}</span>${u.n}</h5><div class="lvl">${u.max>1?`level ${L}/${cap}`:L?"owned":"not bought yet"}</div><p>${u.d}</p><div class="tl">${L&&u.max>1?`<span>Now</span><span>${u.f(L)}</span>`:""}${mx?"":`<span>${u.max===1?"Gives":"Next"}</span><span>${u.f(Math.min(L+1,u.max))}</span><span>Cost</span><span>${u.cur==="parts"?"⚙ "+fmtN(c)+" parts":money(c)}</span>`}</div>`;
+    if(!av)h+=`<div class="lk">🔒 ${u.why||"Not available yet"}</div>`;else if(mx)h+=u.cap&&L>=u.cap()&&L<u.max?`<div class="lk">No room: lay more conveyor belt (this tab)</div>`:`<div class="lk" style="color:#2f6b24">✓ ${u.max===1?"You have this":"Maxed out"}</div>`;
+    else buy={t:canAfford(u)?`Buy for ${u.cur==="parts"?"⚙"+fmtN(c):money(c)}`:u.cur==="parts"?`Need ⚙${fmtN(c-S.parts)} more parts`:`Need ${money(c-S.cash)} more`,ok:canAfford(u),fn:()=>{if(buyUp(u)){checkGoals();render();}}};
+    if(u.id==="van"&&L)h+=`<p>Pick its box with the 🚚 corner of a box in the shop.</p>`;}
+  const key=h+(buy?buy.t+buy.ok:"")+(upTab==="sell"?S.rules.join()+S.sortAlbum+lv("sorter"):"");if(d.dataset.k===key)return;d.dataset.k=key;d.innerHTML=h;
+  if(buy){const b=document.createElement("button");b.className="btn "+(buy.ok?"go":"off");b.textContent=buy.t;b.onclick=()=>{if(buy.ok)buy.fn();else SFX.no();};d.appendChild(b);}
+  // sorter rules: only once you have a sorter, as a tidy table
+  if(upTab==="sell"&&lv("sorter")){const t=document.createElement("div");t.id="rulesT";const O=["keep","sell","shelve","scrap"];
+    t.innerHTML=`<div class="rh">🧹 Sorter rules: what it does with each find</div><span></span>${O.map(o=>`<span style="text-align:center;font-size:6px;color:#6b4a26">${o}</span>`).join("")}`;
+    RAR.forEach((r,i)=>{const n=document.createElement("span");n.className="rn";n.innerHTML=`<i style="background:${r.c}"></i>${r.n}`;t.appendChild(n);
+      for(const o of O){const b=document.createElement("button");b.textContent=o==="keep"?"keep":o==="sell"?"sell":o==="shelve"?"shelf":"scrap";b.className=S.rules[i]===o?"on":"";b.onclick=()=>{S.rules[i]=o;d.dataset.k="";renderDet();};t.appendChild(b);}});
+    const a=document.createElement("div");a.className="ra";a.innerHTML=`<span>📖 Album pieces:</span>`;const ab=document.createElement("button");ab.textContent=S.sortAlbum?"file them first":"treat like the rest";ab.className=S.sortAlbum?"on":"";ab.onclick=()=>{S.sortAlbum=!S.sortAlbum;d.dataset.k="";renderDet();};a.appendChild(ab);t.appendChild(a);d.appendChild(t);}}
+function renderUps(){renderDet();for(const el of $("#upList").querySelectorAll(".up[data-u]"))fillUp(el);for(const el of $("#upList").querySelectorAll(".up[data-s]"))fillStar(el);
   for(const b of $("#upTabs").children){const id=b.dataset.tab;b.dataset.n=id==="stars"?STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;}}
 
 /* ---------- album ---------- */
@@ -1190,7 +1267,9 @@ cv.addEventListener("pointerdown",e=>{audio();setMode(e.pointerType==="touch"?"t
   if(G.st==="closed"&&P.onBox){cutAt(p.x,p.y,0);return;}
   if(G.st==="closed"){cutAt(p.x,p.y,0);}
   const o=canvasObj(p.x,p.y);
+  {const k=shelfAt(p.x,p.y);if(k>=0){openShelfPop(k);return;}}
   if(o==="heap"){binClick();return;}
+  if(G.st==="empty"&&(o==="queue"||inR(p.x,p.y,MAT))){loadNext();return;}
   if(o==="van"&&EV.van>0){grabMysteryVan();render();return;}
   if(G.st==="opened"&&overBox(p.x,p.y)){flatten();return;}
   if(G.st==="reveal"&&G.t>.3){collect();return;}
@@ -1199,9 +1278,28 @@ cv.addEventListener("pointermove",e=>{const p=toStage(e);if(P.down){P.dragged+=M
 addEventListener("pointerup",()=>{P.down=false;P.lastX=P.lastY=null;});
 cv.addEventListener("pointerleave",()=>{if(!P.down)P.over=false;$("#tip").style.display="none";});
 function tipAt(x,y){const tip=$("#tip");let h="";
-  if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> (${RAR[it.r].n})<br>Worth ${money(itemVal(e))} · earns ${money(itemVal(e)*.004*(it.cursed?4:1))}/s${it.cursed?"<br>"+it.d:""}`;}}if(!h)h=`<b>Shop window</b> ${S.shelf.length}/${shelfCap()}<br>Click a find on the right, then Shelve`;}
+  if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> (${RAR[it.r].n})<br>Earning ${money(itemVal(e)*.004*(it.cursed?4:1))}/s until a customer buys it for ${money(itemVal(e))}.${it.cursed?"<br>"+it.d:""}<br><b>Click to sell it now.</b>`;}}if(!h)h=`<b>Shop window</b> ${S.shelf.length}/${shelfCap()}<br>Click a find on the right, then Shelve`;}
   else{const o=canvasObj(x,y);if(o==="heap")h=`<b>Empties heap</b> ${S.emp}/${heapCap()}<br>Click to bin them for ${money(S.empV)}`;else if(o==="queue")h=`<b>Box queue</b> ${S.queue.length+S.spec.length}/${queueCap()}`;else if(o==="van"&&EV.van>0)h="<b>Mystery van!</b> Click it";}
   if(!h){tip.style.display="none";return;}tip.innerHTML=h;tip.style.display="block";tip.style.left=clamp(x+8,0,350)+"px";tip.style.top=clamp(y-30,30,230)+"px";}
+/* ---------- first-time help: a short card the first time you meet each thing ---------- */
+const INTROS={
+  queue:["📦","Your box is in the queue",["Boxes you buy wait in the <b>queue</b> on the left of the mat.","<b>Click the queue</b> (or the mat) to put the next box on the mat, then cut it open.","Later, a <b>Loader</b> does this for you (Upgrades → Buy)."]],
+  finds:["🎁","You found something!",["Your finds land on the <b>right</b>. Click one to choose what to do:","<b>💰 Sell</b>: cash now. <b>🪟 Shelf</b>: earns money every second, and a customer buys it later. <b>📖 Album</b>: collect sets for permanent bonuses. <b>⚙️ Scrap</b>: turn it into parts for machines.","No time? <b>Sell all</b> or <b>Sell junk</b> at the bottom."]],
+  shelf:["🪟","Your shop window",["Shelved finds sit on the wall and <b>earn money every second</b>.","Sooner or later a <b>customer buys it</b> at full price and the shelf frees up. You'll see SOLD and coins.","Want the money now? <b>Click it on the shelf</b> to sell it straight away."]],
+  parts:["⚙️","Parts",["Scrapping breaks a find into <b>⚙ parts</b> (shown next to your cash).","Parts pay for <b>machines</b> (they open boxes) and some hand upgrades like Fast Hands.","Junk is worth more as parts than as cash, early on."]],
+  heap:["🗑️","Empties pile up",["Every box you open leaves an <b>empty</b> on the heap (right of the mat).","If the heap gets <b>full, nothing can be opened</b>. Click it to bin the lot for a few pennies.","A <b>cardboard baler</b> bins them for you (Upgrades → Sell)."]],
+  chain:["🔁","Your business: 5 steps",["Every box goes: <b>1 Buy → 2 Load → 3 Open → 4 Sell → 5 Bin</b>.","Right now <b>you</b> do each step. The \"Your business\" panel (bottom right) shows which ones are automatic.","Automate them one by one in <b>🧰 All upgrades</b>: van, loader, auto-cutter, sorter, baler."]],
+  staff:["🧑‍🔧","Staff",["Staff stand at the front of the bench and <b>open boxes from the queue</b> on their own, alongside you.","They only open boxes they're <b>trained</b> for (Upgrades → Open → Staff Training).","Buy boxes in bulk (×5, ×10) or get the van so they always have work."]],
+  unlock:["🔓","A new box is ready",["You've opened enough to unlock a <b>bigger box</b>. Pay its unlock price in the Box shop.","Bigger boxes cost more but hold <b>better finds</b>."]],
+  stars:["🏷️","You can sell the business",["The <b>🏷️ Sell the business</b> button (left) trades everything for <b>⭐ stars</b>.","Stars buy <b>permanent upgrades</b>, and each sale unlocks new boxes. You start again faster.","There's no rush: the longer you go, the more stars you get."]],
+};
+let introQ=[];
+function intro(k){if(SIM||!S.seen||S.seen[k]||!INTROS[k])return;S.seen[k]=1;introQ.push(k);}
+function introTick(){if(!introQ.length||topModal()||!$("#title").hidden)return;const k=introQ.shift(),[e,h,ps]=INTROS[k];$("#inH").innerHTML=`<span style="font-size:14px">${e}</span>${h}`;$("#inB").innerHTML=ps.map(p=>`<p>${p}</p>`).join("");$("#introModal").hidden=false;}
+function introChecks(){if(G.st==="empty"&&S.queue.length&&!lv("loader"))intro("queue");if(S.tray.length)intro("finds");if(S.emp>=heapCap()*.5&&!lv("baler"))intro("heap");
+  if(S.stats.boxes>=4)intro("chain");if(lv("staff"))intro("staff");if(Object.keys(S.ready).some(k=>!S.unl[k]))intro("unlock");if(starsNow()>=1)intro("stars");}
+$("#inOk").onclick=()=>$("#introModal").hidden=true;
+
 /* ---------- tooltips: styled, for every button (replaces the browser's grey ones) ---------- */
 function upTip(u){const L=lv(u.id),mx=upMaxed(u),av=upAvail(u),c=upCost(u),cap=u.cap?Math.min(u.max,u.cap()):u.max;
   let h=`<h5>${u.e} ${u.n}<i>${u.max>1?`${L}/${cap}`:L?"owned":""}</i></h5><p>${u.d}</p><div class="tl">`;
@@ -1213,7 +1311,7 @@ function boxTip(b){if(b.id==="scrap")return `<h5>♻️ Old cardboard<i>free</i>
   const lock=!unlocked(b);let h=`<h5>${b.e} ${b.n}<i>${lock?"locked":money(priceOf(b))}</i></h5><p>${b.sub}</p><div class="tl"><span>Opens by</span><span>${KINDS[b.kind].toLowerCase()}</span>`;
   if(b.items&&b.items.length)h+=`<span>Finds</span><span>${b.items.filter(i=>S.found[i.id]).length}/${b.items.length} found</span>`;h+=`<span>Opened</span><span>${fmtN(S.opL[b.id]||0)}</span></div>`;
   if(lock)h+=`<div class="lk">${canUnlock(b)?`🔓 Click to unlock for ${money(licOf(b))}`:"🔒 "+lockTxt(b)}</div>`;else if(lv("van"))h+=`<p style="margin-top:3px">Click the 🚚 corner to make the van buy these.</p>`;return h;}
-function tipFor(el){if(el.dataset.u)return upTip(UI[el.dataset.u]);if(el.dataset.s)return starTip(SU[el.dataset.s]);if(el.dataset.box)return boxTip(BI[el.dataset.box]);return el.dataset.tip?`<p style="margin:0">${el.dataset.tip}</p>`:"";}
+function tipFor(el){if(el.closest("#upModal"))return"";if(el.dataset.u)return upTip(UI[el.dataset.u]);if(el.dataset.s)return starTip(SU[el.dataset.s]);if(el.dataset.box)return boxTip(BI[el.dataset.box]);return el.dataset.tip?`<p style="margin:0">${el.dataset.tip}</p>`:"";}
 let tipEl=null;
 document.addEventListener("pointerover",e=>{if(e.pointerType==="touch")return;const el=e.target.closest&&e.target.closest("[title],[data-tip],[data-u],[data-s],[data-box]");if(!el||el===cv){return;}
   if(el.title){el.dataset.tip=el.title;el.removeAttribute("title");}tipEl=el;showTip(el);});
@@ -1266,7 +1364,7 @@ function frame(now){const rdt=Math.min(.05,(now-last)/1000);last=now;
   update(rdt*slow);draw();musicTick();
   const cs=money(shownCash);if(cs!==dispCash){dispCash=cs;$("#cashV").textContent=cs;}
   if(bump>0){bump=0;$("#till").animate([{transform:"scale(1.05)"},{transform:"scale(1)"}],{duration:120});}
-  rT-=rdt;if(rT<=0){rT=.25;checkGoals();render();}
+  rT-=rdt;if(rT<=0){rT=.25;checkGoals();render();introChecks();introTick();}
   saveT-=rdt;if(saveT<=0){saveT=5;save();}
   requestAnimationFrame(frame);}
 // hidden tabs still get timers (throttled to ~1/s), so money keeps flowing at full rate
