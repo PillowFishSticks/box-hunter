@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Box Hunter</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📦%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#10201f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
 @font-face{font-family:"Silk";src:url(fonts/Silkscreen-Regular.ttf) format("truetype");font-weight:400;font-display:block;unicode-range:U+0000-002A,U+002D,U+003A-00A2,U+00A4-00D6,U+00D8-FFFF}
 @font-face{font-family:"Silk";src:url(fonts/Silkscreen-Bold.ttf) format("truetype");font-weight:700;font-display:block;unicode-range:U+0000-002A,U+002D,U+003A-00A2,U+00A4-00D6,U+00D8-FFFF}
@@ -115,8 +121,14 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #toast{left:50%;top:52px;transform:translateX(-50%);padding:3px 6px;font:700 9px/1.1 "Pix";white-space:nowrap;z-index:8;display:none}
 #ev{left:134px;top:30px;width:196px;padding:2px 4px;font:700 7px/1.15 "Pix";z-index:4;animation:shine 1s steps(2) infinite}
 #ev[hidden]{display:none}
-#tip{position:absolute;z-index:9;pointer-events:none;padding:2px 4px;font:400 7px/1.25 "Pix";max-width:130px;display:none}
+#tip{position:absolute;z-index:30;pointer-events:none;padding:4px 6px;font:400 8px/1.3 "Pix";max-width:170px;display:none;background:#fff4dc}
 #tip b{font-weight:700}
+#tip h5{margin:0 0 2px;font:700 9px/1.1 "Pix";display:flex;gap:3px;align-items:center}
+#tip h5 i{margin-left:auto;font:400 10px/1 "Num";font-style:normal;color:#5a3a1a}
+#tip p{margin:0 0 3px;color:#3e2a18}
+#tip .tl{display:grid;grid-template-columns:auto 1fr;gap:1px 5px;font-size:8px}
+#tip .tl span:nth-child(odd){font-weight:700;color:#6b4a26}
+#tip .lk{color:#9b2a24;font-weight:700;margin-top:2px}
 #pop{position:absolute;z-index:7;width:96px;padding:3px;display:flex;flex-direction:column;gap:2px}
 #pop[hidden]{display:none}
 #pop .ph{font:700 7px/1.1 "Pix";display:flex;gap:2px;align-items:center}
@@ -360,19 +372,19 @@ const UPG=[
  {id:"till",g:"shop",e:"🧮",n:"Sharp Till",max:10,cost:g15(100,1.9),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
  // Automation
  {id:"staff",g:"staff",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>40*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
- {id:"train",g:"staff",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
- {id:"conv",g:"staff",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
+ {id:"train",why:"Hire some staff first",g:"staff",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
+ {id:"conv",why:"Hire some staff first",g:"staff",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
  {id:"van",g:"deliv",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
- {id:"vanSpd",g:"deliv",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
- {id:"vanLoad",g:"deliv",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
+ {id:"vanSpd",why:"Get the delivery van first",g:"deliv",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
+ {id:"vanLoad",why:"Get the delivery van first",g:"deliv",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
  {id:"sorter",g:"deliv",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
- {id:"sortSpd",g:"deliv",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
+ {id:"sortSpd",why:"Hire the sorter first",g:"deliv",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
  {id:"baler",g:"shop",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
- {id:"balSpd",g:"shop",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
- {id:"acct",g:"staff",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
- {id:"slicer",g:"mach",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
- {id:"arm",g:"mach",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
- {id:"spinner",g:"mach",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
+ {id:"balSpd",why:"Build the baler first",g:"shop",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
+ {id:"acct",why:"Open a padded envelope first",g:"staff",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
+ {id:"slicer",why:"Open a padded envelope first",g:"mach",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
+ {id:"arm",why:"Unlock lost luggage first",g:"mach",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
+ {id:"spinner",why:"Unlock pallets first",g:"mach",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
 ];
 const UI=Object.fromEntries(UPG.map(u=>[u.id,u]));
 // star upgrades (kept forever)
@@ -424,7 +436,7 @@ function money(n){if(!isFinite(n))return"£∞";const neg=n<0;n=Math.abs(n);let 
   else{const u=["","k","M","B","T"];let i=0;while(n>=1000&&i<u.length-1){n/=1000;i++;}s=n>=1000?"£"+n.toExponential(2).replace("+",""):"£"+(n<10?n.toFixed(2):n<100?n.toFixed(1):Math.round(n))+u[i];}
   return(neg?"−":"")+s;}
 const fmtN=n=>n<1000?String(Math.floor(n)):money(n).slice(1);
-const fmtRate=r=>r>=1?`${r.toFixed(1)}/s`:r>0?`1 per ${(1/r).toFixed(1)}s`:"idle";
+const fmtRate=r=>r>=1?`${r.toFixed(1)} boxes a second`:r>0?`a box every ${(1/r).toFixed(1)}s`:"idle";
 const startCash=L=>L?100*Math.pow(10,L-1):15;
 const setDone=id=>SI[id].items.every(i=>S.album[i]);
 function setBonus(k,box){let a=0;for(const s of SETS)if(s.b.k===k&&(!box||s.b.box===box)&&setDone(s.id))a+=s.b.a;return a;}
@@ -992,9 +1004,9 @@ const lockTxt=b=>{const u=b.unlock;const s=(u.sales||0)>S.sales?`sell the busine
 const boxEls={};
 function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){const b=document.createElement("button");b.textContent=n==="Max"?"Max":"×"+n;b.className=S.buyN===n?"on":"";b.onclick=e=>{e.stopPropagation();S.buyN=n;buildShop();render();};q.appendChild(b);}
   const list=$("#boxList");list.innerHTML="";
-  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">Free</span>`;el.title=SCRAP.sub;el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
+  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">Free</span>`;el.dataset.box="scrap";el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
   for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.sn||b.n}</b><small></small></span><span class="bb"></span>`;
-    el.title=b.sub;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
+    el.dataset.box=b.id;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
 function takeScrap(){if(G.st!=="empty"){toast("Finish the box on the mat first");SFX.no();return;}G={st:"arrive",t:0,x:-70,box:SCRAP,sp:false,paid:0,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:{items:[],boxes:[]},best:0,rattle:0};SFX.buy();render();}
 function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automation)");return;}if(!unlocked(b))return;S.vanBox=b.id;toast(`🚚 The van now buys ${b.n.toLowerCase()}s`);render();}
@@ -1086,7 +1098,7 @@ function renderCard(force){const c=CARDS[cardObj];if(!c)return;$("#cardH").textC
   if(force||list.dataset.k!==cardObj){list.dataset.k=cardObj;list.innerHTML="";for(const id of c.ups){list.appendChild(upCard(UI[id]));}
     if(c.tog){const t=document.createElement("button");t.className="btn";t.dataset.tog=c.tog;t.onclick=()=>{S[c.tog]=!S[c.tog];render();};list.appendChild(t);}}
   for(const el of list.querySelectorAll(".up"))fillUp(el);const t=list.querySelector("[data-tog]");if(t)t.textContent=t.dataset.tog==="vanOn"?(S.vanOn?"⏸ Pause the van":"▶ Start the van"):(S.acctOn?"⏸ Pause the accountant":"▶ Start the accountant");}
-function upCard(u){const b=document.createElement("button");b.className="up";b.dataset.u=u.id;b.title=u.d;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;
+function upCard(u){const b=document.createElement("button");b.className="up";b.dataset.u=u.id;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;
   b.onclick=()=>{if(!upAvail(u)){toast("Not available yet");SFX.no();return;}if(upMaxed(u)){toast(u.cap&&lv(u.id)>=u.cap()?"No room: lay more conveyor belt":"Maxed");return;}if(!buyUp(u)){toast(u.cur==="parts"?`Need ⚙${fmtN(upCost(u)-S.parts)} more parts`:`Need ${money(upCost(u)-S.cash)} more`);SFX.no();return;}checkGoals();render();};fillUp(b);return b;}
 function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=upAvail(u),mx=upMaxed(u),ok=av&&!mx&&canAfford(u),c=upCost(u);
   el.className="up"+(mx?" max":ok?" can":"")+(av?"":" lockd");
@@ -1107,7 +1119,7 @@ function buildUps(){const t=$("#upTabs");t.innerHTML="";for(const [id,lab] of TA
   if(upTab==="deliv"){const r=document.createElement("div");r.id="rules";r.innerHTML=`<div class="rl" style="grid-column:1/-1;text-align:left">🧹 Sorter rules: click to change what happens to each rarity</div>`;
     RAR.forEach((rr,i)=>{const w=document.createElement("div");w.innerHTML=`<div class="rl"><span style="display:inline-block;width:6px;height:6px;background:${rr.c};border:1px solid #2a1a12;margin-right:2px"></span>${rr.n}</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.rules[i];b.onclick=()=>{const o=["keep","sell","shelve","scrap"];S.rules[i]=o[(o.indexOf(S.rules[i])+1)%4];b.textContent=S.rules[i];};w.appendChild(b);r.appendChild(w);});
     const w=document.createElement("div");w.innerHTML=`<div class="rl">Album</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.sortAlbum?"file":"skip";b.onclick=()=>{S.sortAlbum=!S.sortAlbum;b.textContent=S.sortAlbum?"file":"skip";};w.appendChild(b);r.appendChild(w);list.appendChild(r);}}
-function starCard(u){const b=document.createElement("button");b.className="up";b.dataset.s=u.id;b.title=u.d;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;b.onclick=()=>{if(buyStar(u)){buildUps();renderUps();render();checkGoals();}else SFX.no();};fillStar(b);return b;}
+function starCard(u){const b=document.createElement("button");b.className="up";b.dataset.s=u.id;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;b.onclick=()=>{if(buyStar(u)){buildUps();renderUps();render();checkGoals();}else SFX.no();};fillStar(b);return b;}
 function fillStar(el){const u=SU[el.dataset.s],L=slv(u.id),mx=L>=u.max,c=u.cost(L),ok=!mx&&S.stars>=c;el.className="up"+(mx?" max":ok?" can":"");el.querySelector("b").innerHTML=`${u.n} <i>${u.max>1?`${L}/${u.max}`:L?"✓":""}</i>`;el.querySelector("small").textContent=u.f(mx||L===0&&u.max===1?Math.max(L,1):L+1);el.querySelector(".uc").textContent=mx?"MAX":c+"⭐";}
 function renderUps(){for(const el of $("#upList").querySelectorAll(".up[data-u]"))fillUp(el);for(const el of $("#upList").querySelectorAll(".up[data-s]"))fillStar(el);
   for(const b of $("#upTabs").children){const id=b.dataset.tab;b.dataset.n=id==="stars"?STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;}}
@@ -1190,6 +1202,27 @@ function tipAt(x,y){const tip=$("#tip");let h="";
   if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> (${RAR[it.r].n})<br>Worth ${money(itemVal(e))} · earns ${money(itemVal(e)*.004*(it.cursed?4:1))}/s${it.cursed?"<br>"+it.d:""}`;}}if(!h)h=`<b>Shop window</b> ${S.shelf.length}/${shelfCap()}<br>Click a find on the right, then Shelve`;}
   else{const o=canvasObj(x,y);if(o==="heap")h=`<b>Empties heap</b> ${S.emp}/${heapCap()}<br>Click to bin them for ${money(S.empV)}`;else if(o==="queue")h=`<b>Box queue</b> ${S.queue.length+S.spec.length}/${queueCap()}`;else if(o==="van"&&EV.van>0)h="<b>Mystery van!</b> Click it";}
   if(!h){tip.style.display="none";return;}tip.innerHTML=h;tip.style.display="block";tip.style.left=clamp(x+8,0,350)+"px";tip.style.top=clamp(y-30,30,230)+"px";}
+/* ---------- tooltips: styled, for every button (replaces the browser's grey ones) ---------- */
+function upTip(u){const L=lv(u.id),mx=upMaxed(u),av=upAvail(u),c=upCost(u),cap=u.cap?Math.min(u.max,u.cap()):u.max;
+  let h=`<h5>${u.e} ${u.n}<i>${u.max>1?`${L}/${cap}`:L?"owned":""}</i></h5><p>${u.d}</p><div class="tl">`;
+  if(u.max>1||L)h+=`<span>Now</span><span>${L?u.f(L):"not bought yet"}</span>`;
+  if(!mx)h+=`<span>${u.max===1?"Buy":"Next"}</span><span>${u.f(Math.min(L+1,u.max))}</span><span>Cost</span><span>${u.cur==="parts"?"⚙ "+fmtN(c)+" parts":money(c)}</span>`;
+  h+=`</div>`;if(!av)h+=`<div class="lk">🔒 ${u.why||"Not available yet"}</div>`;else if(mx&&u.cap&&L>=u.cap()&&L<u.max)h+=`<div class="lk">No room: lay more conveyor belt</div>`;else if(mx)h+=`<div class="lk" style="color:#2f6b24">Maxed out</div>`;return h;}
+function starTip(u){const L=slv(u.id),mx=L>=u.max;return `<h5>${u.e} ${u.n}<i>${u.max>1?`${L}/${u.max}`:L?"owned":""}</i></h5><p>${u.d}</p><div class="tl">${L?`<span>Now</span><span>${u.f(L)}</span>`:""}${mx?"":`<span>${L?"Next":"Buy"}</span><span>${u.f(L+1)}</span><span>Cost</span><span>${u.cost(L)} ⭐</span>`}</div>`;}
+function boxTip(b){if(b.id==="scrap")return `<h5>♻️ Old cardboard<i>free</i></h5><p>Always free. Cut it up on the mat for 50p. Handy when you can't afford a box.</p>`;
+  const lock=!unlocked(b);let h=`<h5>${b.e} ${b.n}<i>${lock?"locked":money(priceOf(b))}</i></h5><p>${b.sub}</p><div class="tl"><span>Opens by</span><span>${KINDS[b.kind].toLowerCase()}</span>`;
+  if(b.items&&b.items.length)h+=`<span>Finds</span><span>${b.items.filter(i=>S.found[i.id]).length}/${b.items.length} found</span>`;h+=`<span>Opened</span><span>${fmtN(S.opL[b.id]||0)}</span></div>`;
+  if(lock)h+=`<div class="lk">${canUnlock(b)?`🔓 Click to unlock for ${money(licOf(b))}`:"🔒 "+lockTxt(b)}</div>`;else if(lv("van"))h+=`<p style="margin-top:3px">Click the 🚚 corner to make the van buy these.</p>`;return h;}
+function tipFor(el){if(el.dataset.u)return upTip(UI[el.dataset.u]);if(el.dataset.s)return starTip(SU[el.dataset.s]);if(el.dataset.box)return boxTip(BI[el.dataset.box]);return el.dataset.tip?`<p style="margin:0">${el.dataset.tip}</p>`:"";}
+let tipEl=null;
+document.addEventListener("pointerover",e=>{if(e.pointerType==="touch")return;const el=e.target.closest&&e.target.closest("[title],[data-tip],[data-u],[data-s],[data-box]");if(!el||el===cv){return;}
+  if(el.title){el.dataset.tip=el.title;el.removeAttribute("title");}tipEl=el;showTip(el);});
+document.addEventListener("pointerout",e=>{if(tipEl&&(!e.relatedTarget||!tipEl.contains(e.relatedTarget))){tipEl=null;$("#tip").style.display="none";}});
+function showTip(el){const h=tipFor(el);const tip=$("#tip");if(!h){tip.style.display="none";return;}tip.innerHTML=h;tip.style.display="block";
+  const s=$("#stage").getBoundingClientRect(),k=s.width/W,r=el.getBoundingClientRect();const x0=(r.left-s.left)/k,x1=(r.right-s.left)/k,y0=(r.top-s.top)/k,y1=(r.bottom-s.top)/k;
+  const tw=tip.offsetWidth,th=tip.offsetHeight;let x=x1+4,y=y0;if(x+tw>W-2)x=x0-tw-4;if(x<2){x=clamp(x0,2,W-tw-2);y=y1+3;if(y+th>H-2)y=y0-th-3;}
+  tip.style.left=Math.round(x)+"px";tip.style.top=Math.round(clamp(y,2,H-th-2))+"px";}
+setInterval(()=>{if(tipEl&&$("#tip").style.display==="block"){if(!document.body.contains(tipEl)||tipEl.offsetParent===null){tipEl=null;$("#tip").style.display="none";}else showTip(tipEl);}},300);
 function setMode(m){const b=document.body.classList;b.toggle("pad",m==="pad");b.toggle("touch",m==="touch");b.toggle("key",m==="key");}
 // mouse clicks shouldn't leave focus on a button (so Space keeps slicing)
 document.addEventListener("click",e=>{if(!document.body.classList.contains("pad")&&!document.body.classList.contains("key")&&e.target.closest&&e.target.closest("button")&&e.detail>0)document.activeElement.blur();},true);
@@ -1280,6 +1313,8 @@ function sim(hours=10,opts={}){const keepS=S,keepFX=Object.assign({},FX),keepEV=
   const res={minutes:+(t/60).toFixed(1),ms,log,sales:S.sales,stars:S.starsEver,sets:SETS.filter(s=>setDone(s.id)).length,relics:Object.keys(S.relics).length};
   handBusy=keepHB;S=keepS;Object.assign(FX,keepFX);EV=keepEV;acc=keepAcc;SIM=false;return res;}
 
+// offline support + "Add to Home Screen" (only works over https, so not from a local file)
+if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
 // start
 load();if(!S.unl.parcel)S.unl.parcel=1;checkUnlocks();checkGoals(true);
 liveFX();buildShop();fit();
