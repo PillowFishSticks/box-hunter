@@ -379,12 +379,12 @@ const CURSED={lantern:1,cdolls:1,skull:1,ball:1,ghost:1};
 // Box types. tier = order. kind = how you open it. n = items inside. ev = average value ÷ price at the start (the sim tunes these).
 const BOXES=[
  {id:"parcel",e:"📦",n:"Cardboard parcel",price:5,kind:"tape",cnt:1,ev:1.3,sub:"Returned, never opened. Could be anything."},
- {id:"envelope",e:"✉️",n:"Padded envelope",price:40,kind:"strip",cnt:3,ev:1.3,sub:"Three small things in every one.",unlock:{box:"parcel",n:20,lic:50}},
- {id:"sack",e:"👝",n:"Second Class Post sack",sn:"Post sack",price:300,kind:"knot",cnt:[8,12],ev:1.18,sub:"8 to 12 tiny things. Lots of postcards.",unlock:{box:"envelope",n:20,lic:1000}},
- {id:"luggage",e:"🧳",n:"Lost luggage",price:2500,kind:"zip",cnt:4,ev:1.1,w:[62,30,5,2.2,.8],sub:"Mostly clothes. Small chance of a jackpot.",unlock:{box:"sack",n:20,lic:25000}},
- {id:"crate",e:"🪵",n:"Wooden crate",price:20000,kind:"prise",cnt:2,ev:1.0,w:[36,43,15,5,1],sub:"Heavy. Fewer things, but pricier.",unlock:{box:"luggage",n:25,lic:4e5}},
- {id:"storage",e:"🚪",n:"Storage unit",price:200000,kind:"padlock",cnt:20,ev:1.0,sub:"A whole unit: 20 things at once.",unlock:{box:"crate",n:10,sales:1,lic:2e8}},
- {id:"haunted",e:"⚰️",n:"Haunted antique crate",sn:"Haunted crate",price:2e6,kind:"prise",cnt:3,ev:.98,w:[32,40,18,8,2],sub:"Cursed things. Worth a fortune on a shelf.",unlock:{box:"storage",n:5,sales:2,lic:5e8}},
+ {id:"envelope",e:"✉️",n:"Padded envelope",price:40,kind:"strip",cnt:1,bonus:[.5,.2],ev:1.3,sub:"One small thing, often a bonus extra or two.",unlock:{box:"parcel",n:20,lic:50}},
+ {id:"sack",e:"👝",n:"Second Class Post sack",sn:"Post sack",price:300,kind:"knot",cnt:5,bonus:[.6,.5,.4,.3,.2],ev:1.18,sub:"5 tiny things, often more. Lots of postcards.",unlock:{box:"envelope",n:20,lic:1000}},
+ {id:"luggage",e:"🧳",n:"Lost luggage",price:2500,kind:"zip",cnt:2,bonus:[.4],min:1,ev:1.1,w:[62,30,5,2.2,.8],sub:"Two things, one always a proper find. Maybe a jackpot.",unlock:{box:"sack",n:20,lic:25000}},
+ {id:"crate",e:"🪵",n:"Wooden crate",price:20000,kind:"prise",cnt:1,bonus:[.35],min:2,ev:1.0,w:[36,43,15,5,1],sub:"Heavy. Always one Rare or better.",unlock:{box:"luggage",n:25,lic:4e5}},
+ {id:"storage",e:"🚪",n:"Storage unit",price:200000,kind:"padlock",cnt:12,bonus:[.5,.5,.5,.5,.5,.5,.5,.5],min:2,ev:1.0,sub:"A whole unit: 12 things or more, one always Rare.",unlock:{box:"crate",n:10,sales:1,lic:2e8}},
+ {id:"haunted",e:"⚰️",n:"Haunted antique crate",sn:"Haunted crate",price:2e6,kind:"prise",cnt:2,bonus:[.3],min:3,ev:.98,w:[32,40,18,8,2],sub:"Cursed things. Always one Epic or better.",unlock:{box:"storage",n:5,sales:2,lic:5e8}},
  {id:"pallet",e:"🎁",n:"Pallet",price:1e7,kind:"film",cnt:0,ev:.97,sub:"12 to 36 sealed boxes, wrapped in cling film.",unlock:{box:"haunted",n:8,sales:3,lic:8e9}},
  {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:2e11,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:4},hand:1},
 ];
@@ -395,11 +395,12 @@ const broke=()=>S.cash<BOXES[0].price*(1-.03*(S.lv.haggle||0))*(1-.04*((S.slv||{
 const ITEMS=[],II={};
 const hash=s=>{let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return((h>>>0)%1000)/1000;};
 for(const b of BOXES){b.items=[];for(const [id,e,n,r,set,d] of IT[b.id]||[]){const o={id,e,n,r,set:set==="relic"?"":set,relic:set==="relic",d,box:b.id,f:.75+.6*hash(id),cursed:!!CURSED[id]};b.items.push(o);ITEMS.push(o);II[id]=o;}}
-const avgCnt=b=>Array.isArray(b.cnt)?(b.cnt[0]+b.cnt[1])/2:b.cnt;
+// box contents (owner): cnt things always, each bonus[] chance adds one more, min = the first thing is at least that rarity
+const avgCnt=b=>b.cnt+(b.bonus||[]).reduce((a,c)=>a+c,0);
 // calibrate item values so a box is worth b.ev × its price on average at the start
-for(const b of BOXES){if(!b.cnt||b.id==="vault")continue;const w=b.w||RAR.map(r=>r.w),W0=w.reduce((a,c)=>a+c,0);let ev=0;
-  for(let r=0;r<5;r++){const pool=b.items.filter(i=>i.r===r&&!i.relic);const mf=pool.reduce((a,i)=>a+i.f,0)/pool.length;ev+=w[r]/W0*RM[r]*mf;}
-  const K=b.ev/ev;for(const i of b.items)i.v=b.price/avgCnt(b)*RM[i.r]*i.f*K;}
+for(const b of BOXES){if(!b.cnt||b.id==="vault")continue;const w=b.w||RAR.map(r=>r.w);
+  const E=mn=>{const W=w.reduce((a,c,r)=>a+(r>=mn?c:0),0);let ev=0;for(let r=mn;r<5;r++){const pool=b.items.filter(i=>i.r===r&&!i.relic);const mf=pool.reduce((a,i)=>a+i.f,0)/pool.length;ev+=w[r]/W*RM[r]*mf;}return ev;};
+  const g=b.min?1:0,tot=(avgCnt(b)-g)*E(0)+g*E(b.min||0),c=b.ev*b.price/tot;for(const i of b.items)i.v=c*RM[i.r]*i.f;}
 II.star.v=0;
 const SETS=[
  {id:"kitchen",n:"Kitchen Drawer",b:{k:"val",box:"parcel",a:.15}},{id:"toys",n:"Toy Box",b:{k:"shelf",a:1}},{id:"lucky",n:"Lucky Finds",b:{k:"luck",a:.05}},
@@ -539,17 +540,17 @@ const FX={customer(){return false;},toast(){},coins(){},staff(){},van(){},sort()
 function addCash(n){S.cash+=n;if(n>0){S.earned+=n;S.runEarned+=n;}}
 let EV={lucky:0,carboot:0,van:0,auction:null,ghostT:30,ballT:40,swap:0};
 const LUCKX=[-.4,0,.45,.6,.75];   // how strongly luck moves each rarity's weight
-function rollRar(b,lk){const w=(b.w||RAR.map(r=>r.w)).slice();for(let r=0;r<5;r++)w[r]*=Math.pow(lk,LUCKX[r]);let x=Math.random()*w.reduce((a,c)=>a+c,0),r=0;for(;r<4;r++){if((x-=w[r])<=0)break;}return r;}
+function rollRar(b,lk,mn=0){const w=(b.w||RAR.map(r=>r.w)).slice();for(let r=0;r<5;r++)w[r]*=r<mn?0:Math.pow(lk,LUCKX[r]);let x=Math.random()*w.reduce((a,c)=>a+c,0),r=0;for(;r<4;r++){if((x-=w[r])<=0)break;}return r;}
 // what's in a box: items (with a value multiplier m) and, for pallets, more boxes
 function rollBox(id,opt={}){const b=BI[id];const out={items:[],boxes:[]};
   if(b.id==="pallet"){const n=12+ri(25);for(let i=0;i<n;i++){const x=Math.random();out.boxes.push(x<.4?"crate":x<.85?"storage":"haunted");}return out;}
   if(b.id==="vault"){out.items.push({i:"star",m:1});return out;}
-  let n=Array.isArray(b.cnt)?b.cnt[0]+ri(b.cnt[1]-b.cnt[0]+1):b.cnt;if(b.id==="sack"&&S.relics.seal)n*=2;
+  let n=b.cnt;if(b.id==="sack"&&S.relics.seal)n*=2;const n0=n;for(const p of b.bonus||[])if(Math.random()<p)n++;
   const lk=luck()*(opt.hand?1+.04*lv("lucky")*Math.min(5,S.streak):1);
-  for(let k=0;k<n;k++){let r=rollRar(b,lk);if(opt.special&&k===0)r=Math.max(r,2+(Math.random()<.3?1:0));
+  for(let k=0;k<n;k++){let r=rollRar(b,lk,k===0?b.min||0:0);if(opt.special&&k===0)r=Math.max(r,2+(Math.random()<.3?1:0));
     let pool=b.items.filter(i=>i.r===r&&!i.relic);const rel=b.items.find(i=>i.relic);
     if(r===4&&rel&&!S.relics[rel.id]&&Math.random()<.5){out.items.push({i:rel.id,m:1,relic:1});continue;}
-    const it=pool[ri(pool.length)];out.items.push({i:it.id,m:(opt.hand?1.2:1)*(opt.special?2:1)});}
+    const it=pool[ri(pool.length)];out.items.push({i:it.id,m:(opt.hand?1.2:1)*(opt.special?2:1),...(k>=n0?{bonus:1}:{})});}
   return out;}
 // finds go into the tray; a full tray sells the cheapest thing to make room
 function gain(items,src){for(const e of items){const it=II[e.i];S.found[e.i]=(S.found[e.i]||0)+1;if(it.r===4)S.stats.legend++;
@@ -710,7 +711,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.2.4";
+const VERSION="1.3.0";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -945,7 +946,8 @@ function reveal(){const r=G.res,items=r.items;let bi=0;items.forEach((e,k)=>{if(
   const it=II[top.i],R0=RAR[it.r];
   $("#findName").textContent=(top.relic?"✨ ":"")+it.n;$("#findName").style.color=R0.c;
   const tot=items.reduce((a,e)=>a+(e.relic?0:itemVal(e)),0);
-  $("#findSub").textContent=top.relic?"RELIC! "+it.d.replace("RELIC: ",""):items.length>1?`${R0.n} · and ${items.length-1} more · ${money(tot)} in all`:`${R0.n} · worth ${money(itemVal(top))}${top.m>1.2?" (special!)":""}`;
+  const nb=items.filter(e=>e.bonus).length;
+  $("#findSub").textContent=top.relic?"RELIC! "+it.d.replace("RELIC: ",""):items.length>1?`${R0.n} · ${items.length} things${nb?` (${nb} bonus!)`:""} · ${money(tot)} in all`:`${R0.n} · worth ${money(itemVal(top))}${top.m>1.2?" (special!)":""}`;
   $("#find").classList.add("on");SFX.reveal(it.r);if(it.r===0)SFX.junk();
   for(let i=0;i<8+it.r*10;i++){const a=rnd(0,Math.PI*2),v=rnd(30,90+it.r*30);parts.push({x:BX,y:BBOT-50,vx:Math.cos(a)*v,vy:Math.sin(a)*v-40,g:120,life:rnd(.5,1.1),c:Math.random()<.6?R0.c:"#fff",s:it.r>=3?2:1});}
   if(it.r>=2){dog.st="happy";dog.hop=.5;dog.tx=BX+(dog.x<BX?-74:72);setTimeout(()=>dog.st="idle",1600);}
@@ -1066,7 +1068,10 @@ function drawGlow(cx,cy,L,T,w,h){if(!["open","glow"].includes(G.st))return;let r
 function drawItems(){if(G.st!=="reveal"&&G.st!=="fly")return;const items=G.res.items;if(!items.length)return;const t=G.t,cy=BBOT-70;
   if(G.st==="reveal"){const up=Math.min(1,t/.3);
     // the others fan out in a ring, small
-    const others=items.map((e,k)=>k).filter(k=>k!==G.bi).slice(0,24);others.forEach((k,j)=>{const a=-Math.PI+(j+.5)/others.length*Math.PI,rr=lerp(10,52,up);const x=BX+Math.cos(a)*rr*1.3,y=cy+18+Math.sin(a)*rr*.7;const sp=sprite(II[items[k].i].e);ctx.save();ctx.translate(x,y);const s=lerp(.3,1,up);ctx.scale(s,s);ctx.drawImage(sp,-9,-9);ctx.restore();R(x-3,y+8,6,1,rcol(II[items[k].i].r));});
+    // owner: every find in the box is shown, not just the best one: a row under it (two rows, or a fan for big hauls)
+    const others=items.map((e,k)=>k).filter(k=>k!==G.bi).slice(0,24),no=others.length,per=no>12?12:no>6?Math.ceil(no/2):no,gap=no>12?13:20;
+    others.forEach((k,j)=>{const row=Math.floor(j/per),col=j%per,cnt=Math.min(per,no-row*per);const x=BX+(col-(cnt-1)/2)*gap*up,y=cy+30+row*20;const e=items[k],sp=sprite(II[e.i].e);
+      ctx.save();ctx.translate(x,y);const s=lerp(.3,no>12?.75:1.1,up);ctx.scale(s,s);ctx.drawImage(sp,-9,-9);ctx.restore();R(x-4,y+10,8,2,rcol(II[e.i].r));if(e.bonus&&up>=1){R(x+5,y-13,5,5,OUT);R(x+6,y-12,3,3,"#ffe36b");}});
     const top=items[G.bi],bounce=t<.3?-Math.sin(up*Math.PI)*16:0,y=cy-up*8+bounce+Math.sin(t*4)*2,s=t<.3?lerp(.4,2.4,up):2.2+Math.sin(t*5)*.08;
     ctx.globalAlpha=.4+.15*Math.sin(t*8);ctx.fillStyle=rcol(II[top.i].r);ctx.beginPath();ctx.arc(BX,y,20+II[top.i].r*3,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
     const sp=sprite(II[top.i].e),flip=t<.4?Math.cos(t*30):1;ctx.save();ctx.translate(BX,y);ctx.scale(s*flip,s);ctx.drawImage(sp,-9,-9);ctx.restore();}
