@@ -710,7 +710,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.2.3";
+const VERSION="1.2.4";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -731,10 +731,10 @@ function claimGoal(){const g=GOALS[S.goal];if(!goalClaimable(g))return false;con
   else if(v.lic){S.unl[v.lic]=1;FX.unlock(BI[v.lic]);}
   checkGoals();return true;}
 // every goal counts the moment you do it, even ahead of the current one; S.goal = the first one not done yet
-function checkGoals(silent){S.gdone=S.gdone||{};const cur=S.goal;let n=0,r=0,early=[];
-  for(let i=0;i<GOALS.length;i++){const g=GOALS[i];if(S.gdone[g.t]||!g.n||g.p()<g.n)continue;S.gdone[g.t]=1;n++;r+=g.rew||0;if(i>cur)early.push(g);}
+function checkGoals(silent){S.gdone=S.gdone||{};const cur=S.goal;let n=0,r=0,early=[],done=[];
+  for(let i=0;i<GOALS.length;i++){const g=GOALS[i];if(S.gdone[g.t]||!g.n||g.p()<g.n)continue;S.gdone[g.t]=1;n++;r+=g.rew||0;done.push(g);if(i>cur)early.push(g);}
   S.goal=0;while(S.gdone[GOALS[S.goal].t]&&S.goal<GOALS.length-1)S.goal++;
-  if(r)addCash(r);if(n&&!silent)FX.goal({rew:r,n,early});return n;}
+  if(r)addCash(r);if(n&&!silent)FX.goal({rew:r,n,early,done});return n;}
 
 /* =====================================================================
    SOUND
@@ -858,7 +858,11 @@ function binClick(){if(!S.emp){toast("The heap is empty");return;}const v=binEmp
 
 /* ---------- visuals of the core (FX) ---------- */
 const stations=[];   // staff stations: each shows a mini box being opened
-let goalCelT=0,vanAnim=null,goldVanX=0,sorterAnim=0,balerAnim=0,machAnim={slicer:0,arm:0,spinner:0},unlockGlow=[];
+// one card per finished goal, shown in turn: what you did and what it paid (owner)
+function nextGoalCel(){const c=$("#goalCel"),q=goalQ.shift();if(!q){c.hidden=true;goalCelT=0;return;}const x=q.g,rw=x.give?" 🎁 free":x.rew?` +${money(x.rew)}`:"";
+  c.innerHTML=`<b>${q.early?"✅ Done early!":"✅ Goal done!"}${goalQ.length?` (${goalQ.length} more)`:""}</b><span>${x.e} ${x.t}${rw}</span>`;c.hidden=false;
+  c.style.animation="none";void c.offsetWidth;c.style.animation="";goalCelT=setTimeout(nextGoalCel,goalQ.length?1800:2800);}
+let goalCelT=0,goalQ=[],vanAnim=null,goldVanX=0,sorterAnim=0,balerAnim=0,machAnim={slicer:0,arm:0,spinner:0},unlockGlow=[];
 function liveFX(){Object.assign(FX,{
   toast:t=>toast(t),
   customer:e=>{if(custs.filter(c=>!c.browse).length>=6)return false;custs.push(newCust(e));return true;},
@@ -873,8 +877,7 @@ function liveFX(){Object.assign(FX,{
   sound:k=>SFX[k]&&SFX[k](),
   goal:g=>{coinsFrom(240,20,g.rew,6);SFX.goal();const rw=g.rew?` +${money(g.rew)}`:"",e=g.early||[];
     // owner: a goal done ahead of time gets a proper "you did this" moment on the goal bar
-    const c=$("#goalCel");c.innerHTML=e.length===1&&g.n===1?`<b>✅ Done early!</b><span>${e[0].t}${rw}</span>`:e.length?`<b>✅ ${g.n} goals done!</b><span>${e.map(x=>x.t).join(" · ")}${rw}</span>`:`<b>✅ Goal done!${rw}</b>`;
-    c.hidden=false;clearTimeout(goalCelT);goalCelT=setTimeout(()=>c.hidden=true,e.length?3500:1600);const el=$("#goal");el.classList.remove("done");void el.offsetWidth;el.classList.add("done");},
+    for(const x of g.done||[])goalQ.push({g:x,early:e.includes(x)});if(!goalCelT)nextGoalCel();const el=$("#goal");el.classList.remove("done");void el.offsetWidth;el.classList.add("done");},
   pallet:n=>{for(let i=0;i<Math.min(n,12);i++)flyers.push({x:BELT.x+180,y:BELT.y,tx:QS.x+11,ty:QS.y+90,t:-i*.05,k:"crate"});},
   bag:id=>{toast("👜 The Bottomless Bag found a box inside a box!");},
 });}
