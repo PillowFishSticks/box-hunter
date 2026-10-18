@@ -699,7 +699,9 @@ const KINDS={sheet:"CUT",tape:"SLICE",strip:"TEAR",knot:"UNTIE",zip:"UNZIP",pris
 const SEGN=18;
 let G={st:"empty",t:0},P={x:240,y:200,down:false,over:false,lastX:null,lastY:null,downT:0,dragged:0,onBox:false},auto=null;
 const parts=[],floats=[],coins=[],flats=[],flyers=[];let shake=0,slow=1;
-const dog={x:174,y:214,st:"idle",t:0,hop:0,tail:0,bark:0,sniff:0,idle:0};
+// the shop dog wanders along the front of the bench (always drawn in front, so the boxes never hide it)
+const DOGY=216,DOGX=[146,314];
+const dog={x:174,y:DOGY,tx:174,face:1,wait:2,walk:0,st:"idle",t:0,hop:0,tail:0,bark:0,sniff:0,idle:0};
 function boxRect(id,x){const [w,h,d]=DIM[id];const L=x-w/2,T=BBOT-d-h;return{L,T,w,h,d,cx:x,cy:T+h/2};}
 let drawX=null;   // where the box is being drawn this frame (it slides in), so the tape moves with it
 function cutLine(){const b=G.box,R=boxRect(b.id,drawX??BX),{L,T,w,h,cx}=R;
@@ -708,7 +710,7 @@ function nextBox(){if(G.st!=="empty"||heapFull())return;let id=null,sp=false,p=0
   if(S.spec.length){id=S.spec.shift();sp=true;}else if(S.queue.length){const q=S.queue.shift();id=q.b;p=q.p;}else return;
   const b=BI[id];G={st:"arrive",t:0,x:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
   G.res=rollBox(id,{hand:true,special:sp});const best=G.res.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);G.best=best;
-  G.rattle=cursedOn("ghost")?2.4:[.4,.6,1,1.5,2.2][best];dog.sniff=1.2;}
+  G.rattle=cursedOn("ghost")?2.4:[.4,.6,1,1.5,2.2][best];dog.sniff=1.6;dog.tx=BX+(dog.x<BX?-74:72);dog.wait=3;}
 function cutAt(x,y,speed){if(G.st!=="closed")return;const [x0,y0,x1,y1]=cutLine(),dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy);
   const r=8+lv("cutter")*1.8;const t=((x-x0)*dx+(y-y0)*dy)/(len*len),px=x0+dx*t,py=y0+dy*t;if(Math.hypot(x-px,y-py)>r||t<-.08||t>1.08)return;
   let n=0;const half=1/SEGN/2+r*.6/len;
@@ -758,7 +760,9 @@ function liveFX(){Object.assign(FX,{
 /* ---------- update ---------- */
 function update(dt){
   G.t+=dt;dog.t+=dt;dog.tail+=dt*(dog.st==="happy"?18:6);if(dog.hop>0)dog.hop-=dt;if(dog.bark>0)dog.bark-=dt;if(dog.sniff>0)dog.sniff-=dt;
-  dog.idle=G.st==="empty"?dog.idle+dt:0;
+  dog.idle=G.st==="empty"&&!S.queue.length?dog.idle+dt:0;
+  if(dog.idle<=12){const dx=dog.tx-dog.x;if(Math.abs(dx)>1.5){const sp=dog.sniff>0||dog.st==="happy"?55:24;dog.x+=Math.sign(dx)*Math.min(Math.abs(dx),sp*dt);dog.face=Math.sign(dx);dog.walk+=dt*(sp/6);}
+    else{dog.wait-=dt;if(dog.wait<=0){dog.tx=G.st==="empty"?rnd(DOGX[0],DOGX[1]):(Math.random()<.5?rnd(DOGX[0],BX-72):rnd(BX+72,DOGX[1]));dog.wait=rnd(2,6);}}}
   const fk=fastK();
   if(G.st==="empty")nextBox();
   if(G.st==="arrive"){G.x=lerp(G.x,BX,1-Math.pow(.0005,dt/fk));if(Math.abs(G.x-BX)<1){G.x=BX;G.st="closed";G.t=0;SFX.flap();if(S.oneClick||S.preCut)startAuto();if(S.preCut){openIt();}}}
@@ -797,7 +801,7 @@ function reveal(){const r=G.res,items=r.items;let bi=0;items.forEach((e,k)=>{if(
   $("#findSub").textContent=top.relic?"RELIC! "+it.d.replace("RELIC: ",""):items.length>1?`${R0.n} · and ${items.length-1} more · ${money(tot)} in all`:`${R0.n} · worth ${money(itemVal(top))}${top.m>1.2?" (special!)":""}`;
   $("#find").classList.add("on");SFX.reveal(it.r);if(it.r===0)SFX.junk();
   for(let i=0;i<8+it.r*10;i++){const a=rnd(0,Math.PI*2),v=rnd(30,90+it.r*30);parts.push({x:BX,y:BBOT-50,vx:Math.cos(a)*v,vy:Math.sin(a)*v-40,g:120,life:rnd(.5,1.1),c:Math.random()<.6?R0.c:"#fff",s:it.r>=3?2:1});}
-  if(it.r>=2){dog.st="happy";dog.hop=.5;setTimeout(()=>dog.st="idle",1600);}
+  if(it.r>=2){dog.st="happy";dog.hop=.5;dog.tx=BX+(dog.x<BX?-74:72);setTimeout(()=>dog.st="idle",1600);}
   if(it.r>=3){shake=3;dog.bark=1.2;SFX.woof();}
   if(it.r>=4){for(let i=0;i<60;i++)parts.push({x:rnd(0,W),y:rnd(-20,0),vx:rnd(-20,20),vy:rnd(40,90),g:30,life:rnd(1.5,3),c:["#f2c230","#d8423a","#3f8fe0","#5fbf4a","#fff"][i%5],s:2});SFX.legend();}
   if(it.r===0&&items.length===1)floatTxt(BX,BBOT-80,"meh.","#cfd3d6");}
@@ -949,21 +953,24 @@ function drawStaffRow(){const ns=lv("staff"),conv=lv("conv");
 const SORTER={x:308,y:136};
 function drawSorter(){if(!lv("sorter"))return;const a=sorterAnim>0;person(SORTER.x,SORTER.y,{shirt:"#3f8fe0",cap:"#d8423a",arm:a?4:0});}
 function drawDog(){const d=dog;if(cursedOn("cdolls")){R(QS.x+8,QS.y+QS.h-4,6,4,"#a8703c");return;}
-  const nap=d.idle>12,hop=d.hop>0?Math.sin((1-d.hop/.5)*Math.PI)*8:0,x=d.x,y=d.y-hop,lean=d.sniff>0?3:0,tail=Math.sin(d.tail)>0;
+  const nap=d.idle>12,hop=d.hop>0?Math.sin((1-d.hop/.5)*Math.PI)*8:0,y=d.y-hop,lean=d.sniff>0?3:0,tail=Math.sin(d.tail)>0,moving=Math.abs(d.tx-d.x)>1.5&&!nap,step=moving?(Math.floor(d.walk)%2?2:-2):0;
+  // draw facing right around the dog's own x, mirrored when it walks left
+  ctx.save();const x=0;ctx.translate(Math.round(d.x),0);ctx.scale(d.face<0?-1:1,1);
   R(x-14,y+12,30,3,"#0004");
-  if(nap){R(x-10,y+2,22,9,"#a8703c");R(x+8,y-1,10,9,"#b98048");R(x+8,y-3,4,4,"#5a3519");R(x+12,y+3,4,1,OUT);txt("z",x+20,y-8-Math.sin(d.t*2)*2,"#fff4dc",7);return;}
-  R(x-10,y-2,18,12,"#a8703c");R(x-10,y+8,4,5,"#a8703c");R(x+4,y+8,4,5,"#a8703c");R(x-12,y-2+(tail?-4:0),3,tail?6:3,"#a8703c");
+  if(nap){R(x-10,y+2,22,9,"#a8703c");R(x+8,y-1,10,9,"#b98048");R(x+8,y-3,4,4,"#5a3519");R(x+12,y+3,4,1,OUT);ctx.restore();txt("z",d.x+20*(d.face<0?-1:1),y-8-Math.sin(d.t*2)*2,"#fff4dc",7);return;}
+  R(x-10,y-2,18,12,"#a8703c");R(x-10+step,y+8,4,5,"#a8703c");R(x+4-step,y+8,4,5,"#a8703c");R(x-12,y-2+(tail?-4:0),3,tail?6:3,"#a8703c");
   R(x+4+lean,y-12,12,11,"#b98048");R(x+14+lean,y-7,4,4,"#b98048");R(x+17+lean,y-7,2,2,OUT);R(x+4+lean,y-14,4,6,"#5a3519");R(x+11+lean,y-14,4,4,"#5a3519");R(x+10+lean,y-9,2,2,OUT);R(x-8,y+2,6,4,"#f4ead2");
   ctx.strokeStyle=OUT;ctx.lineWidth=1;ctx.strokeRect(x-10.5,y-2.5,19,13);ctx.strokeRect(x+3.5+lean,y-12.5,13,12);if(d.st==="happy")R(x+13+lean,y-3,3,3,"#e06070");
-  if(d.bark>0){R(x+16,y-34,30,12,"#fff4dc");ctx.strokeRect(x+16.5,y-33.5,29,11);ctx.fillStyle=OUT;ctx.font='8px "SilkC"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("WOOF!",x+31,y-27);}}
+  ctx.restore();const bx=clamp(d.x+(d.face<0?-46:16),136,314);
+  if(d.bark>0){R(bx,y-34,30,12,"#fff4dc");ctx.strokeStyle=OUT;ctx.strokeRect(bx+.5,y-33.5,29,11);ctx.fillStyle=OUT;ctx.font='8px "SilkC"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("WOOF!",bx+15,y-27);}}
 function drawCutter(){if(!P.over&&!auto)return;let x=P.x,y=P.y;if(auto){const [x0,y0,x1,y1]=auto.L;x=lerp(x0,x1,auto.t);y=lerp(y0,y1,auto.t);}
   ctx.save();ctx.translate(Math.round(x),Math.round(y));R(-1,-3,4,6,"#e8edf2");R(0,-2,1,4,"#fff");R(3,-5,16,9,OUT);R(4,-4,14,7,S.relics.gcut?"#ffd84a":"#f0c020");R(4,-4,14,2,"#ffe070");R(7,-2,2,3,OUT);R(12,-2,2,3,OUT);
   if(P.down||auto){R(-3,4,2,2,"#ffffffaa");R(-5,1,2,2,"#ffffff66");}ctx.restore();}
 function draw(){buildRoom();ctx.save();if(shake>0)ctx.translate(Math.round(rnd(-shake,shake)),Math.round(rnd(-shake,shake)));
   drawRoomLive();drawQueue();drawHeap();drawBaler();drawSorter();
-  drawDog();if(G.st!=="empty")drawBox();
+  if(G.st!=="empty")drawBox();
   else if(heapFull())txt("HEAP FULL: BIN IT",BX,MAT.y+MAT.h/2,"#ff8a7a",8);
-  drawFlats();drawStaffRow();drawItems();
+  drawFlats();drawStaffRow();drawDog();drawItems();
   for(const p of parts){ctx.globalAlpha=clamp(p.life*2,0,1);R(p.x,p.y,p.s||1,p.s||1,p.c);}ctx.globalAlpha=1;
   for(const c of coins){if(c.t<0)continue;R(c.x-2,c.y-2,5,5,OUT);R(c.x-1,c.y-1,3,3,"#f2c230");R(c.x-1,c.y-1,1,1,"#fff4a0");}
   for(const f of floats){ctx.globalAlpha=clamp(f.life*2,0,1);txt(f.s,f.x,f.y,f.c,f.big?16:11,"center","Num");}ctx.globalAlpha=1;
