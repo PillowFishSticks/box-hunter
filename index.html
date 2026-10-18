@@ -46,7 +46,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #tools .btn{padding:3px 3px;height:22px;position:relative}
 #goal{left:134px;top:5px;width:196px;padding:3px 5px;display:grid;grid-template-columns:auto 1fr;gap:1px 5px;align-items:center}
 #goal .gi{grid-row:span 2;font-size:13px;line-height:1}
-#goalTxt{font:700 8px/1.1 "Pix"}
+#goalTxt{font:700 8px/1.1 "Pix";white-space:nowrap;overflow:hidden}
 #goalRow{display:flex;align-items:center;gap:4px}
 #goalBar{flex:1;height:6px;background:#bfa676;border:1px solid var(--ink);position:relative;overflow:hidden}
 #goalBar i{position:absolute;left:0;top:0;bottom:0;background:var(--good);width:0}
@@ -99,7 +99,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .bz .bi{font-size:8px;width:11px;text-align:center;flex:none}
 .bz span{white-space:nowrap;overflow:hidden}
 .bz em{font-style:normal;margin-left:auto;font:400 8px/1 "Num";color:#2f6b24}
-#relics{display:flex;gap:1px;margin-top:1px;font-size:8px;min-height:9px}
+#relics{display:flex;gap:1px;margin-left:auto;font-size:8px;line-height:7px}
 /* bench overlays */
 /* crisp labels over the bench: queue and empties counts */
 .tag{font:700 7px/1 "Pix";background:var(--ink);color:var(--cream);padding:2px 2px 1px;text-align:center;pointer-events:none;white-space:nowrap;border:1px solid #fff3}
@@ -130,12 +130,12 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #cardList{display:flex;flex-direction:column;gap:2px}
 #card .x{position:absolute;right:3px;top:3px;padding:1px 3px;font-size:7px}
 /* upgrade cards (modal + object card) */
-.up{display:grid;grid-template-columns:14px 1fr auto;gap:0 4px;align-items:center;padding:2px 3px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%;position:relative;min-height:26px}
-.up .ue{font-size:11px;line-height:1;text-align:center}
-.up b{display:block;font:700 8px/1.1 "Pix";white-space:nowrap;overflow:hidden}
-.up b i{font:400 9px/1 "Num";font-style:normal;color:var(--muted)}
-.up small{display:block;font:400 7px/1.15 "Pix";color:var(--muted)}
-.up .uc{font:400 10px/1 "Num";text-align:center;padding:2px 4px;border:2px solid var(--ink);background:#c9bda3;color:#7a6a50;white-space:nowrap;min-width:34px}
+.up{display:grid;grid-template-columns:18px 1fr auto;gap:0 6px;align-items:center;padding:2px 5px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%;position:relative;min-height:22px}
+.up .ue{font-size:13px;line-height:1;text-align:center}
+.up b{display:block;font:700 9px/1.05 "Pix";white-space:nowrap;overflow:hidden;color:var(--ink)}
+.up b i{font:400 10px/1 "Num";font-style:normal;color:#5a3a1a;margin-left:2px}
+.up small{display:block;font:400 8px/1.05 "Pix";color:#3e2a18}
+.up .uc{font:400 12px/1 "Num";text-align:center;padding:2px 6px;border:2px solid var(--ink);background:#c9bda3;color:#6a5a40;white-space:nowrap;min-width:56px}
 .up.can .uc{background:var(--good);color:#fff}
 .up.can{background:#f3ffe6}
 .up.max{background:#e8dcc0}.up.max .uc{background:#e8dcc0}
@@ -143,23 +143,27 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 /* modals */
 .modal{position:absolute;inset:0;background:#0009;display:grid;place-items:center;z-index:10}
 .modal[hidden]{display:none}
-.modal>.panel{width:340px;max-height:258px;padding:6px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.modal>.panel{width:340px;max-height:266px;padding:6px;overflow:hidden;position:relative;display:flex;flex-direction:column}
 .modal>.panel>*{flex:none}
 .modal>.panel>.scroll{flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#9b7c4c #e2cba0}
 .mx{position:absolute;right:4px;top:4px;padding:3px 5px;font-size:9px;z-index:2}
 .modal h2{padding-right:22px}
-.modal h2{margin:0 0 4px;font:700 11px/1 "Silk"}
+.modal h2{margin:0 0 3px;font:700 11px/1 "Silk"}
 .modal p{margin:0 0 4px;font:400 8px/1.3 "Pix"}
 .mrow{display:flex;justify-content:flex-end;gap:4px;margin-top:5px}
-.tabs{display:flex;gap:5px;margin:2px 26px 4px 0}
-.tabs button{position:relative;flex:1;border:2px solid var(--ink);background:#d8c8a6;font:700 8px/1 "Pix";padding:3px 2px}
+.tabs{display:flex;gap:4px;margin:2px 32px 5px 0}
+.tabs button{position:relative;flex:1;border:2px solid var(--ink);background:#d8c8a6;font:700 8px/1 "Pix";padding:4px 2px;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:3px}
+.tabs button[data-n]::after{position:static;animation:none;min-width:10px;height:10px;font-size:8px;line-height:7px;border-width:1px}
+.tabs button[data-n="0"]::after{display:none}
 .tabs button.on{background:var(--cream)}
 #upModal>.panel{width:384px}
-#upList{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:2px 3px 2px 2px;align-content:start;grid-auto-rows:max-content}
+#upList.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#upList.two .uc{min-width:34px;padding:2px 4px}
+#upList{display:grid;grid-template-columns:1fr;gap:2px;padding:2px 3px 2px 2px;align-content:start;grid-auto-rows:max-content}
 .grpH{grid-column:1/-1;font:700 7px/1 "Silk";color:var(--muted);margin-top:2px}
-#rules{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;border:2px solid var(--ink);background:#e2cba0;padding:2px}
-#rules .rl{font:700 6px/1.1 "Pix";text-align:center}
-#rules .btn{font-size:7px;padding:2px 1px}
+#rules{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:3px;border:2px solid var(--ink);background:#e2cba0;padding:3px}
+#rules .rl{font:700 8px/1.2 "Pix";text-align:center}
+#rules .btn{font-size:8px;padding:3px 1px}
 .colH{font:700 8px/1 "Pix";color:var(--muted);margin:3px 0 2px}
 .colG{display:grid;grid-template-columns:repeat(17,1fr);gap:1px}
 .ci{border:1px solid var(--ink);background:var(--cream);text-align:center;height:16px;border-bottom-width:3px;font-size:9px;line-height:12px;position:relative}
@@ -220,7 +224,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
     <div id="trayList"></div>
     <div id="trayBtns"><button class="btn" id="sellJunk" title="Sell junk and commons (J)">Sell junk</button><button class="btn gold" id="sellAll" title="Sell everything (S)">Sell all <span class="k">S</span></button></div>
   </div>
-  <div class="ui panel" id="biz"><h3>Your business</h3><div id="bizList"></div><div id="relics"></div></div>
+  <div class="ui panel" id="biz"><h3>Your business <span id="relics"></span></h3><div id="bizList"></div></div>
   <button class="ui btn gold" id="ev" hidden></button>
   <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div>
   <div class="ui" id="find"><div id="findName"></div><div id="findSub"></div></div>
@@ -305,13 +309,13 @@ const CURSED={lantern:1,cdolls:1,skull:1,ball:1,ghost:1};
 const BOXES=[
  {id:"parcel",e:"📦",n:"Cardboard parcel",price:5,kind:"tape",cnt:1,ev:1.2,sub:"Returned, never opened. Could be anything."},
  {id:"envelope",e:"✉️",n:"Padded envelope",price:40,kind:"strip",cnt:3,ev:1.1,sub:"Three small things in every one.",unlock:{box:"parcel",n:20,lic:50}},
- {id:"sack",e:"👝",n:"Second Class Post sack",price:300,kind:"knot",cnt:[8,12],ev:1.05,sub:"8 to 12 tiny things. Lots of postcards.",unlock:{box:"envelope",n:25,lic:2000}},
+ {id:"sack",e:"👝",n:"Second Class Post sack",sn:"Post sack",price:300,kind:"knot",cnt:[8,12],ev:1.05,sub:"8 to 12 tiny things. Lots of postcards.",unlock:{box:"envelope",n:25,lic:2000}},
  {id:"luggage",e:"🧳",n:"Lost luggage",price:2500,kind:"zip",cnt:4,ev:1.02,w:[62,30,5,2.2,.8],sub:"Mostly clothes. Small chance of a jackpot.",unlock:{box:"sack",n:25,lic:60000}},
  {id:"crate",e:"🪵",n:"Wooden crate",price:20000,kind:"prise",cnt:2,ev:1.0,w:[36,43,15,5,1],sub:"Heavy. Fewer things, but pricier.",unlock:{box:"luggage",n:30,lic:1.5e6}},
  {id:"storage",e:"🚪",n:"Storage unit",price:200000,kind:"padlock",cnt:20,ev:1.0,sub:"A whole unit: 20 things at once.",unlock:{box:"crate",n:10,sales:1,lic:4e7}},
- {id:"haunted",e:"⚰️",n:"Haunted antique crate",price:2e6,kind:"prise",cnt:3,ev:.98,w:[32,40,18,8,2],sub:"Cursed things. Worth a fortune on a shelf.",unlock:{box:"storage",n:5,sales:3,lic:1e9}},
+ {id:"haunted",e:"⚰️",n:"Haunted antique crate",sn:"Haunted crate",price:2e6,kind:"prise",cnt:3,ev:.98,w:[32,40,18,8,2],sub:"Cursed things. Worth a fortune on a shelf.",unlock:{box:"storage",n:5,sales:3,lic:1e9}},
  {id:"pallet",e:"🎁",n:"Pallet",price:1e7,kind:"film",cnt:0,ev:.97,sub:"12 to 36 sealed boxes, wrapped in cling film.",unlock:{box:"haunted",n:8,sales:7,lic:2e10}},
- {id:"vault",e:"🔒",n:"The Mystery Vault",price:1e12,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:9},hand:1},
+ {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:1e12,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:9},hand:1},
 ];
 const BI=Object.fromEntries(BOXES.map((b,i)=>[b.id,Object.assign(b,{tier:i})]));
 const ITEMS=[],II={};
@@ -346,27 +350,27 @@ const UPG=[
  {id:"fast",g:"hands",e:"⚡",n:"Fast Hands",max:5,cur:"parts",cost:g15(15,2.2),f:L=>`animations −${12*L}%`,d:"Opening and reveals play faster, so you open more by hand."},
  {id:"lucky",g:"hands",e:"🍀",n:"Lucky Streak",max:5,cur:"parts",cost:g15(40,2.3),f:L=>`+${4*L}% luck per rare in a row (up to 5)`,d:"Each rare-or-better you open by hand, in a row, makes the next luckier."},
  {id:"xray",g:"hands",e:"🩻",n:"X-ray Scanner",max:2,cur:"parts",cost:L=>[60,600][L],f:L=>["off","see the glow of the box on the mat","see the glow of every queued box"][L],d:"Peek at a box's best find before you open it."},
- {id:"bulk",g:"hands",e:"📦",n:"Bulk Buy",max:3,cur:"parts",cost:L=>[30,300,3000][L],f:L=>["×1 ×5 ×10","adds ×25","adds ×100","adds Max"][L],d:"Buy bigger batches of boxes at once."},
+ {id:"bulk",g:"staff",e:"📦",n:"Bulk Buy",max:3,cur:"parts",cost:L=>[30,300,3000][L],f:L=>["×1 ×5 ×10","adds ×25","adds ×100","adds Max"][L],d:"Buy bigger batches of boxes at once."},
  // Shop
  {id:"shelf",g:"shop",e:"🪟",n:"Extra Shelves",max:21,cost:g15(30,1.6),f:L=>`${3+L} shelf spaces`,d:"Shelved finds earn money every second until a customer buys them."},
  {id:"sign",g:"shop",e:"🪧",n:"Shop Sign",max:15,cost:g15(60,1.7),f:L=>`shelves earn +${12*L}%`,d:"A proper sign brings in better customers."},
  {id:"heap",g:"shop",e:"🗑️",n:"Bigger Corner",max:10,cost:g15(20,1.8),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
  {id:"till",g:"shop",e:"🧮",n:"Sharp Till",max:10,cost:g15(100,1.9),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
  // Automation
- {id:"staff",g:"auto",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>40*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
- {id:"train",g:"auto",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
- {id:"conv",g:"auto",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
- {id:"van",g:"auto",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
- {id:"vanSpd",g:"auto",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
- {id:"vanLoad",g:"auto",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
- {id:"sorter",g:"auto",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
- {id:"sortSpd",g:"auto",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
- {id:"baler",g:"auto",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
- {id:"balSpd",g:"auto",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
- {id:"acct",g:"auto",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys quick-buy upgrades":"not hired",d:"Auto-upgrade: buys the top Quick buy upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
- {id:"slicer",g:"auto",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
- {id:"arm",g:"auto",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
- {id:"spinner",g:"auto",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
+ {id:"staff",g:"staff",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>40*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
+ {id:"train",g:"staff",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
+ {id:"conv",g:"staff",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
+ {id:"van",g:"deliv",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
+ {id:"vanSpd",g:"deliv",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
+ {id:"vanLoad",g:"deliv",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
+ {id:"sorter",g:"deliv",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
+ {id:"sortSpd",g:"deliv",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
+ {id:"baler",g:"shop",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
+ {id:"balSpd",g:"shop",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
+ {id:"acct",g:"staff",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys quick-buy upgrades":"not hired",d:"Auto-upgrade: buys the top Quick buy upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
+ {id:"slicer",g:"mach",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
+ {id:"arm",g:"mach",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
+ {id:"spinner",g:"mach",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
 ];
 const UI=Object.fromEntries(UPG.map(u=>[u.id,u]));
 // star upgrades (kept forever)
@@ -473,7 +477,7 @@ function gain(items,src){for(const e of items){const it=II[e.i];S.found[e.i]=(S.
     if(e.relic){if(!S.relics[e.i]){S.relics[e.i]=1;FX.toast(`✨ RELIC: ${it.n}! ${it.d.replace("RELIC: ","")}`);FX.sound("legend");}continue;}
     if(!S.best||itemVal(e)>S.best.v)S.best={i:e.i,v:itemVal(e)};
     S.tray.push({i:e.i,m:e.m});}
-  while(S.tray.length>12){let j=0;for(let k=1;k<S.tray.length;k++)if(itemVal(S.tray[k])<itemVal(S.tray[j]))j=k;sellAt(j,true);}}
+  while(S.tray.length>TRAY){let j=0;for(let k=1;k<S.tray.length;k++)if(itemVal(S.tray[k])<itemVal(S.tray[j]))j=k;sellAt(j,true);}}
 function sellAt(j,quiet){const e=S.tray[j];if(!e)return 0;S.tray.splice(j,1);const v=itemVal(e);addCash(v);S.stats.sold++;if(!quiet)FX.coins("tray",v);return v;}
 function shelveAt(j){const e=S.tray[j];if(!e||S.shelf.length>=shelfCap())return false;S.tray.splice(j,1);S.shelf.push({i:e.i,m:e.m});S.stats.shelved++;return true;}
 function scrapAt(j){const e=S.tray[j];if(!e)return 0;S.tray.splice(j,1);const p=partsOf(e);S.parts+=p;S.stats.scrapped++;return p;}
@@ -495,6 +499,7 @@ function autoOpen(qi,who){const q=S.queue[qi];S.queue.splice(qi,1);const b=BI[q.
   gain(r.items,who);boxDone(q.b,false);
   const best=r.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);if(who==="staff")FX.staff(q.b,best);else FX.machine(who,q.b,best);}
 function checkUnlocks(){for(const b of BOXES)if(!S.unl[b.id]&&canUnlock(b)){if(!licOf(b)){S.unl[b.id]=1;FX.unlock(b);}else if(!S.ready[b.id]){S.ready[b.id]=1;FX.toast(`🔓 ${b.n}s can be unlocked in the Box shop (${money(licOf(b))})`);FX.sound("unlock");}}}
+const TRAY=9;   // finds the tray holds (what fits on screen)
 const heapFull=()=>S.emp>=heapCap();
 let handBusy=()=>G.st!=="empty";
 function binEmpties(k){k=Math.min(k,S.emp);if(k<=0)return 0;const v=S.empV*k/S.emp;S.empV-=v;S.emp-=k;addCash(v);return v;}
@@ -583,35 +588,35 @@ function catchUp(sec,k){const before={cash:S.cash,boxes:S.stats.boxes,sold:S.sta
    ===================================================================== */
 const has=id=>lv(id)>0;
 const GOALS=[
- {t:"Buy a parcel from the Box shop (left)",e:"📦",n:1,p:()=>S.opL.parcel||S.queue.length?1:0,rew:2},
+ {t:"Buy a parcel in the Box shop (left)",e:"📦",n:1,p:()=>S.opL.parcel||S.queue.length?1:0,rew:2},
  {t:"Open 5 boxes",e:"🔪",n:5,p:()=>S.stats.boxes,rew:3},
- {t:"Buy an upgrade (Quick buy, left)",e:"⬆️",n:1,p:()=>Object.values(S.lv).reduce((a,b)=>a+b,0),rew:5},
- {t:"Bin the empties: click the heap in the corner",e:"🗑️",n:1,p:()=>S.stats.binned||0,rew:3},
- {t:"Buy 5 boxes at once (×5 in the shop)",e:"5️⃣",n:1,p:()=>S.stats.multi,rew:5},
- {t:"Find something Rare (blue) or better",e:"💎",n:1,p:()=>ITEMS.some(i=>i.r>=2&&S.found[i.id])?1:0,rew:5},
- {t:"Hire staff to open boxes for you",e:"🧑‍🔧",n:1,p:()=>lv("staff"),rew:10},
+ {t:"Buy an upgrade (Quick buy)",e:"⬆️",n:1,p:()=>Object.values(S.lv).reduce((a,b)=>a+b,0),rew:5},
+ {t:"Click the empties heap to bin it",e:"🗑️",n:1,p:()=>S.stats.binned||0,rew:3},
+ {t:"Buy 5 boxes at once (×5)",e:"5️⃣",n:1,p:()=>S.stats.multi,rew:5},
+ {t:"Find something Rare (blue)",e:"💎",n:1,p:()=>ITEMS.some(i=>i.r>=2&&S.found[i.id])?1:0,rew:5},
+ {t:"Hire staff to open boxes",e:"🧑‍🔧",n:1,p:()=>lv("staff"),rew:10},
  {t:"Click a find, then Shelve it",e:"🪟",n:1,p:()=>S.stats.shelved,rew:10},
- {t:"Build the cardboard baler (auto-bin)",e:"🗜️",n:1,p:()=>lv("baler"),rew:15},
- {t:"Get the delivery van (auto-buy)",e:"🚚",n:1,p:()=>lv("van"),rew:25},
- {t:"Open 20 parcels, then unlock envelopes (£50)",e:"✉️",n:1,p:()=>S.unl.envelope?1:0,rew:30},
+ {t:"Build the baler (auto-bin)",e:"🗜️",n:1,p:()=>lv("baler"),rew:15},
+ {t:"Get the van (auto-buy)",e:"🚚",n:1,p:()=>lv("van"),rew:25},
+ {t:"Open 20 parcels, unlock envelopes",e:"✉️",n:1,p:()=>S.unl.envelope?1:0,rew:30},
  {t:"Hire the sorter (auto-sell)",e:"🧹",n:1,p:()=>lv("sorter"),rew:50},
  {t:"Scrap a find for ⚙ parts",e:"⚙️",n:1,p:()=>S.stats.scrapped,rew:20},
  {t:"Build a Tape slicer (⚙ parts)",e:"✂️",n:1,p:()=>lv("slicer"),rew:100},
- {t:"Open 25 envelopes, then unlock post sacks",e:"👝",n:1,p:()=>S.unl.sack?1:0,rew:150},
+ {t:"Open 25 envelopes, unlock sacks",e:"👝",n:1,p:()=>S.unl.sack?1:0,rew:150},
  {t:"Complete an album set (📖)",e:"📖",n:1,p:()=>SETS.filter(s=>setDone(s.id)).length,rew:300},
- {t:"Open 25 sacks, then unlock lost luggage",e:"🧳",n:1,p:()=>S.unl.luggage?1:0,rew:1500},
- {t:"Lay a conveyor belt for more staff",e:"🛤️",n:1,p:()=>lv("conv"),rew:1000},
- {t:"Open 30 luggage, then unlock wooden crates",e:"🪵",n:1,p:()=>S.unl.crate?1:0,rew:10000},
- {t:"Earn £10M in this business (for your first ⭐)",e:"💷",n:1e7,p:()=>S.runEarned,rew:50000,cash:1},
+ {t:"Open 25 sacks, unlock luggage",e:"🧳",n:1,p:()=>S.unl.luggage?1:0,rew:1500},
+ {t:"Lay a conveyor belt",e:"🛤️",n:1,p:()=>lv("conv"),rew:1000},
+ {t:"Open 30 luggage, unlock crates",e:"🪵",n:1,p:()=>S.unl.crate?1:0,rew:10000},
+ {t:"Earn £10M for your first ⭐",e:"💷",n:1e7,p:()=>S.runEarned,rew:50000,cash:1},
  {t:"Sell the business for ⭐ stars",e:"🏷️",n:1,p:()=>S.sales,rew:0},
- {t:"Spend your stars (⭐ tab in upgrades)",e:"⭐",n:1,p:()=>Object.values(S.slv).reduce((a,b)=>a+b,0),rew:0},
+ {t:"Spend stars (Upgrades → Stars)",e:"⭐",n:1,p:()=>Object.values(S.slv).reduce((a,b)=>a+b,0),rew:0},
  {t:"Open a storage unit",e:"🚪",n:1,p:()=>S.opL.storage||0,rew:0},
- {t:"Find a relic (5 to find, see 📖)",e:"✨",n:1,p:()=>Object.keys(S.relics).length,rew:0},
- {t:"Open a haunted antique crate",e:"⚰️",n:1,p:()=>S.opL.haunted||0,rew:0},
+ {t:"Find a relic (5 to find)",e:"✨",n:1,p:()=>Object.keys(S.relics).length,rew:0},
+ {t:"Open a haunted crate",e:"⚰️",n:1,p:()=>S.opL.haunted||0,rew:0},
  {t:"Open a pallet",e:"🎁",n:1,p:()=>S.opL.pallet||0,rew:0},
  {t:"Complete 10 album sets",e:"📖",n:10,p:()=>SETS.filter(s=>setDone(s.id)).length,rew:0},
- {t:"Open the Mystery Vault (£1T)",e:"🔒",n:1,p:()=>S.vaultDone?1:0,rew:0},
- {t:"You beat Box Hunter! Keep hunting for every find and relic.",e:"🏆",n:0,p:()=>0,rew:0},
+ {t:"Open the Mystery Vault",e:"🔒",n:1,p:()=>S.vaultDone?1:0,rew:0},
+ {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 function checkGoals(silent){let g=GOALS[S.goal];while(g&&g.n&&g.p()>=g.n){S.goal++;if(g.rew&&!silent){addCash(g.rew);FX.goal(g);}g=GOALS[S.goal];}}
 
@@ -735,7 +740,7 @@ let vanAnim=null,goldVanX=0,sorterAnim=0,balerAnim=0,machAnim={slicer:0,arm:0,sp
 function liveFX(){Object.assign(FX,{
   toast:t=>toast(t),
   coins:(from,v)=>{const p=from==="tray"?stagePos($("#trayList")):{x:BX,y:BBOT-30};coinsFrom(p.x,p.y,v,Math.min(8,2+Math.round(Math.log10(1+v))));},
-  staff:(id,best)=>{const n=Math.min(lv("staff"),5);if(!n)return;const k=stations.findIndex(s=>s.t<=0);const i=k>=0?k:ri(n);stations[i]={t:1.2,box:id,r:best};if(best>=2)SFX.glow(Math.min(best,3));},
+  staff:(id,best)=>{const n=Math.min(lv("staff"),5);if(!n)return;let k=-1;for(let j=0;j<n;j++)if(!stations[j]||stations[j].t<=0){k=j;break;}const i=k>=0?k:ri(n);stations[i]={t:1.2,box:id,r:best};if(best>=2)SFX.glow(Math.min(best,3));},
   machine:(m,id,best)=>{machAnim[m]=.5;if(best>=3)SFX.reveal(best);},
   van:(id,n)=>{vanAnim={t:0,box:id,n};SFX.van();},
   sort:(k,v)=>{sorterAnim=.4;if(k==="sell"&&v)SFX.till();},
@@ -936,7 +941,7 @@ function drawStaffRow(){const ns=lv("staff"),conv=lv("conv");
     if(working){const k=1-s.t/1.2;mini(s.box,x+10,y-2,1);if(k>.4){const c=rcol(s.r);ctx.globalAlpha=1-k;R(x+6,y-14-k*10,8,8,c);ctx.globalAlpha=1;}if(s.r>=3&&k>.5)txt("!",x,y-28,"#ffe36b",8);}}
   if(ns>5)txt(`+${ns-5}`,148+4*24+12,222,"#fff4dc",10,"center","Num");
   // machines at the right end of the belt
-  const ms=[["slicer","#c9ced3","✂"],["arm","#e0a030","⛏"],["spinner","#9ad0ff","◎"]];let mx=262;for(const [m,c] of ms){if(!lv(m))continue;const a=machAnim[m]>0;R(mx,228,16,18,c);R(mx+2,230,12,6,"#2a2a2a");R(mx+3,231+(a?2:0),10,3,a?"#ffe36b":"#5fbf4a");box1(mx,228,16,18);txt(String(lv(m)),mx+8,240,"#fff4dc",10,"center","Num");mx+=18;}}
+  const ms=[["slicer","#c9ced3","✂"],["arm","#e0a030","⛏"],["spinner","#9ad0ff","◎"]];let mx=262;for(const [m,c] of ms){if(!lv(m))continue;const a=machAnim[m]>0;R(mx,228,16,18,c);R(mx+2,230,12,6,"#2a2a2a");R(mx+3,231+(a?2:0),10,3,a?"#ffe36b":"#5fbf4a");box1(mx,228,16,18);ctx.font='10px "Num"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=OUT;ctx.fillText(String(lv(m)),mx+8,241);mx+=18;}}
 const SORTER={x:308,y:136};
 function drawSorter(){if(!lv("sorter"))return;const a=sorterAnim>0;person(SORTER.x,SORTER.y,{shirt:"#3f8fe0",cap:"#d8423a",arm:a?4:0});}
 function drawDog(){const d=dog;if(cursedOn("cdolls")){R(QS.x+8,QS.y+QS.h-4,6,4,"#a8703c");return;}
@@ -976,11 +981,11 @@ function buySel(id){const b=BI[id||S.sel];if(!b)return;if(!unlocked(b)&&canUnloc
 const lockTxt=b=>{const u=b.unlock;const s=(u.sales||0)>S.sales?`sell the business ${u.sales}× · `:"";return `${s}open ${u.n} ${BI[u.box].n.toLowerCase()}s (${Math.min(u.n,S.opL[u.box]||0)}/${u.n})`;};
 const boxEls={};
 function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){const b=document.createElement("button");b.textContent=n==="Max"?"Max":"×"+n;b.className=S.buyN===n?"on":"";b.onclick=e=>{e.stopPropagation();S.buyN=n;buildShop();render();};q.appendChild(b);}
-  const list=$("#boxList");list.innerHTML="";for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.n}</b><small></small></span><span class="bb"></span>`;
+  const list=$("#boxList");list.innerHTML="";for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.sn||b.n}</b><small></small></span><span class="bb"></span>`;
     el.title=b.sub;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
 function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automation)");return;}if(!unlocked(b))return;S.vanBox=b.id;toast(`🚚 The van now buys ${b.n.toLowerCase()}s`);render();}
-function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(-5);if(next)show.push(next);return show;}
+function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-3:-4);if(next)show.push(next);return show;}
 let quickKey="";
 function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
@@ -1002,7 +1007,7 @@ function render(){if(SIM)return;
   if(tl.dataset.k!==tk){tl.dataset.k=tk;tl.innerHTML="";if(!S.tray.length)tl.innerHTML=`<div id="trayEmpty">Finds land here. Click one to sell it, shelve it, file it in the album or scrap it for parts.</div>`;
     S.tray.forEach((e,j)=>{const it=II[e.i],b=document.createElement("button");b.className="ti"+(popIdx===j?" sel":"");b.style.borderLeftColor=RAR[it.r].c;
       b.innerHTML=`<span class="te">${it.e}</span><span>${needsAlbum(e.i)?"📖 ":""}${it.n}</span><span class="tv">${money(itemVal(e))}</span>`;b.title=`${RAR[it.r].n}: ${it.d}`;b.onclick=()=>openPop(j,b);tl.appendChild(b);});}
-  $("#trayN").textContent=S.tray.length?`${S.tray.length}/12`:"";
+  $("#trayN").textContent=S.tray.length?`${S.tray.length}/${TRAY}`:"";
   const qn=S.queue.length+S.spec.length,qt=`QUEUE<br><b>${qn}/${queueCap()}</b>`;if($("#qTag").innerHTML!==qt)$("#qTag").innerHTML=qt;
   const ht=`EMPTIES<br><b>${S.emp}/${heapCap()}</b>`;const hEl=$("#hTag");if(hEl.innerHTML!==ht)hEl.innerHTML=ht;hEl.className="ui tag"+(heapFull()?" full":S.emp>=heapCap()*.7?" warn":"");
   // business panel
@@ -1060,7 +1065,9 @@ const CARDS={
   queue:{h:"📦 Box queue",p:"Boxes you buy wait here. You open the front one; staff and machines take the rest.",ups:["conv","bulk","haggle"]},
 };
 let cardObj=null;
-function openCard(obj){cardObj=obj;$("#card").hidden=false;closePop();renderCard(true);const c=$("#card");c.style.left="150px";c.style.top="60px";if(document.body.classList.contains("pad")||document.body.classList.contains("key")){const b=c.querySelector(".up");b&&b.focus();}}
+const CARD_TAB={shop:"shop",staff:"staff",van:"deliv",sorter:"deliv",baler:"shop",machines:"mach",queue:"hands"};
+function openCard(obj){openUps(CARD_TAB[obj]||"hands");}
+function openCardOld(obj){cardObj=obj;$("#card").hidden=false;closePop();renderCard(true);const c=$("#card");c.style.left="150px";c.style.top="60px";if(document.body.classList.contains("pad")||document.body.classList.contains("key")){const b=c.querySelector(".up");b&&b.focus();}}
 function closeCard(){cardObj=null;$("#card").hidden=true;}
 function renderCard(force){const c=CARDS[cardObj];if(!c)return;$("#cardH").textContent=c.h;$("#cardP").textContent=c.p;const list=$("#cardList");
   if(force||list.dataset.k!==cardObj){list.dataset.k=cardObj;list.innerHTML="";for(const id of c.ups){list.appendChild(upCard(UI[id]));}
@@ -1071,21 +1078,21 @@ function upCard(u){const b=document.createElement("button");b.className="up";b.d
 function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=upAvail(u),mx=upMaxed(u),ok=av&&!mx&&canAfford(u),c=upCost(u);
   el.className="up"+(mx?" max":ok?" can":"")+(av?"":" lockd");
   const bt=`${u.n} <i>${u.max>1?`${L}/${u.cap?Math.min(u.max,u.cap()):u.max}`:L?"✓":""}</i>`;const b=el.querySelector("b");if(b.innerHTML!==bt)b.innerHTML=bt;
-  const sm=av?u.f(L):"Locked for now";const s=el.querySelector("small");if(s.textContent!==sm)s.textContent=sm;
+  const sm=av?(L===0&&!mx&&u.max>1?"buy: "+u.f(1):u.f(L)):"Locked for now";const s=el.querySelector("small");if(s.textContent!==sm)s.textContent=sm;
   const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;}
 
 /* ---------- all upgrades modal (tabs) ---------- */
-const TABS=[["hands","✋ Hands"],["shop","🪟 Shop"],["auto","🤖 Automation"],["stars","⭐ Stars"]];let upTab="hands";
+const TABS=[["hands","✋ Hands"],["shop","🪟 Shop"],["staff","🧑‍🔧 Staff"],["deliv","🚚 Van"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
 function openUps(tab){if(tab)upTab=tab;$("#upModal").hidden=false;closePop();closeCard();buildUps();renderUps();const f=$("#upList .up");if(f&&(document.body.classList.contains("pad")||document.body.classList.contains("key")))f.focus();}
 function buildUps(){const t=$("#upTabs");t.innerHTML="";for(const [id,lab] of TABS){if(id==="stars"&&!S.sales&&starsNow()<1)continue;const b=document.createElement("button");b.textContent=lab;b.className=upTab===id?"on":"";b.dataset.tab=id;b.onclick=()=>{upTab=id;buildUps();renderUps();};t.appendChild(b);}
-  const list=$("#upList");list.innerHTML="";
+  const list=$("#upList");list.innerHTML="";list.classList.toggle("two",upTab==="stars");
   if(upTab==="stars"){const h=document.createElement("div");h.className="grpH";h.style.cssText="font:400 8px/1.3 Pix;color:inherit";h.innerHTML=`You have <b style="font:400 10px Num">${S.stars}⭐</b>. Every star you've ever earned also adds +1% to all values (${S.starsEver} so far = +${S.starsEver}%).`;list.appendChild(h);
     let g="";for(const u of STARU){if(u.g!==g){g=u.g;const gh=document.createElement("div");gh.className="grpH";gh.textContent=g;list.appendChild(gh);}list.appendChild(starCard(u));}
     const gh=document.createElement("div");gh.className="grpH";gh.textContent="Unlocks (from selling the business)";list.appendChild(gh);
     for(const u of UNLOCKS){const d=document.createElement("div");d.className="up"+(S.sales>=u.n?" max":" lockd");d.innerHTML=`<span class="ue">${S.sales>=u.n?"✅":"🔒"}</span><span><b>${u.t}</b><small>after selling ${u.n}×</small></span><span></span>`;list.appendChild(d);}return;}
   for(const u of UPG)if(u.g===upTab)list.appendChild(upCard(u));
-  if(upTab==="auto"){const r=document.createElement("div");r.id="rules";r.innerHTML=`<div class="rl" style="grid-column:1/-1;text-align:left">🧹 Sorter rules (click to change): what to do with each rarity</div>`;
-    RAR.forEach((rr,i)=>{const w=document.createElement("div");w.innerHTML=`<div class="rl" style="color:${rr.c};text-shadow:0 0 1px #000">${rr.n}</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.rules[i];b.onclick=()=>{const o=["keep","sell","shelve","scrap"];S.rules[i]=o[(o.indexOf(S.rules[i])+1)%4];b.textContent=S.rules[i];};w.appendChild(b);r.appendChild(w);});
+  if(upTab==="deliv"){const r=document.createElement("div");r.id="rules";r.innerHTML=`<div class="rl" style="grid-column:1/-1;text-align:left">🧹 Sorter rules: click to change what happens to each rarity</div>`;
+    RAR.forEach((rr,i)=>{const w=document.createElement("div");w.innerHTML=`<div class="rl"><span style="display:inline-block;width:6px;height:6px;background:${rr.c};border:1px solid #2a1a12;margin-right:2px"></span>${rr.n}</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.rules[i];b.onclick=()=>{const o=["keep","sell","shelve","scrap"];S.rules[i]=o[(o.indexOf(S.rules[i])+1)%4];b.textContent=S.rules[i];};w.appendChild(b);r.appendChild(w);});
     const w=document.createElement("div");w.innerHTML=`<div class="rl">Album</div>`;const b=document.createElement("button");b.className="btn";b.textContent=S.sortAlbum?"file":"skip";b.onclick=()=>{S.sortAlbum=!S.sortAlbum;b.textContent=S.sortAlbum?"file":"skip";};w.appendChild(b);r.appendChild(w);list.appendChild(r);}}
 function starCard(u){const b=document.createElement("button");b.className="up";b.dataset.s=u.id;b.title=u.d;b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;b.onclick=()=>{if(buyStar(u)){buildUps();renderUps();render();checkGoals();}else SFX.no();};fillStar(b);return b;}
 function fillStar(el){const u=SU[el.dataset.s],L=slv(u.id),mx=L>=u.max,c=u.cost(L),ok=!mx&&S.stars>=c;el.className="up"+(mx?" max":ok?" can":"");el.querySelector("b").innerHTML=`${u.n} <i>${u.max>1?`${L}/${u.max}`:L?"✓":""}</i>`;el.querySelector("small").textContent=u.f(mx||L===0&&u.max===1?Math.max(L,1):L+1);el.querySelector(".uc").textContent=mx?"MAX":c+"⭐";}
@@ -1131,7 +1138,7 @@ $("#aucYes").onclick=()=>{if(!takeAuction()){toast("Not enough cash");SFX.no();}
 $("#aucNo").onclick=()=>{EV.auction=null;$("#aucModal").hidden=true;render();};
 
 /* ---------- buttons ---------- */
-$("#upBtn").onclick=()=>openUps();$("#upClose").onclick=()=>{$("#upModal").hidden=true;render();};
+$("#upBtn").onclick=()=>{let best=upTab,bn=-1;for(const [id] of TABS){const n=id==="stars"?0:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;if(n>bn){bn=n;best=id;}}openUps(bn>0?best:upTab);};$("#upClose").onclick=()=>{$("#upModal").hidden=true;render();};
 $("#albBtn").onclick=openAlb;$("#albClose").onclick=()=>$("#albModal").hidden=true;
 $("#helpBtn").onclick=()=>{$("#helpModal").hidden=false;$("#helpClose").focus();};$("#helpClose").onclick=()=>{$("#helpModal").hidden=true;S.helped=true;save();};
 $("#awayClose").onclick=()=>$("#awayModal").hidden=true;
@@ -1160,8 +1167,6 @@ cv.addEventListener("pointerdown",e=>{audio();setMode(e.pointerType==="touch"?"t
   const o=canvasObj(p.x,p.y);
   if(o==="heap"){binClick();return;}
   if(o==="van"&&EV.van>0){grabMysteryVan();render();return;}
-  if(o){openCard(o==="van"?"van":o==="queue"?"queue":o);return;}
-  closeCard();
   if(G.st==="opened"&&overBox(p.x,p.y)){flatten();return;}
   if(G.st==="reveal"&&G.t>.3){collect();return;}
   if(G.st==="empty"&&inR(p.x,p.y,MAT)&&!S.queue.length&&!S.spec.length)buySel();});
@@ -1169,8 +1174,8 @@ cv.addEventListener("pointermove",e=>{const p=toStage(e);if(P.down){P.dragged+=M
 addEventListener("pointerup",()=>{P.down=false;P.lastX=P.lastY=null;});
 cv.addEventListener("pointerleave",()=>{if(!P.down)P.over=false;$("#tip").style.display="none";});
 function tipAt(x,y){const tip=$("#tip");let h="";
-  if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> (${RAR[it.r].n})<br>Worth ${money(itemVal(e))} · earns ${money(itemVal(e)*.004*(it.cursed?4:1))}/s${it.cursed?"<br>"+it.d:""}`;}}if(!h)h="<b>Shop window</b><br>Click to upgrade shelves";}
-  else{const o=canvasObj(x,y);if(o==="heap")h=`<b>Empties heap</b> ${S.emp}/${heapCap()}<br>Click to bin them for ${money(S.empV)}`;else if(o==="queue")h=`<b>Box queue</b> ${S.queue.length+S.spec.length}/${queueCap()}`;else if(o)h=`<b>${CARDS[o==="baler"?"baler":o].h}</b><br>Click to upgrade`;}
+  if(x>=SHELF.x-4&&x<=SHELF.x+132&&y>=SHELF.y0-26&&y<=SHELF.y0+2*SHELF.dy+8){for(let k=0;k<S.shelf.length;k++){const p=shelfPos(k);if(Math.abs(x-p.x)<8&&Math.abs(y-p.y)<10){const e=S.shelf[k],it=II[e.i];h=`<b>${it.n}</b> (${RAR[it.r].n})<br>Worth ${money(itemVal(e))} · earns ${money(itemVal(e)*.004*(it.cursed?4:1))}/s${it.cursed?"<br>"+it.d:""}`;}}if(!h)h=`<b>Shop window</b> ${S.shelf.length}/${shelfCap()}<br>Click a find on the right, then Shelve`;}
+  else{const o=canvasObj(x,y);if(o==="heap")h=`<b>Empties heap</b> ${S.emp}/${heapCap()}<br>Click to bin them for ${money(S.empV)}`;else if(o==="queue")h=`<b>Box queue</b> ${S.queue.length+S.spec.length}/${queueCap()}`;else if(o==="van"&&EV.van>0)h="<b>Mystery van!</b> Click it";}
   if(!h){tip.style.display="none";return;}tip.innerHTML=h;tip.style.display="block";tip.style.left=clamp(x+8,0,350)+"px";tip.style.top=clamp(y-30,30,230)+"px";}
 function setMode(m){const b=document.body.classList;b.toggle("pad",m==="pad");b.toggle("touch",m==="touch");b.toggle("key",m==="key");}
 // mouse clicks shouldn't leave focus on a button (so Space keeps slicing)
