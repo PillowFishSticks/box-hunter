@@ -74,6 +74,8 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .bx small{display:block;font:400 6px/1.1 "Pix";color:var(--muted);white-space:nowrap}
 .bx .bb{font:400 9px/1 "Num";padding:2px 3px;border:2px solid var(--ink);background:#c9bda3;color:#7a6a50;white-space:nowrap}
 .bx .bb.ok{background:var(--good);color:#fff}
+.bx .bb.free{background:var(--gold);color:var(--ink);animation:shine 1s steps(2) infinite}
+.up .uc.free{background:var(--gold)!important;color:var(--ink)!important}
 .bx.lock{background:#d8c8a6}.bx.lock .be{filter:grayscale(1) brightness(.8)}
 .bx.van{box-shadow:inset 0 0 0 1px var(--blue)}
 .bx .vt{position:absolute;left:-4px;top:-4px;font-size:7px;line-height:1}
@@ -505,7 +507,7 @@ const starsNow=()=>starsFor(S.runEarned);
 const unlocked=b=>!!S.unl[b.id];
 function canUnlock(b){const u=b.unlock;return !u||((S.opL[u.box]||0)>=u.n&&S.sales>=(u.sales||0));}
 const licOf=b=>b.unlock&&b.unlock.lic||0;
-function buyLicence(b){if(S.unl[b.id]||!canUnlock(b)||S.cash<licOf(b)-1e-9)return false;addCash(-licOf(b));S.unl[b.id]=1;FX.unlock(b);return true;}
+function buyLicence(b){const free=isGiftLic(b.id);if(S.unl[b.id]||!canUnlock(b)||(!free&&S.cash<licOf(b)-1e-9))return false;if(!free)addCash(-licOf(b));S.unl[b.id]=1;FX.unlock(b);return true;}
 const bestUnlocked=()=>BOXES.filter(b=>unlocked(b)&&b.id!=="vault").at(-1);
 const staffCan=b=>b.tier<=trainMax();
 const machineFor=b=>b.tier<=2?"slicer":b.tier<=6?"arm":b.id==="pallet"?"spinner":null;
@@ -614,9 +616,9 @@ function takeAuction(){const a=EV.auction;if(!a||S.cash<a.p)return false;addCash
 function upCost(u){return u.cost(lv(u.id));}
 function upAvail(u){return !u.need||u.need();}
 function upMaxed(u){return lv(u.id)>=u.max||(u.cap&&lv(u.id)>=u.cap());}
-function canAfford(u){const c=upCost(u);return u.cur==="parts"?S.parts>=c-1e-9:S.cash>=c-1e-9;}
-function buyUp(u,quiet){if(!upAvail(u)||upMaxed(u)||!canAfford(u))return false;const c=upCost(u);if(u.cur==="parts")S.parts-=c;else addCash(-c);S.lv[u.id]=lv(u.id)+1;
-  if(u.id==="van"&&!unlocked(BI[S.vanBox]))S.vanBox="parcel";FX.sound("buy");if(!quiet)FX.toast(`${u.e} ${u.n}${u.max>1?" "+lv(u.id):""}!`);return true;}
+function canAfford(u){if(isGiftUp(u.id))return true;const c=upCost(u);return u.cur==="parts"?S.parts>=c-1e-9:S.cash>=c-1e-9;}
+function buyUp(u,quiet){if(!upAvail(u)||upMaxed(u)||!canAfford(u))return false;const c=upCost(u),free=isGiftUp(u.id);if(free){}else if(u.cur==="parts")S.parts-=c;else addCash(-c);S.lv[u.id]=lv(u.id)+1;
+  if(u.id==="van"&&!unlocked(BI[S.vanBox]))S.vanBox="parcel";FX.sound("buy");if(!quiet)FX.toast(`${free?"🎁 Free: ":""}${u.e} ${u.n}${u.max>1?" "+lv(u.id):""}!`);return true;}
 // quick buy: the best value things you can afford right now (cheapest first, automation unlocks first)
 function quickPicks(n){const out=[];for(const u of UPG){if(!upAvail(u)||upMaxed(u)||!canAfford(u))continue;
     const c=upCost(u),rel=u.cur==="parts"?c/Math.max(1,S.parts):c/Math.max(1,S.cash);const pri=(u.max===1||u.id==="staff"&&lv("staff")<3?.3:1)*rel;out.push({u,c,pri});}
@@ -680,6 +682,8 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // goals that say "get X" hand you X for free (owner: no grinding for something the game told you to do)
+const gift=()=>{const g=GOALS[S.goal];return goalClaimable(g)?g.give:null;};
+const isGiftUp=id=>{const v=gift();return !!v&&v.up===id;},isGiftBox=id=>{const v=gift();return !!v&&v.box===id;},isGiftLic=id=>{const v=gift();return !!v&&v.lic===id;};
 function goalClaimable(g){const v=g&&g.give;if(!v)return false;if(v.up){const u=UI[v.up];return upAvail(u)&&!upMaxed(u);}if(v.lic)return !S.unl[v.lic]&&canUnlock(BI[v.lic]);return true;}
 function claimGoal(){const g=GOALS[S.goal];if(!goalClaimable(g))return false;const v=g.give;
   if(v.up){S.lv[v.up]=lv(v.up)+1;FX.sound("buy");FX.toast(`🎁 Free: ${UI[v.up].e} ${UI[v.up].n}`);}
@@ -1076,7 +1080,7 @@ function floatTxt(x,y,s,c,big){floats.push({x,y,s,c,life:1.1,big});if(floats.len
    ===================================================================== */
 let toastT=null;function toast(t){if(SIM)return;const el=$("#toast");el.textContent=t;el.style.display="block";clearTimeout(toastT);toastT=setTimeout(()=>el.style.display="none",2400);}
 const QTY=()=>[1,5,10,...(lv("bulk")>=1?[25]:[]),...(lv("bulk")>=2?[100]:[]),...(lv("bulk")>=3?["Max"]:[])];
-function buySel(id){const b=BI[id||S.sel];if(!b)return;if(!unlocked(b)&&canUnlock(b)){if(buyLicence(b)){checkGoals();render();}else{toast(`Unlocking costs ${money(licOf(b))}`);SFX.no();}return;}if(!unlocked(b)){toast(`${b.n}: ${lockTxt(b)}`);SFX.no();return;}
+function buySel(id){const b=BI[id||S.sel];if(!b)return;if(isGiftBox(b.id)){claimGoal();S.sel=b.id;SFX.buy();render();return;}if(!unlocked(b)&&canUnlock(b)){if(buyLicence(b)){checkGoals();render();}else{toast(`Unlocking costs ${money(licOf(b))}`);SFX.no();}return;}if(!unlocked(b)){toast(`${b.n}: ${lockTxt(b)}`);SFX.no();return;}
   const want=S.buyN==="Max"?1e9:S.buyN;const room=queueCap()-S.queue.length;if(room<=0){toast("The queue is full!");SFX.no();return;}
   const p=priceOf(b);if(S.cash<p-1e-9){toast(`Need ${money(p-S.cash)} more`);SFX.no();return;}
   const n=buyBoxes(b.id,want,"you");S.sel=b.id;SFX.buy();if(n>1)toast(`Bought ${n} × ${b.n.toLowerCase()}`);checkGoals();render();}
@@ -1084,7 +1088,7 @@ const lockTxt=b=>{const u=b.unlock;const s=(u.sales||0)>S.sales?`sell the busine
 const boxEls={};
 function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){const b=document.createElement("button");b.textContent=n==="Max"?"Max":"×"+n;b.className=S.buyN===n?"on":"";b.onclick=e=>{e.stopPropagation();S.buyN=n;buildShop();render();};q.appendChild(b);}
   const list=$("#boxList");list.innerHTML="";
-  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">Free</span>`;el.dataset.box="scrap";el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
+  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">+50p</span>`;el.dataset.box="scrap";el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
   for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.sn||b.n}</b><small></small></span><span class="bb"></span>`;
     el.dataset.box=b.id;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
@@ -1096,16 +1100,16 @@ function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
   // shop
   const vis=visibleBoxes();for(const b of BOXES){const el=boxEls[b.id];if(!el)continue;el.hidden=!vis.includes(b);if(el.hidden)continue;const sm=el.querySelector("small"),bb=el.querySelector(".bb"),vt=el.querySelector(".vt");
-    if(!unlocked(b)&&canUnlock(b)){el.className="bx";const l="🔓 "+money(licOf(b));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(S.cash>=licOf(b)?" ok":"");const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
+    if(!unlocked(b)&&canUnlock(b)){el.className="bx";const fr=isGiftLic(b.id),l="🔓 "+(fr?"Free":money(licOf(b)));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(fr?" ok free":S.cash>=licOf(b)?" ok":"");const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
     if(!unlocked(b)){el.className="bx lock";bb.textContent="🔒";bb.className="bb";const u=b.unlock,n=Math.min(u.n,S.opL[u.box]||0);const w=Math.round(100*n/u.n)+"%";
       const key=lockTxt(b);if(sm.dataset.k!==key){sm.dataset.k=key;sm.innerHTML=`${(u.sales||0)>S.sales?`🏷️ sell business ${u.sales}×`:`open ${u.n} ${BI[u.box].e}`} · ${n}/${u.n}<div class="mini"><i style="width:${w}"></i></div>`;}continue;}
     const p=priceOf(b),ok=S.cash>=p-1e-9;el.className="bx"+(S.vanBox===b.id&&lv("van")?" van":"");vt.textContent=lv("van")?(S.vanBox===b.id?"🚚":""):"";
-    const s2=`${fmtN(S.opL[b.id]||0)} opened`;if(sm.textContent!==s2)sm.textContent=s2;const lab=money(p);if(bb.textContent!==lab)bb.textContent=lab;bb.className="bb"+(ok?" ok":"");}
+    const s2=`${fmtN(S.opL[b.id]||0)} opened`;if(sm.textContent!==s2)sm.textContent=s2;const gv=isGiftBox(b.id)&&gift(),lab=gv?(gv.n>1?`${gv.n} free`:"Free"):money(p);if(bb.textContent!==lab)bb.textContent=lab;bb.className="bb"+(gv?" ok free":ok?" ok":"");}
   // quick buy
   const ql=$("#quickList"),qp=ql?quickPicks(3):[],qk=qp.map(q=>q.u.id+lv(q.u.id)).join(",");
   if(ql&&qk!==quickKey){quickKey=qk;ql.innerHTML="";if(!qp.length)ql.innerHTML=`<div id="quickNone">Nothing affordable yet. Open boxes and sell finds.</div>`;
     for(const q of qp){const b=document.createElement("button");b.className="qb";b.title=q.u.d;b.innerHTML=`<span class="qe">${q.u.e}</span><span>${q.u.n}${q.u.max>1?" "+(lv(q.u.id)+1):""}</span><span class="qc">${q.u.cur==="parts"?"⚙"+fmtN(q.c):money(q.c)}</span>`;b.onclick=()=>{if(buyUp(q.u)){checkGoals();render();}};ql.appendChild(b);}}
-  $("#upBtn").dataset.n=UPG.filter(u=>upAvail(u)&&!upMaxed(u)&&canAfford(u)).length+STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length;
+  const gu=gift()&&gift().up;$("#upBtn").dataset.n=gu?"FREE":UPG.filter(u=>upAvail(u)&&!upMaxed(u)&&canAfford(u)).length+STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length;
   const st=starsNow();const sb=$("#sellBiz");sb.hidden=st<1;if(!sb.hidden)sb.textContent=`🏷️ Sell the business: +${st}⭐`;
   // tray
   const tk=S.tray.map(e=>e.i).join(",")+"|"+(popIdx??"");const tl=$("#trayList");
@@ -1128,8 +1132,8 @@ function render(){if(SIM)return;
   const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span>${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
   // goal
   const g=GOALS[S.goal]||GOALS.at(-1),gp=g.n?Math.min(g.n,g.p()):0;if($("#goalTxt").textContent!==g.t){$("#goalTxt").textContent=g.t;$("#goal .gi").textContent=g.e;}
-  const gc=goalClaimable(g);$("#goalBtn").hidden=!gc;$("#goalRew").hidden=gc;
-  $("#goalBar i").style.width=(g.n?100*gp/g.n:100)+"%";$("#goalN").textContent=g.n>1?(g.cash?`${money(gp)}/${money(g.n)}`:`${fmtN(gp)}/${fmtN(g.n)}`):"";$("#goalRew").textContent=g.rew?`+${money(g.rew)}`:"";
+  const gc=goalClaimable(g);$("#goalBtn").hidden=true;if(gc)$("#goalRew").textContent="🎁 free";
+  $("#goalBar i").style.width=(g.n?100*gp/g.n:100)+"%";$("#goalN").textContent=g.n>1?(g.cash?`${money(gp)}/${money(g.n)}`:`${fmtN(gp)}/${fmtN(g.n)}`):"";$("#goalRew").textContent=goalClaimable(g)?"🎁 free":g.rew?`+${money(g.rew)}`:"";
   // event button
   const ev=$("#ev");if(EV.van>0){ev.hidden=false;ev.textContent=`🚐 Bonus event: click here for a free special box (${Math.ceil(EV.van)}s left)`;ev.dataset.k="van";}
   else if(EV.auction){ev.hidden=false;ev.textContent=`📦 Bonus event: a sealed box for ${money(EV.auction.p)}. Click to see (${Math.ceil(EV.auction.t)}s)`;ev.dataset.k="auc";}
@@ -1196,7 +1200,7 @@ function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=up
   el.className="up"+(mx?" max":ok?" can":"")+(av?"":" lockd");
   const bt=`${u.n} <i>${u.max>1?`${L}/${u.cap?Math.min(u.max,u.cap()):u.max}`:L?"✓":""}</i>`;const b=el.querySelector("b");if(b.innerHTML!==bt)b.innerHTML=bt;
   const sm=av?(L===0&&!mx&&u.max>1?"buy: "+u.f(1):u.f(L)):"Locked for now";const s=el.querySelector("small");if(s.textContent!==sm)s.textContent=sm;
-  const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;}
+  const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):isGiftUp(u.id)?"Free":(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;ce.classList.toggle("free",ct==="Free");}
 
 /* ---------- all upgrades modal (tabs) ---------- */
 const TABS=[["hands","✋ Hands"],["buy","🚚 Buy"],["open","🔪 Open"],["sell","💰 Sell"],["shop","🪟 Shop"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
@@ -1225,7 +1229,7 @@ function renderDet(){const d=$("#upDet");if(!d||!detU)return;let h="",buy=null;
   else{const u=detU,L=lv(u.id),mx=upMaxed(u),av=upAvail(u),c=upCost(u),cap=u.cap?Math.min(u.max,u.cap()):u.max;
     h=`<h5><span>${u.e}</span>${u.n}</h5><div class="lvl">${u.max>1?`level ${L}/${cap}`:L?"owned":"not bought yet"}</div><p>${u.d}</p><div class="tl">${L&&u.max>1?`<span>Now</span><span>${u.f(L)}</span>`:""}${mx?"":`<span>${u.max===1?"Gives":"Next"}</span><span>${u.f(Math.min(L+1,u.max))}</span><span>Cost</span><span>${u.cur==="parts"?"⚙ "+fmtN(c)+" parts":money(c)}</span>`}</div>`;
     if(!av)h+=`<div class="lk">🔒 ${u.why||"Not available yet"}</div>`;else if(mx)h+=u.cap&&L>=u.cap()&&L<u.max?`<div class="lk">No room: lay more conveyor belt (this tab)</div>`:`<div class="lk" style="color:#2f6b24">✓ ${u.max===1?"You have this":"Maxed out"}</div>`;
-    else buy={t:canAfford(u)?`Buy for ${u.cur==="parts"?"⚙"+fmtN(c):money(c)}`:u.cur==="parts"?`Need ⚙${fmtN(c-S.parts)} more parts`:`Need ${money(c-S.cash)} more`,ok:canAfford(u),fn:()=>{if(buyUp(u)){checkGoals();render();}}};
+    else buy={t:isGiftUp(u.id)?"🎁 Get it free":canAfford(u)?`Buy for ${u.cur==="parts"?"⚙"+fmtN(c):money(c)}`:u.cur==="parts"?`Need ⚙${fmtN(c-S.parts)} more parts`:`Need ${money(c-S.cash)} more`,ok:canAfford(u),fn:()=>{if(buyUp(u)){checkGoals();render();}}};
     if(u.id==="van"&&L)h+=`<p>Pick its box with the 🚚 corner of a box in the shop.</p>`;}
   const key=h+(buy?buy.t+buy.ok:"")+(upTab==="sell"?S.rules.join()+S.sortAlbum+lv("sorter"):"");if(d.dataset.k===key)return;d.dataset.k=key;d.innerHTML=h;
   if(buy){const b=document.createElement("button");b.className="btn "+(buy.ok?"go":"off");b.textContent=buy.t;b.onclick=()=>{if(buy.ok)buy.fn();else SFX.no();};d.appendChild(b);}
@@ -1281,7 +1285,7 @@ $("#aucYes").onclick=()=>{if(!takeAuction()){toast("Not enough cash");SFX.no();}
 $("#aucNo").onclick=()=>{EV.auction=null;$("#aucModal").hidden=true;render();};
 
 /* ---------- buttons ---------- */
-$("#upBtn").onclick=()=>{let best=upTab,bn=-1;for(const [id] of TABS){const n=id==="stars"?0:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;if(n>bn){bn=n;best=id;}}openUps(bn>0?best:upTab);};$("#upClose").onclick=()=>{$("#upModal").hidden=true;render();};
+$("#upBtn").onclick=()=>{const gu=gift()&&gift().up;if(gu){detU=UI[gu];openUps(UI[gu].g);return;}let best=upTab,bn=-1;for(const [id] of TABS){const n=id==="stars"?0:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;if(n>bn){bn=n;best=id;}}openUps(bn>0?best:upTab);};$("#upClose").onclick=()=>{$("#upModal").hidden=true;render();};
 $("#albBtn").onclick=openAlb;$("#albClose").onclick=()=>$("#albModal").hidden=true;
 $("#helpBtn").onclick=()=>{$("#helpModal").hidden=false;$("#helpClose").focus();};$("#helpClose").onclick=()=>{$("#helpModal").hidden=true;S.helped=true;save();};
 $("#awayClose").onclick=()=>$("#awayModal").hidden=true;
