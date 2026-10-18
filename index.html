@@ -521,8 +521,6 @@ function coreTick(dt){S.runT+=dt;S.playT+=dt;
   if(lv("baler")&&S.emp){acc.bal+=dt;const bt=balTimeL(lv("balSpd"));if(acc.bal>=bt){const k=Math.floor(acc.bal/bt);acc.bal-=k*bt;const v=binEmpties(k);if(v)FX.bale(v);}}else acc.bal=0;
   // accountant (auto-upgrade)
   if(lv("acct")&&S.acctOn){acc.acct+=dt;if(acc.acct>=3){acc.acct=0;const q=quickPicks(1)[0];if(q&&q.c<=S.cash*.5)buyUp(q.u,true);}}
-  // no dead ends: broke, with nothing to open or sell, the postie drops off a free parcel
-  if(S.cash<priceOf(BI.parcel)&&!S.queue.length&&!S.spec.length&&!S.tray.length&&!S.shelf.length&&!handBusy()){acc.post=(acc.post||0)+dt;if(acc.post>3){acc.post=0;S.queue.push({b:"parcel",p:0});FX.toast("📮 The postie left a free parcel on the doorstep");}}
   // shelves
   shelfTick(dt);
   // events
@@ -724,7 +722,7 @@ function openIt(){if(G.box.id==="scrap"){addCash(SCRAP_PAY);coinsFrom(BX,BBOT-30
 function sliceLine(x0,y0,x1,y1){const d=Math.hypot(x1-x0,y1-y0),n=Math.max(1,Math.ceil(d/2));for(let i=1;i<=n;i++){const t=i/n;cutAt(lerp(x0,x1,t),lerp(y0,y1,t),d*60);}}
 function startAuto(){if(G.st==="closed"&&!auto)auto={t:0,L:cutLine()};}
 function benchAction(){
-  if(G.st==="empty"){if(heapFull())binClick();else if(!S.queue.length&&!S.spec.length)buySel();}
+  if(G.st==="empty"){if(heapFull())binClick();}
   else if(G.st==="closed")startAuto();
   else if(G.st==="opened")flatten();
   else if(G.st==="reveal"&&G.t>.3)collect();}
@@ -964,7 +962,6 @@ function drawCutter(){if(!P.over&&!auto)return;let x=P.x,y=P.y;if(auto){const [x
 function draw(){buildRoom();ctx.save();if(shake>0)ctx.translate(Math.round(rnd(-shake,shake)),Math.round(rnd(-shake,shake)));
   drawRoomLive();drawQueue();drawHeap();drawBaler();drawSorter();
   drawDog();if(G.st!=="empty")drawBox();
-  else if(!S.queue.length&&!S.spec.length){txt(heapFull()?"BIN THE EMPTIES":"BUY A BOX",BX,MAT.y+MAT.h/2,heapFull()?"#ff8a7a":"#cfe8d8",8);}
   else if(heapFull())txt("HEAP FULL: BIN IT",BX,MAT.y+MAT.h/2,"#ff8a7a",8);
   drawFlats();drawStaffRow();drawItems();
   for(const p of parts){ctx.globalAlpha=clamp(p.life*2,0,1);R(p.x,p.y,p.s||1,p.s||1,p.c);}ctx.globalAlpha=1;
@@ -994,12 +991,11 @@ function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){cons
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
 function takeScrap(){if(G.st!=="empty"){toast("Finish the box on the mat first");SFX.no();return;}G={st:"arrive",t:0,x:-70,box:SCRAP,sp:false,paid:0,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:{items:[],boxes:[]},best:0,rattle:0};SFX.buy();render();}
 function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automation)");return;}if(!unlocked(b))return;S.vanBox=b.id;toast(`🚚 The van now buys ${b.n.toLowerCase()}s`);render();}
-function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-5:-6);if(next)show.push(next);return show;}
+function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-4:-5);if(next)show.push(next);return show;}
 let quickKey="";
 function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
   // shop
-  boxEls.scrap.hidden=!broke();
   const vis=visibleBoxes();for(const b of BOXES){const el=boxEls[b.id];if(!el)continue;el.hidden=!vis.includes(b);if(el.hidden)continue;const sm=el.querySelector("small"),bb=el.querySelector(".bb"),vt=el.querySelector(".vt");
     if(!unlocked(b)&&canUnlock(b)){el.className="bx";const l="🔓 "+money(licOf(b));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(S.cash>=licOf(b)?" ok":"");const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
     if(!unlocked(b)){el.className="bx lock";bb.textContent="🔒";bb.className="bb";const u=b.unlock,n=Math.min(u.n,S.opL[u.box]||0);const w=Math.round(100*n/u.n)+"%";
@@ -1043,7 +1039,7 @@ function render(){if(SIM)return;
   hint();}
 function shelfIncome(){let s=0;const inc=.004*(1+.12*lv("sign"))*(1+setBonus("inc"))*(EV.carboot>0?2:1)*(cursedOn("skull")?1.5:1);for(const e of S.shelf)s+=itemVal(e)*inc*(II[e.i].cursed?4:1);return s;}
 function hint(){let h="";const pad=document.body.classList.contains("pad");
-  if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(!S.queue.length&&!S.spec.length)?(broke()?"Short of cash? Cut up the free old cardboard (top of the shop)":S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":pad?"Press Y to buy boxes":"Buy boxes in the Box shop on the left"):"";
+  if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(!S.queue.length&&!S.spec.length)?(broke()?"Short of cash? Cut up some free old cardboard (top of the shop)":S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":pad?"Press Y to buy boxes":"Buy boxes in the Box shop on the left"):"";
   else if(G.st==="arrive")h=G.sp?"✨ A special box! Worth double when you open it":"Here it comes...";
   else if(G.st==="closed")h=pad?`Hold A to ${KINDS[G.box.kind].toLowerCase()}`:`Drag along the ${G.box.kind==="tape"?"tape":"line"}, or hold on the box`;
   else if(G.st==="reveal")h=pad?"Nice! Press A to keep it":"Nice! Click to keep it";
@@ -1179,7 +1175,7 @@ cv.addEventListener("pointerdown",e=>{audio();setMode(e.pointerType==="touch"?"t
   if(o==="van"&&EV.van>0){grabMysteryVan();render();return;}
   if(G.st==="opened"&&overBox(p.x,p.y)){flatten();return;}
   if(G.st==="reveal"&&G.t>.3){collect();return;}
-  if(G.st==="empty"&&inR(p.x,p.y,MAT)&&!S.queue.length&&!S.spec.length)buySel();});
+});
 cv.addEventListener("pointermove",e=>{const p=toStage(e);if(P.down){P.dragged+=Math.hypot(p.x-(P.lastX??p.x),p.y-(P.lastY??p.y));if(G.st==="closed")sliceLine(P.lastX??p.x,P.lastY??p.y,p.x,p.y);}P.x=p.x;P.y=p.y;P.lastX=p.x;P.lastY=p.y;P.over=true;tipAt(p.x,p.y,e);});
 addEventListener("pointerup",()=>{P.down=false;P.lastX=P.lastY=null;});
 cv.addEventListener("pointerleave",()=>{if(!P.down)P.over=false;$("#tip").style.display="none";});
@@ -1248,7 +1244,7 @@ function sim(hours=10,opts={}){const keepS=S,keepFX=Object.assign({},FX),keepEV=
   const handOpen=()=>{let id=null,sp=false;if(S.spec.length){id=S.spec.shift();sp=true;}else{
       // a human opens the priciest box in the queue, or buys one
       let qi=-1,bp=-1;S.queue.forEach((q,i)=>{if(BI[q.b].price>bp){bp=BI[q.b].price;qi=i;}});
-      if(qi<0){const b=BOXES.filter(b=>unlocked(b)&&b.id!=="vault"&&priceOf(b)<=S.cash).at(-1);if(!b)return;buyBoxes(b.id,1,"you");qi=S.queue.length-1;}if(qi<0)return;id=S.queue.splice(qi,1)[0].b;}
+      if(qi<0){const b=BOXES.filter(b=>unlocked(b)&&b.id!=="vault"&&priceOf(b)<=S.cash).at(-1);if(!b){addCash(SCRAP_PAY);return;}buyBoxes(b.id,1,"you");qi=S.queue.length-1;}if(qi<0)return;id=S.queue.splice(qi,1)[0].b;}
     if(heapFull())return;const r=rollBox(id,{hand:true,special:sp});const hi=r.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);S.streak=hi>=2?S.streak+1:0;for(const x of r.boxes)S.queue.push({b:x,p:0});gain(r.items,"hand");boxDone(id,true);
     if(hi>=2)mark("first rare");if(id==="vault"){S.vaultDone=true;}};
   const trayByHand=()=>{for(let j=S.tray.length;j--;){const e=S.tray[j],r=II[e.i].r;if(needsAlbum(e.i)){fileAt(j);continue;}if(r>=2&&S.shelf.length<shelfCap()){shelveAt(j);continue;}if(r<=1&&S.opL.envelope>0&&S.parts<botPartsNeed()){scrapAt(j);continue;}sellAt(j,true);}};
