@@ -317,6 +317,9 @@ const BOXES=[
  {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:1e12,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:9},hand:1},
 ];
 const BI=Object.fromEntries(BOXES.map((b,i)=>[b.id,Object.assign(b,{tier:i})]));
+// when you can't afford a parcel: free old cardboard to cut up for pennies (not a real box type)
+const SCRAP={id:"scrap",e:"♻️",n:"Old cardboard",kind:"sheet",price:0,tier:0,items:[],sub:"Free. Cut it up and sell the pieces for pennies."};BI.scrap=SCRAP;const SCRAP_PAY=.5;
+const broke=()=>S.cash<BOXES[0].price*(1-.03*(S.lv.haggle||0))*(1-.04*((S.slv||{}).cheap||0))-1e-9;
 const ITEMS=[],II={};
 const hash=s=>{let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return((h>>>0)%1000)/1000;};
 for(const b of BOXES){b.items=[];for(const [id,e,n,r,set,d] of IT[b.id]||[]){const o={id,e,n,r,set:set==="relic"?"":set,relic:set==="relic",d,box:b.id,f:.75+.6*hash(id),cursed:!!CURSED[id]};b.items.push(o);ITEMS.push(o);II[id]=o;}}
@@ -693,8 +696,8 @@ const BALER={x:322,y:228,w:26,h:22};    // the baler sits under the heap
 const BELT={x:134,y:248,w:212,h:10};
 const WIN={x:140,y:36,w:64,h:42};
 const SHELF={x:210,y0:50,dy:24,cols:8,sw:16};
-const DIM={parcel:[96,56,16],envelope:[100,56,0],sack:[70,68,0],luggage:[104,60,8],crate:[96,62,10],storage:[112,78,0],haunted:[96,62,10],pallet:[104,72,6],vault:[90,80,10]};
-const KINDS={tape:"SLICE",strip:"TEAR",knot:"UNTIE",zip:"UNZIP",prise:"PRISE",padlock:"SNIP",film:"UNWRAP",safe:"CRACK"};
+const DIM={scrap:[100,30,4],parcel:[96,56,16],envelope:[100,56,0],sack:[70,68,0],luggage:[104,60,8],crate:[96,62,10],storage:[112,78,0],haunted:[96,62,10],pallet:[104,72,6],vault:[90,80,10]};
+const KINDS={sheet:"CUT",tape:"SLICE",strip:"TEAR",knot:"UNTIE",zip:"UNZIP",prise:"PRISE",padlock:"SNIP",film:"UNWRAP",safe:"CRACK"};
 const SEGN=18;
 let G={st:"empty",t:0},P={x:240,y:200,down:false,over:false,lastX:null,lastY:null,downT:0,dragged:0,onBox:false},auto=null;
 const parts=[],floats=[],coins=[],flats=[],flyers=[];let shake=0,slow=1;
@@ -702,7 +705,7 @@ const dog={x:174,y:214,st:"idle",t:0,hop:0,tail:0,bark:0,sniff:0,idle:0};
 function boxRect(id,x){const [w,h,d]=DIM[id];const L=x-w/2,T=BBOT-d-h;return{L,T,w,h,d,cx:x,cy:T+h/2};}
 let drawX=null;   // where the box is being drawn this frame (it slides in), so the tape moves with it
 function cutLine(){const b=G.box,R=boxRect(b.id,drawX??BX),{L,T,w,h,cx}=R;
-  return({tape:[cx,T,cx,T+h],strip:[L,T+10,L+w,T+10],knot:[cx,T+24,cx,T-2],zip:[L+8,T+h*.52,L+w-8,T+h*.52],prise:[L+4,T+6,L+w-4,T+6],padlock:[cx-16,T+h-22,cx+16,T+h-22],film:[L+8,T+6,L+w-8,T+h-6],safe:[cx-28,T+h/2,cx+28,T+h/2]})[b.kind];}
+  return({sheet:[L+4,T+h/2,L+w-4,T+h/2],tape:[cx,T,cx,T+h],strip:[L,T+10,L+w,T+10],knot:[cx,T+24,cx,T-2],zip:[L+8,T+h*.52,L+w-8,T+h*.52],prise:[L+4,T+6,L+w-4,T+6],padlock:[cx-16,T+h-22,cx+16,T+h-22],film:[L+8,T+6,L+w-8,T+h-6],safe:[cx-28,T+h/2,cx+28,T+h/2]})[b.kind];}
 function nextBox(){if(G.st!=="empty"||heapFull())return;let id=null,sp=false,p=0;
   if(S.spec.length){id=S.spec.shift();sp=true;}else if(S.queue.length){const q=S.queue.shift();id=q.b;p=q.p;}else return;
   const b=BI[id];G={st:"arrive",t:0,x:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
@@ -713,9 +716,11 @@ function cutAt(x,y,speed){if(G.st!=="closed")return;const [x0,y0,x1,y1]=cutLine(
   let n=0;const half=1/SEGN/2+r*.6/len;
   for(let i=0;i<SEGN;i++){if(G.seg[i])continue;const ti=(i+.5)/SEGN;if(Math.abs(t-ti)<=half){G.seg[i]=1;n++;const sx=x0+dx*ti,sy=y0+dy*ti;
       parts.push({x:sx+rnd(-3,3),y:sy,vx:rnd(-60,60),vy:rnd(-80,-25),g:260,life:.5,c:Math.random()<.5?"#f0d090":"#9a6a2a",s:1+ri(2)});parts.push({x:sx,y:sy,vx:0,vy:0,g:0,life:.12,c:"#fff",s:3});}}
-  if(n){G.cut+=n;const sp=clamp(speed/300,0,2);({tape:SFX.rip,strip:SFX.tear,knot:SFX.tear,zip:SFX.zip,prise:SFX.creak,padlock:SFX.snip,film:SFX.tear,safe:SFX.zip})[G.box.kind](sp);G.wob=.18;
+  if(n){G.cut+=n;const sp=clamp(speed/300,0,2);({sheet:SFX.rip,tape:SFX.rip,strip:SFX.tear,knot:SFX.tear,zip:SFX.zip,prise:SFX.creak,padlock:SFX.snip,film:SFX.tear,safe:SFX.zip})[G.box.kind](sp);G.wob=.18;
     if(G.cut>=SEGN*.86)openIt();}}
-function openIt(){G.seg.fill(1);G.st="open";G.t=0;SFX.pop();if(S.relics.gcut)S.preCut=!S.preCut;}
+function openIt(){if(G.box.id==="scrap"){addCash(SCRAP_PAY);coinsFrom(BX,BBOT-30,SCRAP_PAY,3);floatTxt(BX,BBOT-50,"+"+money(SCRAP_PAY),"#fff4dc");SFX.till();
+    for(let i=0;i<14;i++)parts.push({x:BX+rnd(-45,45),y:BBOT-20,vx:rnd(-80,80),vy:rnd(-110,-30),g:240,life:.7,c:Math.random()<.5?PAL.cb:PAL.cb2,s:2+ri(2)});G={st:"empty",t:0};render();return;}
+  G.seg.fill(1);G.st="open";G.t=0;SFX.pop();if(S.relics.gcut)S.preCut=!S.preCut;}
 function sliceLine(x0,y0,x1,y1){const d=Math.hypot(x1-x0,y1-y0),n=Math.max(1,Math.ceil(d/2));for(let i=1;i<=n;i++){const t=i/n;cutAt(lerp(x0,x1,t),lerp(y0,y1,t),d*60);}}
 function startAuto(){if(G.st==="closed"&&!auto)auto={t:0,L:cutLine()};}
 function benchAction(){
@@ -807,7 +812,7 @@ function box1(x,y,w,h){ctx.strokeStyle=OUT;ctx.lineWidth=2;ctx.strokeRect(Math.r
 function txt(s,x,y,c,size=8,align="center",font="SilkC"){ctx.font=`${font==="Num"?"":font==="Pix"?"700 ":""}${size}px "${font}"`;ctx.textAlign=align;ctx.textBaseline="middle";ctx.fillStyle=OUT;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1]])ctx.fillText(s,Math.round(x)+dx,Math.round(y)+dy);ctx.fillStyle=c;ctx.fillText(s,Math.round(x),Math.round(y));}
 const rcol=r=>EV.swap>0?RAR[[2,4,0,1,3][r]].c:RAR[r].c;
 // small box icons: queue, staff stations, conveyor
-const MINI={parcel:["#d8a062","#a8732f"],envelope:["#eedb92","#d8423a"],sack:["#cdb68a","#7a5a30"],luggage:["#3b6fb6","#c9ced3"],crate:["#b57a3c","#7a4a22"],storage:["#8d959c","#f2c230"],haunted:["#4a2f45","#7fe07a"],pallet:["#a8743c","#e8f4ff"],vault:["#7f8a93","#f2c230"]};
+const MINI={scrap:["#c99052","#a8732f"],parcel:["#d8a062","#a8732f"],envelope:["#eedb92","#d8423a"],sack:["#cdb68a","#7a5a30"],luggage:["#3b6fb6","#c9ced3"],crate:["#b57a3c","#7a4a22"],storage:["#8d959c","#f2c230"],haunted:["#4a2f45","#7fe07a"],pallet:["#a8743c","#e8f4ff"],vault:["#7f8a93","#f2c230"]};
 function mini(id,x,y,s=1,sp){const [a,b]=MINI[id]||MINI.parcel;const w=12*s,h=8*s;R(x-w/2,y-h,w,h,a);R(x-w/2,y-h,w,2*s,b);R(x-1*s,y-h,2*s,h,b);box1(x-w/2,y-h,w,h);if(sp){R(x+w/2-2,y-h-3,3,3,"#fff7a0");}}
 function person(x,y,o={}){const sh=o.shirt||"#d8423a",sk=o.skin||"#f0c8a0",hair=o.hair||"#5a3519",bob=o.bob||0;y-=bob;
   R(x-4,y-2,3,4,"#2f3b52");R(x+1,y-2,3,4,"#2f3b52");R(x-5,y-10,10,9,sh);R(x-5,y-10,10,2,o.shirt2||"#ffffff55");
@@ -852,7 +857,7 @@ function drawVan(x,y,body,trim,gold){R(x,y-16,40,14,body);R(x+28,y-22,12,8,body)
 function drawBox(){const st=G.st,b=G.box;let x=st==="arrive"?G.x:BX;const wob=G.wob>0&&st==="closed"?Math.sin(G.t*60)*G.wob*6:0;x+=wob;drawX=x;
   const Rr=boxRect(b.id,x),{L,T,w,h,d,cx}=Rr;R(L+3,T+h+d+1,w,5,"#0005");
   const k=st==="open"?clamp(G.t/.3,0,1):(st==="glow"||st==="reveal"||st==="fly"||st==="opened")?1:0;
-  ({tape:drawParcel,strip:drawEnvelope,knot:drawSack,zip:drawLuggage,prise:b.id==="haunted"?drawHaunted:drawCrate,padlock:drawStorage,film:drawPallet,safe:drawVault})[b.kind](Rr,k,x);
+  ({sheet:drawSheet,tape:drawParcel,strip:drawEnvelope,knot:drawSack,zip:drawLuggage,prise:b.id==="haunted"?drawHaunted:drawCrate,padlock:drawStorage,film:drawPallet,safe:drawVault})[b.kind](Rr,k,x);
   if(st==="closed"&&lv("xray")>=1){ctx.globalAlpha=.25+.15*Math.sin(G.t*6);R(L+4,T+h-6,w-8,4,rcol(G.best));ctx.globalAlpha=1;}
   if(G.sp&&st!=="opened"){R(L-4,T-4,6,6,"#fff7a0");R(L+w-2,T-6,4,4,"#fff7a0");}
   if(st==="closed")drawGuide(x);
@@ -866,6 +871,8 @@ function drawParcel({L,T,w,h,d},k,x){R(L,T+h,w,d,PAL.cb2);R(L,T+h,w,2,"#8a5a2a")
   R(L,T,w,h,PAL.inside);R(L,T,w,4,"#1a0e06");const fw=w/2,lw=lerp(fw,-fw*.55,k);
   const flap=(fx,fw2,out)=>{fx=Math.round(fx);fw2=Math.round(fw2);if(fw2<1)return;const y0=T+(out?3:0),hh=h-(out?6:0);R(fx,y0,fw2,hh,out?PAL.cb3:PAL.cb);box1(fx,y0,fw2,hh);};
   if(lw>0){flap(L,lw,false);flap(L+w-lw,lw,false);}else{flap(L+lw,-lw,true);flap(L+w,-lw,true);}box1(L,T,w,h+d);}
+function drawSheet({L,T,w,h,d}){for(let i=2;i>=0;i--){R(L+i*3,T+i*3,w,h,i?PAL.cb2:PAL.cb);box1(L+i*3,T+i*3,w,h);}R(L,T,w,3,PAL.cb3);R(L+12,T+8,20,2,"#a8732f");R(L+w-30,T+h-9,18,2,"#a8732f");
+  segDraw((ax,ay,bx,by,c)=>{if(c)R(ax,ay-1,bx-ax+.5,3,PAL.inside);});}
 function drawEnvelope({L,T,w,h},k){const sy=T+10;R(L,T,w,h,PAL.env);R(L,T,w,3,PAL.env3);R(L,T+h-3,w,3,PAL.env2);
   for(let i=0;i<40;i++){R(L+6+((i*37)%(w-12)),T+18+((i*23)%(h-26)),2,2,PAL.env3);}R(L+10,T+24,30,16,"#fff8e0");R(L+12,T+28,22,1,"#9a8a70");R(L+12,T+32,16,1,"#9a8a70");R(L+w-18,T+22,12,14,"#d8423a");R(L+w-16,T+24,8,10,"#f4b0a0");
   if(k===0){segDraw((ax,ay,bx,by,c)=>{const sw=bx-ax;if(c){R(ax,sy-4,sw+.5,2,PAL.strip);R(ax,sy+2,sw+.5,2,PAL.strip);R(ax,sy-2,sw+.5,4,PAL.inside);}else{R(ax,sy-3,sw+.5,6,PAL.strip);R(ax,sy-3,sw+.5,1,"#f08070");}});R(L-8,sy-4,10,8,PAL.strip);box1(L-8,sy-4,10,8);box1(L,T,w,h);return;}
@@ -905,7 +912,7 @@ function drawVault({L,T,w,h,d,cx,cy},k){R(L,T+h,w,d,"#5b646c");R(L,T,w,h,"#7f8a9
 function drawGuide(x){const [x0,y0,x1,y1]=cutLine(),t=performance.now()/1000;if(G.cut>0&&!auto)return;
   ctx.fillStyle=Math.floor(t*3)%2?"#ffffff":"#ffe36b";const len=Math.hypot(x1-x0,y1-y0);for(let s=0;s<len;s+=6){const k=s/len;ctx.fillRect(Math.round(lerp(x0,x1,k))-1,Math.round(lerp(y0,y1,k))-1,3,3);}
   if(auto)return;const b=Math.round(Math.sin(t*6)*3);const lab=KINDS[G.box.kind];
-  txt(lab,clamp(x0+(x1-x0)*.5+(Math.abs(x1-x0)>Math.abs(y1-y0)?0:34),MAT.x+30,MAT.x+MAT.w-30),Math.max(MAT.y+6,Math.min(y0,y1)-12+b),"#ffe36b",8);}
+  txt(lab,clamp(x0+(x1-x0)*.5+(Math.abs(x1-x0)>Math.abs(y1-y0)?0:34),MAT.x+30,MAT.x+MAT.w-30),Math.max(MAT.y+6,(G.box.kind==="sheet"?boxRect("scrap",BX).T-10:Math.min(y0,y1)-12)+b),"#ffe36b",8);}
 function drawGlow(cx,cy,L,T,w,h){if(!["open","glow"].includes(G.st))return;let r=G.best;if(G.tease&&G.st==="glow"&&G.t<.35)r=Math.floor(G.t*20)%2?4:3;const c=rcol(r),gt=G.st==="glow"?G.t:0,a=.4+.25*Math.sin(G.t*30);
   ctx.globalAlpha=a;ctx.fillStyle=c;for(let i=0;i<7;i++){const ang=-Math.PI/2+(i-3)*.22+Math.sin(G.t*3+i)*.05,len=40+gt*90+i%2*20;ctx.beginPath();ctx.moveTo(cx-10,cy);ctx.lineTo(cx+10,cy);ctx.lineTo(cx+Math.cos(ang)*len+6,cy+Math.sin(ang)*len);ctx.lineTo(cx+Math.cos(ang)*len-6,cy+Math.sin(ang)*len);ctx.closePath();ctx.fill();}ctx.globalAlpha=1;}
 function drawItems(){if(G.st!=="reveal"&&G.st!=="fly")return;const items=G.res.items;if(!items.length)return;const t=G.t,cy=BBOT-70;
@@ -980,15 +987,19 @@ function buySel(id){const b=BI[id||S.sel];if(!b)return;if(!unlocked(b)&&canUnloc
 const lockTxt=b=>{const u=b.unlock;const s=(u.sales||0)>S.sales?`sell the business ${u.sales}× · `:"";return `${s}open ${u.n} ${BI[u.box].n.toLowerCase()}s (${Math.min(u.n,S.opL[u.box]||0)}/${u.n})`;};
 const boxEls={};
 function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){const b=document.createElement("button");b.textContent=n==="Max"?"Max":"×"+n;b.className=S.buyN===n?"on":"";b.onclick=e=>{e.stopPropagation();S.buyN=n;buildShop();render();};q.appendChild(b);}
-  const list=$("#boxList");list.innerHTML="";for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.sn||b.n}</b><small></small></span><span class="bb"></span>`;
+  const list=$("#boxList");list.innerHTML="";
+  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">Free</span>`;el.title=SCRAP.sub;el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
+  for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.sn||b.n}</b><small></small></span><span class="bb"></span>`;
     el.title=b.sub;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
+function takeScrap(){if(G.st!=="empty"){toast("Finish the box on the mat first");SFX.no();return;}G={st:"arrive",t:0,x:-70,box:SCRAP,sp:false,paid:0,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:{items:[],boxes:[]},best:0,rattle:0};SFX.buy();render();}
 function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automation)");return;}if(!unlocked(b))return;S.vanBox=b.id;toast(`🚚 The van now buys ${b.n.toLowerCase()}s`);render();}
 function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-5:-6);if(next)show.push(next);return show;}
 let quickKey="";
 function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
   // shop
+  boxEls.scrap.hidden=!broke();
   const vis=visibleBoxes();for(const b of BOXES){const el=boxEls[b.id];if(!el)continue;el.hidden=!vis.includes(b);if(el.hidden)continue;const sm=el.querySelector("small"),bb=el.querySelector(".bb"),vt=el.querySelector(".vt");
     if(!unlocked(b)&&canUnlock(b)){el.className="bx";const l="🔓 "+money(licOf(b));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(S.cash>=licOf(b)?" ok":"");const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
     if(!unlocked(b)){el.className="bx lock";bb.textContent="🔒";bb.className="bb";const u=b.unlock,n=Math.min(u.n,S.opL[u.box]||0);const w=Math.round(100*n/u.n)+"%";
@@ -1032,7 +1043,7 @@ function render(){if(SIM)return;
   hint();}
 function shelfIncome(){let s=0;const inc=.004*(1+.12*lv("sign"))*(1+setBonus("inc"))*(EV.carboot>0?2:1)*(cursedOn("skull")?1.5:1);for(const e of S.shelf)s+=itemVal(e)*inc*(II[e.i].cursed?4:1);return s;}
 function hint(){let h="";const pad=document.body.classList.contains("pad");
-  if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(!S.queue.length&&!S.spec.length)?(S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":pad?"Press Y to buy boxes":"Buy boxes in the Box shop on the left"):"";
+  if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(!S.queue.length&&!S.spec.length)?(broke()?"Short of cash? Cut up the free old cardboard (top of the shop)":S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":pad?"Press Y to buy boxes":"Buy boxes in the Box shop on the left"):"";
   else if(G.st==="arrive")h=G.sp?"✨ A special box! Worth double when you open it":"Here it comes...";
   else if(G.st==="closed")h=pad?`Hold A to ${KINDS[G.box.kind].toLowerCase()}`:`Drag along the ${G.box.kind==="tape"?"tape":"line"}, or hold on the box`;
   else if(G.st==="reveal")h=pad?"Nice! Press A to keep it":"Nice! Click to keep it";
