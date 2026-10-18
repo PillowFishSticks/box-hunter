@@ -75,6 +75,10 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .bx .bb{font:400 9px/1 "Num";padding:2px 3px;border:2px solid var(--ink);background:#c9bda3;color:#7a6a50;white-space:nowrap}
 .bx .bb.ok{background:var(--good);color:#fff}
 .bx .bb.free{background:var(--gold);color:var(--ink);animation:shine 1s steps(2) infinite}
+.bx.gift{box-shadow:0 0 0 2px var(--gold),0 0 6px 2px #f2c230aa;animation:glow 1.2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 2px #fff7a0,0 0 9px 3px #f2c230cc}}
+.up.gift{box-shadow:0 0 0 2px var(--gold),0 0 6px 2px #f2c230aa;animation:glow 1.2s ease-in-out infinite}
+#upBtn.gift{animation:glow 1.2s ease-in-out infinite}
 .up .uc.free{background:var(--gold)!important;color:var(--ink)!important}
 .bx.lock{background:#d8c8a6}.bx.lock .be{filter:grayscale(1) brightness(.8)}
 .bx.van{box-shadow:inset 0 0 0 1px var(--blue)}
@@ -456,7 +460,7 @@ const KEY="boxHunter.v1";
 const fresh=()=>({v:3,cash:15,parts:0,stars:0,starsEver:0,sales:0,earned:0,runEarned:0,runT:0,playT:0,
   lv:{},slv:{},op:{},opL:{},queue:[],spec:[],tray:[],shelf:[],emp:0,empV:0,
   rules:["sell","sell","shelve","shelve","shelve"],sortAlbum:true,vanBox:"parcel",vanOn:true,acctOn:true,
-  album:{},found:{},relics:{},unl:{parcel:1},ready:{},seen:{},goal:0,buyN:1,sel:"parcel",helped:false,muted:false,music:true,oneClick:false,
+  album:{},found:{},relics:{},unl:{parcel:1},ready:{},seen:{},gifted:{},goal:0,buyN:1,sel:"parcel",helped:false,muted:false,music:true,oneClick:false,
   streak:0,preCut:false,best:null,vaultDone:false,last:Date.now(),evT:200,stats:{boxes:0,hand:0,sold:0,shelved:0,scrapped:0,multi:0,legend:0}});
 let S=fresh(),readOnly=false,loadedRaw=null;
 function load(){try{const raw=localStorage.getItem(KEY);if(!raw)return;loadedRaw=raw;localStorage.setItem(KEY+".backup",raw);migrate(JSON.parse(raw));}catch(e){console.warn("load failed",e);readOnly=true;}}
@@ -650,21 +654,21 @@ const has=id=>lv(id)>0;
 const GOALS=[
  {t:"Get your first parcel",e:"📦",n:1,p:()=>S.opL.parcel||S.queue.length?1:0,rew:0,give:{box:"parcel",n:1}},
  {t:"Click the queue to put it on the mat",e:"📦",n:1,p:()=>S.stats.loaded||0,rew:1},
- {t:"Open 5 boxes",e:"🔪",n:5,p:()=>S.stats.boxes,rew:3},
+ {t:"Open 5 boxes",e:"🔪",n:5,p:()=>S.stats.boxes,rew:0,give:{box:"parcel",n:5}},
  {t:"Get a Sharper Cutter",e:"🔪",n:1,p:()=>Object.values(S.lv).reduce((a,b)=>a+b,0),rew:0,give:{up:"cutter"}},
  {t:"Click the empties heap to bin it",e:"🗑️",n:1,p:()=>S.stats.binned||0,rew:3},
- {t:"Get 5 parcels at once",e:"5️⃣",n:1,p:()=>S.stats.multi,rew:0,give:{box:"parcel",n:5}},
- {t:"Find something Rare (blue)",e:"💎",n:1,p:()=>ITEMS.some(i=>i.r>=2&&S.found[i.id])?1:0,rew:5},
+  {t:"Find something Rare (blue)",e:"💎",n:1,p:()=>ITEMS.some(i=>i.r>=2&&S.found[i.id])?1:0,rew:5},
+ {t:"Put a find on a shelf",e:"🪟",n:1,p:()=>S.stats.shelved,rew:5},
+ {t:"Scrap a find for ⚙ parts",e:"⚙️",n:1,p:()=>S.stats.scrapped,rew:5},
+ {t:"Spend parts: get Fast Hands",e:"⚡",n:1,p:()=>lv("fast"),rew:0,give:{up:"fast"}},
  {t:"Hire the loader",e:"🙋",n:1,p:()=>lv("loader"),rew:0,give:{up:"loader"}},
  {t:"Get the auto-cutter",e:"🤖",n:1,p:()=>lv("autocut"),rew:0,give:{up:"autocut"}},
  {t:"Hire your first staff",e:"🧑‍🔧",n:1,p:()=>lv("staff"),rew:0,give:{up:"staff"}},
- {t:"Click a find, then Shelve it",e:"🪟",n:1,p:()=>S.stats.shelved,rew:10},
- {t:"Get the cardboard baler",e:"🗜️",n:1,p:()=>lv("baler"),rew:0,give:{up:"baler"}},
+  {t:"Get the cardboard baler",e:"🗜️",n:1,p:()=>lv("baler"),rew:0,give:{up:"baler"}},
  {t:"Get the delivery van",e:"🚚",n:1,p:()=>lv("van"),rew:0,give:{up:"van"}},
  {t:"Unlock envelopes (open 20 📦)",e:"✉️",n:1,p:()=>S.unl.envelope?1:0,rew:0,give:{lic:"envelope"}},
  {t:"Hire the sorter",e:"🧹",n:1,p:()=>lv("sorter"),rew:0,give:{up:"sorter"}},
- {t:"Scrap a find for ⚙ parts",e:"⚙️",n:1,p:()=>S.stats.scrapped,rew:20},
- {t:"Get a tape slicer machine",e:"✂️",n:1,p:()=>lv("slicer"),rew:0,give:{up:"slicer"}},
+  {t:"Get a tape slicer machine",e:"✂️",n:1,p:()=>lv("slicer"),rew:0,give:{up:"slicer"}},
  {t:"Unlock sacks (open 25 ✉️)",e:"👝",n:1,p:()=>S.unl.sack?1:0,rew:0,give:{lic:"sack"}},
  {t:"Complete an album set (📖)",e:"📖",n:1,p:()=>SETS.filter(s=>setDone(s.id)).length,rew:300},
  {t:"Unlock luggage (open 25 👝)",e:"🧳",n:1,p:()=>S.unl.luggage?1:0,rew:0,give:{lic:"luggage"}},
@@ -684,8 +688,8 @@ const GOALS=[
 // goals that say "get X" hand you X for free (owner: no grinding for something the game told you to do)
 const gift=()=>{const g=GOALS[S.goal];return goalClaimable(g)?g.give:null;};
 const isGiftUp=id=>{const v=gift();return !!v&&v.up===id;},isGiftBox=id=>{const v=gift();return !!v&&v.box===id;},isGiftLic=id=>{const v=gift();return !!v&&v.lic===id;};
-function goalClaimable(g){const v=g&&g.give;if(!v)return false;if(v.up){const u=UI[v.up];return upAvail(u)&&!upMaxed(u);}if(v.lic)return !S.unl[v.lic]&&canUnlock(BI[v.lic]);return true;}
-function claimGoal(){const g=GOALS[S.goal];if(!goalClaimable(g))return false;const v=g.give;
+function goalClaimable(g){const v=g&&g.give;if(!v||(S.gifted||{})[GOALS.indexOf(g)])return false;if(v.up){const u=UI[v.up];return upAvail(u)&&!upMaxed(u);}if(v.lic)return !S.unl[v.lic]&&canUnlock(BI[v.lic]);return true;}
+function claimGoal(){const g=GOALS[S.goal];if(!goalClaimable(g))return false;const v=g.give;S.gifted=S.gifted||{};S.gifted[S.goal]=1;
   if(v.up){S.lv[v.up]=lv(v.up)+1;FX.sound("buy");FX.toast(`🎁 Free: ${UI[v.up].e} ${UI[v.up].n}`);}
   else if(v.box){for(let i=0;i<v.n;i++)S.queue.push({b:v.box,p:0});if(v.n>1)S.stats.multi++;FX.sound("buy");FX.toast(`🎁 Free: ${v.n} × ${BI[v.box].n.toLowerCase()}`);}
   else if(v.lic){S.unl[v.lic]=1;FX.unlock(BI[v.lic]);}
@@ -1100,16 +1104,16 @@ function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
   // shop
   const vis=visibleBoxes();for(const b of BOXES){const el=boxEls[b.id];if(!el)continue;el.hidden=!vis.includes(b);if(el.hidden)continue;const sm=el.querySelector("small"),bb=el.querySelector(".bb"),vt=el.querySelector(".vt");
-    if(!unlocked(b)&&canUnlock(b)){el.className="bx";const fr=isGiftLic(b.id),l="🔓 "+(fr?"Free":money(licOf(b)));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(fr?" ok free":S.cash>=licOf(b)?" ok":"");const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
+    if(!unlocked(b)&&canUnlock(b)){el.className="bx";const fr=isGiftLic(b.id),l="🔓 "+(fr?"Free":money(licOf(b)));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(fr?" ok free":S.cash>=licOf(b)?" ok":"");el.classList.toggle("gift",fr);const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
     if(!unlocked(b)){el.className="bx lock";bb.textContent="🔒";bb.className="bb";const u=b.unlock,n=Math.min(u.n,S.opL[u.box]||0);const w=Math.round(100*n/u.n)+"%";
       const key=lockTxt(b);if(sm.dataset.k!==key){sm.dataset.k=key;sm.innerHTML=`${(u.sales||0)>S.sales?`🏷️ sell business ${u.sales}×`:`open ${u.n} ${BI[u.box].e}`} · ${n}/${u.n}<div class="mini"><i style="width:${w}"></i></div>`;}continue;}
     const p=priceOf(b),ok=S.cash>=p-1e-9;el.className="bx"+(S.vanBox===b.id&&lv("van")?" van":"");vt.textContent=lv("van")?(S.vanBox===b.id?"🚚":""):"";
-    const s2=`${fmtN(S.opL[b.id]||0)} opened`;if(sm.textContent!==s2)sm.textContent=s2;const gv=isGiftBox(b.id)&&gift(),lab=gv?(gv.n>1?`${gv.n} free`:"Free"):money(p);if(bb.textContent!==lab)bb.textContent=lab;bb.className="bb"+(gv?" ok free":ok?" ok":"");}
+    const s2=`${fmtN(S.opL[b.id]||0)} opened`;if(sm.textContent!==s2)sm.textContent=s2;const gv=isGiftBox(b.id)&&gift(),lab=gv?(gv.n>1?`${gv.n} free`:"Free"):money(p);if(bb.textContent!==lab)bb.textContent=lab;bb.className="bb"+(gv?" ok free":ok?" ok":"");el.classList.toggle("gift",!!gv);}
   // quick buy
   const ql=$("#quickList"),qp=ql?quickPicks(3):[],qk=qp.map(q=>q.u.id+lv(q.u.id)).join(",");
   if(ql&&qk!==quickKey){quickKey=qk;ql.innerHTML="";if(!qp.length)ql.innerHTML=`<div id="quickNone">Nothing affordable yet. Open boxes and sell finds.</div>`;
     for(const q of qp){const b=document.createElement("button");b.className="qb";b.title=q.u.d;b.innerHTML=`<span class="qe">${q.u.e}</span><span>${q.u.n}${q.u.max>1?" "+(lv(q.u.id)+1):""}</span><span class="qc">${q.u.cur==="parts"?"⚙"+fmtN(q.c):money(q.c)}</span>`;b.onclick=()=>{if(buyUp(q.u)){checkGoals();render();}};ql.appendChild(b);}}
-  const gu=gift()&&gift().up;$("#upBtn").dataset.n=gu?"FREE":UPG.filter(u=>upAvail(u)&&!upMaxed(u)&&canAfford(u)).length+STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length;
+  const gu=gift()&&gift().up;$("#upBtn").classList.toggle("gift",!!gu);$("#upBtn").dataset.n=gu?"FREE":UPG.filter(u=>upAvail(u)&&!upMaxed(u)&&canAfford(u)).length+STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length;
   const st=starsNow();const sb=$("#sellBiz");sb.hidden=st<1;if(!sb.hidden)sb.textContent=`🏷️ Sell the business: +${st}⭐`;
   // tray
   const tk=S.tray.map(e=>e.i).join(",")+"|"+(popIdx??"");const tl=$("#trayList");
@@ -1132,8 +1136,8 @@ function render(){if(SIM)return;
   const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span>${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
   // goal
   const g=GOALS[S.goal]||GOALS.at(-1),gp=g.n?Math.min(g.n,g.p()):0;if($("#goalTxt").textContent!==g.t){$("#goalTxt").textContent=g.t;$("#goal .gi").textContent=g.e;}
-  const gc=goalClaimable(g);$("#goalBtn").hidden=true;if(gc)$("#goalRew").textContent="🎁 free";
-  $("#goalBar i").style.width=(g.n?100*gp/g.n:100)+"%";$("#goalN").textContent=g.n>1?(g.cash?`${money(gp)}/${money(g.n)}`:`${fmtN(gp)}/${fmtN(g.n)}`):"";$("#goalRew").textContent=goalClaimable(g)?"🎁 free":g.rew?`+${money(g.rew)}`:"";
+  $("#goalBtn").hidden=true;
+  $("#goalBar i").style.width=(g.n?100*gp/g.n:100)+"%";$("#goalN").textContent=g.n>1?(g.cash?`${money(gp)}/${money(g.n)}`:`${fmtN(gp)}/${fmtN(g.n)}`):"";$("#goalRew").textContent=goalClaimable(g)?"":g.rew?`+${money(g.rew)}`:"";
   // event button
   const ev=$("#ev");if(EV.van>0){ev.hidden=false;ev.textContent=`🚐 Bonus event: click here for a free special box (${Math.ceil(EV.van)}s left)`;ev.dataset.k="van";}
   else if(EV.auction){ev.hidden=false;ev.textContent=`📦 Bonus event: a sealed box for ${money(EV.auction.p)}. Click to see (${Math.ceil(EV.auction.t)}s)`;ev.dataset.k="auc";}
@@ -1200,7 +1204,7 @@ function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=up
   el.className="up"+(mx?" max":ok?" can":"")+(av?"":" lockd");
   const bt=`${u.n} <i>${u.max>1?`${L}/${u.cap?Math.min(u.max,u.cap()):u.max}`:L?"✓":""}</i>`;const b=el.querySelector("b");if(b.innerHTML!==bt)b.innerHTML=bt;
   const sm=av?(L===0&&!mx&&u.max>1?"buy: "+u.f(1):u.f(L)):"Locked for now";const s=el.querySelector("small");if(s.textContent!==sm)s.textContent=sm;
-  const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):isGiftUp(u.id)?"Free":(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;ce.classList.toggle("free",ct==="Free");}
+  const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):isGiftUp(u.id)?"Free":(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;ce.classList.toggle("free",ct==="Free");el.classList.toggle("gift",ct==="Free");}
 
 /* ---------- all upgrades modal (tabs) ---------- */
 const TABS=[["hands","✋ Hands"],["buy","🚚 Buy"],["open","🔪 Open"],["sell","💰 Sell"],["shop","🪟 Shop"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
