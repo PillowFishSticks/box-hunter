@@ -1,5 +1,5 @@
 // Box Hunter offline support: always try the network first (so updates arrive straight away), fall back to the cache when offline.
-const CACHE="box-hunter-v1";
+const CACHE="box-hunter-v2";
 const FILES=["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","fonts/Silkscreen-Regular.ttf","fonts/Silkscreen-Bold.ttf","fonts/PixelifySans.ttf","fonts/Jersey10-Regular.ttf"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
