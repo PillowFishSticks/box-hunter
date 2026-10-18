@@ -216,11 +216,13 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #upDet .tl span:nth-child(odd){font-weight:700;color:#6b4a26}
 #upDet .lk{color:#9b2a24;font-weight:700}
 #upDet .btn{margin-top:auto;font-size:9px;padding:4px}
-#rulesT{display:grid;grid-template-columns:auto repeat(4,1fr);gap:2px;align-items:center;font:700 6.5px/1 "Pix";border-top:2px dashed #9b7c4c;padding-top:4px;margin-top:2px}
+#rulesT{display:grid;grid-template-columns:auto repeat(4,1fr);gap:3px 4px;align-items:center;font:700 9px/1 "Pix"}
+#rulesT .rc{text-align:center;font-size:8px;color:#6b4a26}
+#rulesBtn{padding:1px 4px;font-size:7px;margin-left:auto;margin-right:4px}
 #rulesT .rh{grid-column:1/-1;font-size:7.5px;margin-bottom:1px}
 #rulesT .rn{display:flex;align-items:center;gap:2px;white-space:nowrap}
-#rulesT .rn i{width:6px;height:6px;border:1px solid var(--ink);display:inline-block}
-#rulesT button{border:1px solid var(--ink);background:#e2cba0;font:700 6px/1 "Pix";padding:2px 0;text-align:center;width:100%}
+#rulesT .rn i{width:8px;height:8px;border:1px solid var(--ink);display:inline-block}
+#rulesT button{border:1px solid var(--ink);background:#e2cba0;font:700 8px/1 "Pix";padding:4px 0;cursor:pointer;text-align:center;width:100%}
 #rulesT button.on{background:var(--ink);color:var(--cream)}
 #rulesT .ra{grid-column:1/-1;display:flex;gap:3px;align-items:center;margin-top:2px}
 #rulesT .ra button{width:auto;padding:2px 4px}
@@ -290,7 +292,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
     <div class="panel" id="toast"></div>
   </div>
   <div class="ui panel" id="tray">
-    <div id="trayHead"><h3>Your finds</h3><span id="trayN"></span></div>
+    <div id="trayHead"><h3>Your finds</h3><button class="btn" id="rulesBtn" hidden>🧹 Rules</button><span id="trayN"></span></div>
     <div id="trayList"></div>
     <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk <span class="k">J</span></button><button class="btn" id="scrapAll">Scrap ⚙ <span class="k">K</span></button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
   </div>
@@ -311,6 +313,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="modal" id="awayModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>☕ While you were away</h2><div id="awayBody" class="stat"></div><div class="mrow"><button class="btn go" id="awayClose">Lovely</button></div></div></div>
   <div class="modal" id="aucModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>📦 Customs auction</h2><p id="aucTxt"></p><div class="mrow"><button class="btn" id="aucNo">Pass</button><button class="btn go" id="aucYes">Buy it</button></div></div></div>
   <div class="modal" id="introModal" hidden><div class="panel" style="width:270px"><button class="btn mx" data-x>✕</button><h2 id="inH"></h2><div id="inB" class="stat"></div><div class="mrow"><button class="btn go" id="inOk">Got it</button></div></div></div>
+  <div class="modal" id="rulesModal" hidden><div class="panel" style="width:250px"><button class="btn mx" data-x>✕</button><h2>🧹 Sorter rules</h2><p>What the sorter does with each find, by rarity.</p><div id="rulesT"></div></div></div>
   <div class="modal" id="goalModal" hidden><div class="panel" style="width:260px"><button class="btn mx" data-x>✕</button><h2>🎯 Goals</h2><p>Do them in any order: each one pays as soon as you do it.</p><div id="goalList" class="scroll"></div></div></div>
   <div class="modal" id="askModal" hidden><div class="panel" style="width:230px"><h2 id="askH"></h2><p id="askP"></p><div class="mrow"><button class="btn" id="askNo">Cancel</button><button class="btn" id="askYes"></button></div></div></div>
   <div class="modal" id="credits" hidden><div class="panel"><button class="btn mx" data-x>✕</button><div id="crawl"></div><div class="mrow"><button class="btn go" id="credClose">Keep playing</button></div></div></div>
@@ -711,7 +714,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.3.1";
+const VERSION="1.3.2";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -1204,6 +1207,7 @@ function render(){if(SIM)return;
     // owner: one list, priciest first (j stays the real tray index for the pop-up)
     S.tray.map((e,j)=>[e,j]).sort((A,B)=>itemVal(B[0])-itemVal(A[0])).forEach(([e,j])=>{const it=II[e.i],b=document.createElement("button");b.className="ti"+(popIdx===j?" sel":"");b.style.borderLeftColor=RAR[it.r].c;
       b.innerHTML=`<span class="te">${it.e}</span><span>${needsAlbum(e.i)?"📖 ":""}${it.n}</span><span class="tv">${money(itemVal(e))}</span>`;b.onclick=()=>openPop(j,b);tl.appendChild(b);});}
+  $("#rulesBtn").hidden=!lv("sorter");
   $("#trayN").textContent=S.tray.length?`${S.tray.length}/${TRAY}`:"";
   const qn=S.queue.length+S.spec.length,qt=`QUEUE<br><b>${qn}/${queueCap()}</b>`;if($("#qTag").innerHTML!==qt)$("#qTag").innerHTML=qt;
   const ht=`EMPTIES<br><b>${S.emp}/${heapCap()}</b>`;const hEl=$("#hTag");if(hEl.innerHTML!==ht)hEl.innerHTML=ht;hEl.className="ui tag"+(heapFull()?" full":S.emp>=heapCap()*.7?" warn":"");
@@ -1325,11 +1329,14 @@ function renderDet(){const d=$("#upDet");if(!d||!detU)return;let h="",buy=null;
   const key=h+(buy?buy.t+buy.ok:"")+(upTab==="sell"?S.rules.join()+S.sortAlbum+lv("sorter"):"");if(d.dataset.k===key)return;d.dataset.k=key;d.innerHTML=h;
   if(buy){const b=document.createElement("button");b.className="btn "+(buy.ok?"go":"off");b.textContent=buy.t;b.onclick=()=>{if(buy.ok)buy.fn();else SFX.no();};d.appendChild(b);}
   // sorter rules: only once you have a sorter, as a tidy table
-  if(upTab==="sell"&&lv("sorter")){const t=document.createElement("div");t.id="rulesT";const O=["keep","sell","shelve","scrap"];
-    t.innerHTML=`<div class="rh">🧹 Sorter rules: what it does with each find</div><span></span>${O.map(o=>`<span style="text-align:center;font-size:6px;color:#6b4a26">${o}</span>`).join("")}`;
+  if(upTab==="sell"&&lv("sorter")){const rb=document.createElement("button");rb.className="btn";rb.textContent="🧹 Sorter rules";rb.onclick=openRules;d.appendChild(rb);}}
+// sorter rules live in their own card (owner: not squeezed into the upgrades details pane), opened from Your Finds
+function openRules(){renderRules();$("#rulesModal").hidden=false;}
+function renderRules(){const t=$("#rulesT");t.innerHTML="";const O=["keep","sell","shelve","scrap"];
+    
     RAR.forEach((r,i)=>{const n=document.createElement("span");n.className="rn";n.innerHTML=`<i style="background:${r.c}"></i>${r.n}`;t.appendChild(n);
-      for(const o of O){const b=document.createElement("button");b.textContent=o==="keep"?"keep":o==="sell"?"sell":o==="shelve"?"shelf":"scrap";b.className=S.rules[i]===o?"on":"";b.onclick=()=>{S.rules[i]=o;d.dataset.k="";renderDet();};t.appendChild(b);}});
-    const a=document.createElement("div");a.className="ra";a.innerHTML=`<span>📖 Album pieces:</span>`;const ab=document.createElement("button");ab.textContent=S.sortAlbum?"file them first":"treat like the rest";ab.className=S.sortAlbum?"on":"";ab.onclick=()=>{S.sortAlbum=!S.sortAlbum;d.dataset.k="";renderDet();};a.appendChild(ab);t.appendChild(a);d.appendChild(t);}}
+      for(const o of O){const b=document.createElement("button");b.textContent=o==="shelve"?"shelf":o;b.className=S.rules[i]===o?"on":"";b.onclick=()=>{S.rules[i]=o;renderRules();save();};t.appendChild(b);}});
+    const a=document.createElement("div");a.className="ra";a.innerHTML=`<span>📖 New album pieces:</span>`;const ab=document.createElement("button");ab.textContent=S.sortAlbum?"file them first":"treat like the rest";ab.className=S.sortAlbum?"on":"";ab.onclick=()=>{S.sortAlbum=!S.sortAlbum;renderRules();save();};a.appendChild(ab);t.appendChild(a);}
 function renderUps(){renderDet();for(const el of $("#upList").querySelectorAll(".up[data-u]"))fillUp(el);for(const el of $("#upList").querySelectorAll(".up[data-s]"))fillStar(el);
   for(const b of $("#upTabs").children){const id=b.dataset.tab;b.dataset.n=id==="stars"?STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;}}
 
@@ -1389,7 +1396,7 @@ $("#upBtn").onclick=()=>{const gu=gift()&&gift().up;if(gu){detU=UI[gu];openUps(U
 $("#albBtn").onclick=openAlb;$("#albClose").onclick=()=>$("#albModal").hidden=true;
 $("#helpBtn").onclick=()=>{$("#helpModal").hidden=false;$("#helpClose").focus();};$("#helpClose").onclick=()=>{$("#helpModal").hidden=true;S.helped=true;save();};
 $("#awayClose").onclick=()=>$("#awayModal").hidden=true;
-$("#sellAll").onclick=()=>sellAllTray(false);$("#scrapAll").onclick=scrapAllTray;$("#sellJunk").onclick=()=>sellAllTray(true);
+$("#sellAll").onclick=()=>sellAllTray(false);$("#scrapAll").onclick=scrapAllTray;$("#rulesBtn").onclick=openRules;$("#sellJunk").onclick=()=>sellAllTray(true);
 $("#cardX").onclick=closeCard;
 for(const b of document.querySelectorAll(".mx[data-x]"))b.onclick=()=>{const m=b.closest(".modal");if(m.id==="helpModal")$("#helpClose").click();else if(m.id==="aucModal")$("#aucNo").click();else m.hidden=true;};
 for(const m of document.querySelectorAll(".modal"))m.addEventListener("pointerdown",e=>{if(e.target===m)closeTop();});
