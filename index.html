@@ -109,7 +109,8 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 @keyframes shine{50%{filter:brightness(1.15)}}
 /* right column */
 #tray{right:6px;top:32px;width:122px;height:140px;display:flex;flex-direction:column}
-#trayHead{display:flex;justify-content:space-between;align-items:baseline}
+#trayHead{display:flex;justify-content:space-between;align-items:center;height:13px;flex:none;white-space:nowrap}
+#trayHead h3{white-space:nowrap}
 #trayN{font:400 9px/1 "Num";color:var(--muted)}
 #trayList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:1px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#9b7c4c #e2cba0}
 #trayList>*{flex:none}
@@ -218,7 +219,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #upDet .btn{margin-top:auto;font-size:9px;padding:4px}
 #rulesT{display:grid;grid-template-columns:auto repeat(4,1fr);gap:3px 4px;align-items:center;font:700 9px/1 "Pix"}
 #rulesT .rc{text-align:center;font-size:8px;color:#6b4a26}
-#rulesBtn{padding:1px 4px;font-size:7px;margin-left:auto;margin-right:4px}
+#rulesBtn{padding:1px 4px;font-size:7px;line-height:1;margin-left:auto;margin-right:4px;white-space:nowrap;flex:none}
 #rulesT .rh{grid-column:1/-1;font-size:7.5px;margin-bottom:1px}
 #rulesT .rn{display:flex;align-items:center;gap:2px;white-space:nowrap}
 #rulesT .rn i{width:8px;height:8px;border:1px solid var(--ink);display:inline-block}
@@ -714,7 +715,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.3.2";
+const VERSION="1.3.3";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
