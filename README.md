@@ -13,7 +13,7 @@ Play: https://pillowfishsticks.github.io/box-hunter/
 5. Spend money in 🧰 All upgrades: better tools, shelves, staff who open boxes, a van that buys boxes, a sorter that sells, a baler that bins empties, and machines paid for with parts.
 6. Unlock bigger boxes: envelopes, post sacks, lost luggage, crates, storage units, haunted crates, pallets.
 7. When the 🏷️ sign appears, sell the business for ⭐ stars, spend them on permanent upgrades and start again stronger.
-8. The final goal: open the £100 billion Mystery Vault.
+8. The final goal: open the £200 billion Mystery Vault.
 
 The 🎯 goal at the top always says what to do next.
 

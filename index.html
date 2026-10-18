@@ -90,7 +90,9 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .up .uc.free{background:var(--gold)!important;color:var(--ink)!important}
 .bx.lock{background:#d8c8a6}.bx.lock .be{filter:grayscale(1) brightness(.8)}
 .bx.van{box-shadow:inset 0 0 0 1px var(--blue)}
-.bx .vt{position:absolute;left:-4px;top:-4px;font-size:7px;line-height:1}
+.bx .vt{position:absolute;left:-5px;top:-5px;font-size:9px;line-height:1;padding:1px;cursor:pointer}
+.bx .vt.off{opacity:.3;filter:grayscale(1)}
+.bx .vt.off:hover{opacity:.8;filter:none}
 .mini{height:3px;background:#bfa676;border:1px solid var(--ink);position:relative;margin-top:1px;overflow:hidden}
 .mini i{position:absolute;left:0;top:0;bottom:0;background:var(--blue)}
 #quick h3{margin-bottom:1px}
@@ -106,7 +108,8 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #tray{right:6px;top:32px;width:122px;height:140px;display:flex;flex-direction:column}
 #trayHead{display:flex;justify-content:space-between;align-items:baseline}
 #trayN{font:400 9px/1 "Num";color:var(--muted)}
-#trayList{flex:1;display:flex;flex-direction:column;gap:1px;overflow:hidden}
+#trayList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:1px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#9b7c4c #e2cba0}
+#trayList>*{flex:none}
 .ti{display:grid;grid-template-columns:12px 1fr auto;gap:2px;align-items:center;padding:0 2px;border:1px solid var(--ink);background:var(--cream);text-align:left;width:100%;font:400 7px/1 "Pix";border-left-width:4px;min-height:11px}
 .ti .te{font-size:8px;line-height:1}
 .ti span{white-space:nowrap;overflow:hidden}
@@ -196,6 +199,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .tabs button[data-n="0"]::after{display:none}
 .tabs button.on{background:var(--cream)}
 #upModal>.panel{width:458px}
+#upModal>.panel,#albModal>.panel{height:256px}
 #upBody{display:grid;grid-template-columns:1fr 156px;gap:5px;flex:1 1 auto;min-height:0}
 #upBody>div:first-child{display:flex;flex-direction:column;min-height:0}
 #upIntro{font:400 7px/1.25 "Pix";color:#3e2a18;margin:0 0 3px;padding:2px 4px;background:#f6e6c4;border:1px dashed #9b7c4c}
@@ -285,7 +289,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="ui panel" id="tray">
     <div id="trayHead"><h3>Your finds</h3><span id="trayN"></span></div>
     <div id="trayList"></div>
-    <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk</button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
+    <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk</button><button class="btn" id="scrapAll">Scrap ⚙</button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
   </div>
   <div class="ui panel" id="biz"><h3>Your business <span id="relics"></span></h3><div id="bizList"></div></div>
   <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div>
@@ -378,8 +382,8 @@ const BOXES=[
  {id:"crate",e:"🪵",n:"Wooden crate",price:20000,kind:"prise",cnt:2,ev:1.0,w:[36,43,15,5,1],sub:"Heavy. Fewer things, but pricier.",unlock:{box:"luggage",n:25,lic:4e5}},
  {id:"storage",e:"🚪",n:"Storage unit",price:200000,kind:"padlock",cnt:20,ev:1.0,sub:"A whole unit: 20 things at once.",unlock:{box:"crate",n:10,sales:1,lic:2e8}},
  {id:"haunted",e:"⚰️",n:"Haunted antique crate",sn:"Haunted crate",price:2e6,kind:"prise",cnt:3,ev:.98,w:[32,40,18,8,2],sub:"Cursed things. Worth a fortune on a shelf.",unlock:{box:"storage",n:5,sales:2,lic:5e8}},
- {id:"pallet",e:"🎁",n:"Pallet",price:1e7,kind:"film",cnt:0,ev:.97,sub:"12 to 36 sealed boxes, wrapped in cling film.",unlock:{box:"haunted",n:8,sales:3,lic:5e9}},
- {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:1e11,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:4},hand:1},
+ {id:"pallet",e:"🎁",n:"Pallet",price:1e7,kind:"film",cnt:0,ev:.97,sub:"12 to 36 sealed boxes, wrapped in cling film.",unlock:{box:"haunted",n:8,sales:3,lic:8e9}},
+ {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:2e11,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:4},hand:1},
 ];
 const BI=Object.fromEntries(BOXES.map((b,i)=>[b.id,Object.assign(b,{tier:i})]));
 // when you can't afford a parcel: free old cardboard to cut up for pennies (not a real box type)
@@ -426,8 +430,8 @@ const UPG=[
  // Automation
  {id:"loader",g:"buy",e:"🙋",n:"Loader",max:1,cost:()=>15,f:L=>L?"puts the next box on the mat":"not hired",d:"Auto-load: puts the next box from the queue onto the mat, so you don't have to click the queue."},
  {id:"loadSpd",why:"Hire the loader first",g:"buy",e:"⏩",n:"Loader: quicker",max:8,cost:g15(40,1.8),f:L=>`a box on the mat ${loadDelayL(L).toFixed(1)}s after the last`,d:"The loader puts boxes down faster.",need:()=>lv("loader")>0},
- {id:"autocut",g:"open",e:"🤖",n:"Auto-cutter",max:1,cost:()=>60,f:L=>L?"cuts open the box on the mat":"not built",d:"Auto-open: a little machine that cuts open the box on the mat for you. Boxes you cut yourself are still worth 20% more."},
- {id:"autoSpd",why:"Build the auto-cutter first",g:"open",e:"⚡",n:"Auto-cutter: faster",max:10,cost:g15(90,1.7),f:L=>`starts cutting after ${autoDelayL(L).toFixed(1)}s`,d:"The auto-cutter gets going sooner and cuts faster.",need:()=>lv("autocut")>0},
+ {id:"autocut",g:"open",e:"🧔",n:"Box cutter",max:1,cost:()=>60,f:L=>L?"cuts open the box on the mat":"not hired",d:"Auto-open: someone who cuts open the box on the mat for you. Boxes you cut yourself are still worth 20% more."},
+ {id:"autoSpd",why:"Hire the box cutter first",g:"open",e:"⚡",n:"Box cutter: faster",max:10,cost:g15(90,1.7),f:L=>`starts cutting after ${autoDelayL(L).toFixed(1)}s`,d:"The box cutter gets going sooner and cuts faster.",need:()=>lv("autocut")>0},
  {id:"staff",g:"open",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>25*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
  {id:"train",why:"Hire some staff first",g:"open",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
  {id:"conv",why:"Hire some staff first",g:"open",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
@@ -448,7 +452,7 @@ const UI=Object.fromEntries(UPG.map(u=>[u.id,u]));
 const STARU=[
  {id:"hsCut",g:"Head starts",e:"🔪",n:"Sharp start",max:1,cost:()=>1,f:L=>"start with Sharper Cutter 5 and Sharp Eye 3",d:"Every run starts with good tools."},
  {id:"hsKid",g:"Head starts",e:"🧑‍🔧",n:"Old staff",max:3,cost:L=>2+2*L,f:L=>`start with ${3*L} staff`,d:"Your old staff follow you to the new lock-up."},
- {id:"hsVan",g:"Head starts",e:"🚚",n:"Van on retainer",max:1,cost:()=>3,f:L=>"start with the van, loader, auto-cutter, sorter and baler",d:"Automation from the first minute."},
+ {id:"hsVan",g:"Head starts",e:"🚚",n:"Van on retainer",max:1,cost:()=>3,f:L=>"start with the van, loader, box cutter, sorter and baler",d:"Automation from the first minute."},
  {id:"cash",g:"Head starts",e:"💷",n:"Seed money",max:6,cost:L=>1+2*L,f:L=>`start with ${money(startCash(L))}`,d:"Start each run with money in the till."},
  {id:"val",g:"Boosts",e:"💰",n:"Reputation",max:20,cost:L=>1+L,f:L=>`finds worth +${10*L}%`,d:"Your name sells. Every find is worth more."},
  {id:"odds",g:"Boosts",e:"🍀",n:"Trained eye",max:10,cost:L=>2+L,f:L=>`luck +${10*L}%`,d:"Better odds in every box."},
@@ -606,12 +610,12 @@ function sortOne(){let j=0;if(S.sortAlbum){const a=S.tray.findIndex(e=>needsAlbu
       if(S.shelf.length&&itemVal(S.shelf[m])<itemVal(e)){const old=S.shelf.splice(m,1)[0];addCash(itemVal(old));shelveAt(j);FX.sort("shelve");}else{const v=sellAt(j,true);FX.sort("sell",v);}}}}
 const cursedOn=id=>S.shelf.some(e=>e.i===id);
 // shelves: a customer comes in and pays the full shop price (SHELF_K × what a trader gives you). Nothing earns just by sitting there.
-const SHELF_K=1.5;
+const SHELF_K=2;
 const shelfPay=e=>itemVal(e)*SHELF_K*(1+setBonus("inc"))*(II[e.i].cursed?2:1)*(S.relics.lcat?2:1)*(cursedOn("skull")?1.5:1);
-const custRate=()=>.008*(1+.12*lv("sign"))*(EV.carboot>0?3:1)*(cursedOn("skull")?.5:1);
+const custRate=()=>.01*(1+.12*lv("sign"))*(EV.carboot>0?3:1)*(cursedOn("skull")?.5:1);
 function sellShelf(e){const k=S.shelf.indexOf(e);if(k<0)return 0;S.shelf.splice(k,1);const pay=shelfPay(e);addCash(pay);S.stats.shelfSold=(S.stats.shelfSold||0)+1;FX.shelfSold(k,pay);return pay;}
 function shelfTick(dt){if(!S.shelf.length)return;const rate=custRate();
-  for(let k=S.shelf.length;k--;){const e=S.shelf[k];if(e.rsv)continue;   // a customer is already walking over for it
+  for(let k=S.shelf.length;k--;){const e=S.shelf[k];if(e.rsv||e.walk)continue;   // a customer is already walking over for it
     if(Math.random()<rate*dt){if(!SIM&&FX.customer(e))e.rsv=1;else sellShelf(e);}}}
 // events: a mystery van, car boot Sunday, a customs auction, lucky hour; cursed shelf effects
 function eventsTick(dt){for(const k of ["lucky","carboot","van","swap"])if(EV[k]>0)EV[k]-=dt;
@@ -672,7 +676,7 @@ const GOALS=[
  {t:"Spend parts: get Fast Hands",e:"⚡",n:1,p:()=>lv("fast"),rew:0,give:{up:"fast"}},
  {t:"Hire the loader",e:"🙋",n:1,p:()=>lv("loader"),rew:5},
  {t:"Open 25 boxes",e:"🔪",n:25,p:()=>S.stats.boxes,rew:10},
- {t:"Get the auto-cutter",e:"🤖",n:1,p:()=>lv("autocut"),rew:10},
+ {t:"Hire the box cutter",e:"🧔",n:1,p:()=>lv("autocut"),rew:10},
  {t:"Sell 10 finds",e:"💷",n:10,p:()=>S.stats.sold,rew:10},
  {t:"Hire your first staff",e:"🧑‍🔧",n:1,p:()=>lv("staff"),rew:10},
  {t:"Bin the empties heap 5 times",e:"🗑️",n:5,p:()=>S.stats.binned||0,rew:15},
@@ -703,9 +707,9 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.1.0";
+const VERSION="1.2.0";
 // v2 goal list: old saves map their goal index by title
-const GOALS_V1=["Hire the loader","Get the auto-cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
+const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 function fixGoalIdx(){if(S.gv>=3)return;
   if(S.gv<2&&S.goal>=9){const k=S.goal-9;if(k<GOALS_V1.length){const i=GOALS.findIndex(g=>g.t===GOALS_V1[k]);if(i>=0)S.goal=i;}else S.goal+=GOALS.length-(9+GOALS_V1.length+10);}
   S.gdone={};for(let i=0;i<S.goal;i++)S.gdone[i]=1;S.gv=3;}
@@ -812,7 +816,7 @@ function cutLine(){const b=G.box,R=boxRect(b.id,drawX??BX),{L,T,w,h,cx}=R;
   return({sheet:[L+4,T+h/2,L+w-4,T+h/2],tape:[cx,T,cx,T+h],strip:[L,T+10,L+w,T+10],knot:[cx,T+24,cx,T-2],zip:[L+8,T+h*.52,L+w-8,T+h*.52],prise:[L+4,T+6,L+w-4,T+6],padlock:[cx-16,T+h-22,cx+16,T+h-22],film:[L+8,T+6,L+w-8,T+h-6],safe:[cx-28,T+h/2,cx+28,T+h/2]})[b.kind];}
 function nextBox(){if(G.st!=="empty"||heapFull())return;let id=null,sp=false,p=0;
   if(S.spec.length){id=S.spec.shift();sp=true;}else if(S.queue.length){const q=S.queue.shift();id=q.b;p=q.p;}else return;
-  const b=BI[id];S.stats.loaded=(S.stats.loaded||0)+1;G={st:"arrive",t:0,x:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
+  const b=BI[id];S.stats.loaded=(S.stats.loaded||0)+1;G={st:"arrive",t:0,x:lv("loader")?QS.x+4+DIM[id][0]/2:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
   G.res=rollBox(id,{hand:true,special:sp});const best=G.res.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);G.best=best;
   G.rattle=cursedOn("ghost")?2.4:[.4,.6,1,1.5,2.2][best];dog.sniff=1.6;dog.tx=BX+(dog.x<BX?-74:72);dog.wait=3;}
 function cutAt(x,y,speed){if(G.st!=="closed")return;const [x0,y0,x1,y1]=cutLine(),dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy);
@@ -854,8 +858,8 @@ function liveFX(){Object.assign(FX,{
   staff:(id,best)=>{const n=Math.min(lv("staff"),5);if(!n)return;let k=-1;for(let j=0;j<n;j++)if(!stations[j]||stations[j].t<=0){k=j;break;}const i=k>=0?k:ri(n);stations[i]={t:1.2,box:id,r:best};if(best>=2)SFX.glow(Math.min(best,3));},
   machine:(m,id,best)=>{machAnim[m]=.5;if(best>=3)SFX.reveal(best);},
   van:(id,n)=>{vanAnim={t:0,box:id,n};SFX.van();},
-  sort:(k,v)=>{sorterAnim=.4;if(k==="sell"&&v)SFX.till();},
-  bale:v=>{balerAnim=.3;if(Math.random()<.3)SFX.bale();},
+  sort:(k,v)=>{sorterAnim=.4;if(k==="shelve")crewShelve();if(k==="sell"&&v)SFX.till();},
+  bale:v=>{balerAnim=.3;CREW.baler.anim=.35;if(Math.random()<.3)SFX.bale();},
   shelfSold:(k,v)=>{const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);floatTxt(p.x,p.y-12,"SOLD "+money(v),"#ffe36b");SFX.till();},
   unlock:b=>{toast(`${b.e} ${b.n} unlocked!`);SFX.unlock();shake=2;S.sel=b.id;unlockGlow.push({id:b.id,t:3});},
   sound:k=>SFX[k]&&SFX[k](),
@@ -914,7 +918,7 @@ function update(dt){
   custTick(dt);
   if(vanAnim){vanAnim.t+=dt;if(vanAnim.t>2.2)vanAnim=null;}
   if(EV.van>0)goldVanX+=dt*14;else goldVanX=0;
-  sorterAnim=Math.max(0,sorterAnim-dt);balerAnim=Math.max(0,balerAnim-dt);for(const m in machAnim)machAnim[m]=Math.max(0,machAnim[m]-dt);
+  crewTick(dt);sorterAnim=Math.max(0,sorterAnim-dt);balerAnim=Math.max(0,balerAnim-dt);for(const m in machAnim)machAnim[m]=Math.max(0,machAnim[m]-dt);
   for(const u of unlockGlow)u.t-=dt;
   shownCash=lerp(shownCash,S.cash,1-Math.pow(.002,dt));if(Math.abs(shownCash-S.cash)<Math.max(.005,S.cash*1e-4))shownCash=S.cash;
   if(shake>0)shake=Math.max(0,shake-dt*6);}
@@ -977,10 +981,10 @@ function drawRoomLive(){ctx.drawImage(ROOM,0,0);
   if(EV.van>0)drawVan(WIN.x-50+goldVanX,WIN.y+WIN.h-6,"#f2c230","#a86a10",true);
   ctx.restore();
   // shelves
-  for(let k=0;k<shelfCap()&&k<24;k++){const p=shelfPos(k),e=S.shelf[k];if(e){const sp=sprite(II[e.i].e);ctx.drawImage(sp,Math.round(p.x-9),Math.round(p.y-9));R(p.x-5,p.y+8,10,1,rcol(II[e.i].r));}
+  for(let k=0;k<shelfCap()&&k<24;k++){const p=shelfPos(k),e=S.shelf[k];if(e&&!e.walk){const sp=sprite(II[e.i].e);ctx.drawImage(sp,Math.round(p.x-9),Math.round(p.y-9));R(p.x-5,p.y+8,10,1,rcol(II[e.i].r));}
     else{ctx.globalAlpha=.25;R(p.x-5,p.y+4,10,4,"#fff4dc");ctx.globalAlpha=1;}}
   if(cursedOn("lantern")&&Math.random()<.04){ctx.fillStyle="#0007";ctx.fillRect(0,0,W,H);}}
-function drawVan(x,y,body,trim,gold){R(x,y-16,40,14,body);R(x+28,y-22,12,8,body);R(x+30,y-21,8,5,"#8fc3d3");R(x,y-6,40,3,trim);R(x+6,y-3,6,4,OUT);R(x+28,y-3,6,4,OUT);box1(x,y-16,40,14);
+function drawVan(x,y,body,trim,gold){R(x,y-16,40,14,body);R(x+28,y-22,12,8,body);R(x+30,y-21,8,5,"#8fc3d3");R(x+33,y-20,4,4,"#f0c8a0");R(x+33,y-21,4,2,gold?"#2f3b52":"#d8423a");R(x+34,y-18,1,1,OUT);R(x,y-6,40,3,trim);R(x+6,y-3,6,4,OUT);R(x+28,y-3,6,4,OUT);box1(x,y-16,40,14);
   ctx.fillStyle=OUT;ctx.font='5px "SilkC"';ctx.textAlign="left";ctx.fillText(gold?"MYSTERY":"2ND CLASS",x+3,y-9);}
 
 /* ---------- boxes ---------- */
@@ -1079,7 +1083,32 @@ function drawStaffRow(){const ns=lv("staff"),conv=lv("conv");
   // machines at the right end of the belt
   const ms=[["slicer","#c9ced3","✂"],["arm","#e0a030","⛏"],["spinner","#9ad0ff","◎"]];let mx=262;for(const [m,c] of ms){if(!lv(m))continue;const a=machAnim[m]>0;R(mx,228,16,18,c);R(mx+2,230,12,6,"#2a2a2a");R(mx+3,231+(a?2:0),10,3,a?"#ffe36b":"#5fbf4a");box1(mx,228,16,18);ctx.font='10px "Num"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=OUT;ctx.fillText(String(lv(m)),mx+8,241);mx+=18;}}
 const SORTER={x:308,y:136};
-function drawSorter(){if(!lv("sorter"))return;const a=sorterAnim>0;person(SORTER.x,SORTER.y,{shirt:"#3f8fe0",cap:"#d8423a",arm:a?4:0});}
+// the crew (owner: every automatic step has a person doing it on screen): loader, box cutter, sorter, baler hand
+const CREW={loader:{x:QS.x+11,y:BBOT+6,w:0},cutter:{x:MAT.x+14,y:MAT.y+36,w:0},sorter:{x:SORTER.x,y:SORTER.y,w:0,trip:null},baler:{x:BALER.x+13,y:BALER.y+2,w:0,anim:0}};
+function walkTo(c,tx,ty,sp,dt){const dx=tx-c.x,dy=ty-c.y,d=Math.hypot(dx,dy);if(d<.5){c.x=tx;c.y=ty;return true;}const st=Math.min(d,sp*dt);c.x+=dx/d*st;c.y+=dy/d*st;c.w+=dt;return false;}
+const crewBob=c=>Math.floor(c.w*8)%2;
+function crewShelve(){const c=CREW.sorter;if(c.trip)return;const e=S.shelf.at(-1);if(!e)return;e.walk=1;c.trip={e,ph:0,t:0};}
+function crewTick(dt){
+  const L=CREW.loader;if(G.st==="arrive"&&lv("loader")){const r=boxRect(G.box.id,G.x);L.x=r.L-5;L.y=BBOT+4;L.w+=dt;L.push=1;}else{L.push=0;walkTo(L,QS.x+11,BBOT+6,70,dt);}
+  const C=CREW.cutter;if(lv("autocut")){let tx=MAT.x+14,ty=MAT.y+36;
+    if(auto){const [x0,y0,x1,y1]=auto.L;tx=lerp(x0,x1,auto.t)+26;ty=lerp(y0,y1,auto.t)+6;C.x+=(tx-C.x)*Math.min(1,dt*16);C.y+=(ty-C.y)*Math.min(1,dt*16);C.w+=dt;}
+    else{if(G.st==="closed"&&G.box.id!=="vault"){const l=cutLine();tx=l[0]+26;ty=l[1]+6;}walkTo(C,tx,ty,120,dt);}}
+  const T=CREW.sorter;if(T.trip){const tr=T.trip,k=S.shelf.indexOf(tr.e);
+    if(k<0&&tr.ph<2){T.trip=null;}
+    else if(tr.ph===0){const p=shelfPos(k);if(walkTo(T,p.x,CUSTY+8,110,dt)){tr.ph=1;tr.t=0;}}
+    else if(tr.ph===1){tr.t+=dt;if(tr.t>.3){delete tr.e.walk;tr.ph=2;}}
+    else if(walkTo(T,SORTER.x,SORTER.y,110,dt))T.trip=null;}
+  else walkTo(T,SORTER.x,SORTER.y,110,dt);
+  const B=CREW.baler;B.anim=Math.max(0,B.anim-dt);}
+function drawSorter(){if(!lv("sorter"))return;const c=CREW.sorter,tr=c.trip,moving=tr&&tr.ph!==1||Math.hypot(c.x-SORTER.x,c.y-SORTER.y)>1;
+  const reach=tr&&tr.ph===1;person(Math.round(c.x),Math.round(c.y),{shirt:"#3f8fe0",cap:"#d8423a",arm:reach||(!tr&&sorterAnim>0)?4:0,bob:moving?crewBob(c):0});
+  if(tr&&tr.ph<=1){const it=II[tr.e.i];if(it){const sp=sprite(it.e);let x=c.x-9,y=c.y-30;if(reach){const p=shelfPos(S.shelf.indexOf(tr.e)),k=clamp(tr.t/.3,0,1);x=lerp(x,p.x-9,k);y=lerp(y,p.y-9,k);}ctx.drawImage(sp,Math.round(x),Math.round(y));}}}
+function drawLoader(){if(!lv("loader"))return;const c=CREW.loader,home=Math.hypot(c.x-QS.x-11,c.y-BBOT-6)<1;
+  person(Math.round(c.x),Math.round(c.y),{shirt:"#f29f30",cap:"#2f8f8f",hair:"#2a1a12",arm:c.push?2:0,bob:home?0:crewBob(c)});}
+function drawBoxCutter(){if(!lv("autocut"))return;const c=CREW.cutter;
+  person(Math.round(c.x),Math.round(c.y),{shirt:"#5fbf4a",hair:"#9a3a1a",skin:"#c08a60",arm:auto?3:0,bob:auto?crewBob(c):0});}
+function drawBalerHand(){if(!lv("baler"))return;const c=CREW.baler,a=c.anim>0;
+  person(c.x,c.y,{shirt:"#2f3b52",cap:"#f2c230",arm:a?4:0,bob:0});if(a){const k=1-c.anim/.35;R(c.x+2,c.y-16+k*12,10,3,PAL.cb);}}
 function drawDog(){const d=dog;if(cursedOn("cdolls")){R(QS.x+8,QS.y+QS.h-4,6,4,"#a8703c");return;}
   const nap=d.idle>12,hop=d.hop>0?Math.sin((1-d.hop/.5)*Math.PI)*8:0,y=d.y-hop,lean=d.sniff>0?3:0,tail=Math.sin(d.tail)>0,moving=Math.abs(d.tx-d.x)>1.5&&!nap,step=moving?(Math.floor(d.walk)%2?2:-2):0;
   // draw facing right around the dog's own x, mirrored when it walks left
@@ -1092,12 +1121,19 @@ function drawDog(){const d=dog;if(cursedOn("cdolls")){R(QS.x+8,QS.y+QS.h-4,6,4,"
   ctx.restore();const bx=clamp(d.x+(d.face<0?-46:16),136,314);
   if(d.bark>0){R(bx,y-34,30,12,"#fff4dc");ctx.strokeStyle=OUT;ctx.strokeRect(bx+.5,y-33.5,29,11);ctx.fillStyle=OUT;ctx.font='8px "SilkC"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("WOOF!",bx+15,y-27);}}
 function drawCutter(){if(!P.over&&!auto)return;let x=P.x,y=P.y;if(auto){const [x0,y0,x1,y1]=auto.L;x=lerp(x0,x1,auto.t);y=lerp(y0,y1,auto.t);}
-  ctx.save();ctx.translate(Math.round(x),Math.round(y));R(-1,-3,4,6,"#e8edf2");R(0,-2,1,4,"#fff");R(3,-5,16,9,OUT);R(4,-4,14,7,S.relics.gcut?"#ffd84a":"#f0c020");R(4,-4,14,2,"#ffe070");R(7,-2,2,3,OUT);R(12,-2,2,3,OUT);
-  if(P.down||auto){R(-3,4,2,2,"#ffffffaa");R(-5,1,2,2,"#ffffff66");}ctx.restore();}
+  ctx.save();ctx.translate(Math.round(x),Math.round(y));const cl=lv("cutter"),tier=cl>=10?4:cl>=7?3:cl>=4?2:cl>=1?1:0,bl=tier*2;
+  // tiers: yellow plastic → red → steel → purple pro → crystal (the Golden Cutter relic keeps its gold handle)
+  const HC=[["#f0c020","#ffe070"],["#d8423a","#ff7a6a"],["#4a525c","#7d8792"],["#7a4ad8","#b48aff"],["#2fbfb0","#b0fff4"]][tier],hc=S.relics.gcut?["#ffd84a","#fff0a0"]:HC;
+  R(-2-bl,-4,6+bl,8,OUT);R(-1-bl,-3,4+bl,6,tier>=2?"#f4f8fb":"#e8edf2");R(-bl,-2,2+bl,1,"#fff");if(tier>=2)R(-1-bl,2,4+bl,1,"#9aa6b0");
+  R(3,-5,16,9,OUT);R(4,-4,14,7,hc[0]);R(4,-4,14,2,hc[1]);R(7,-2,2,3,OUT);R(12,-2,2,3,OUT);if(tier>=3)R(16,-3,2,5,"#ffe36b");
+  const t=performance.now()/1000;if(tier>=4){const sx=4+Math.floor((t*20)%14);R(sx,-4,1,7,"#ffffffcc");}
+  if(tier>=3&&Math.floor(t*6)%3===0)R(-2-bl+Math.floor(t*30)%(4+bl),-6,1,1,"#ffffff");
+  if(P.down||auto){const n=1+tier;for(let i=0;i<n;i++)R(-3-i*2-bl/2,4-i,2,2,i%2?"#ffffff66":"#ffffffaa");if(tier>=4)R(-4-bl,-1,2,2,"#b0fff4");}ctx.restore();}
 function draw(){buildRoom();ctx.save();if(shake>0)ctx.translate(Math.round(rnd(-shake,shake)),Math.round(rnd(-shake,shake)));
-  drawRoomLive();drawCusts();drawQueue();drawHeap();drawBaler();drawSorter();
+  drawRoomLive();drawCusts();drawQueue();drawHeap();drawBalerHand();drawBaler();
   if(G.st!=="empty")drawBox();
   else if(heapFull())txt("HEAP FULL: BIN IT",BX,MAT.y+MAT.h/2,"#ff8a7a",8);
+  drawSorter();drawLoader();drawBoxCutter();
   drawFlats();drawStaffRow();drawDog();drawItems();
   for(const p of parts){ctx.globalAlpha=clamp(p.life*2,0,1);R(p.x,p.y,p.s||1,p.s||1,p.c);}ctx.globalAlpha=1;
   for(const c of coins){if(c.t<0)continue;R(c.x-2,c.y-2,5,5,OUT);R(c.x-1,c.y-1,3,3,"#f2c230");R(c.x-1,c.y-1,1,1,"#fff4a0");}
@@ -1135,7 +1171,7 @@ function render(){if(SIM)return;
     if(!unlocked(b)&&canUnlock(b)){el.className="bx";const fr=isGiftLic(b.id),l="🔓 "+(fr?"Free":money(licOf(b)));if(bb.textContent!==l)bb.textContent=l;bb.className="bb"+(fr?" ok free":S.cash>=licOf(b)?" ok":"");el.classList.toggle("gift",fr);const t="Ready to unlock!";if(sm.textContent!==t){sm.textContent=t;sm.dataset.k="";}vt.textContent="";continue;}
     if(!unlocked(b)){el.className="bx lock";bb.textContent="🔒";bb.className="bb";const u=b.unlock,n=Math.min(u.n,S.opL[u.box]||0);const w=Math.round(100*n/u.n)+"%";
       const key=lockTxt(b);if(sm.dataset.k!==key){sm.dataset.k=key;sm.innerHTML=`${(u.sales||0)>S.sales?`🏷️ sell business ${u.sales}×`:`open ${u.n} ${BI[u.box].e}`} · ${n}/${u.n}<div class="mini"><i style="width:${w}"></i></div>`;}continue;}
-    const p=priceOf(b),ok=S.cash>=p-1e-9;el.className="bx"+(S.vanBox===b.id&&lv("van")?" van":"");vt.textContent=lv("van")?(S.vanBox===b.id?"🚚":""):"";
+    const p=priceOf(b),ok=S.cash>=p-1e-9;el.className="bx"+(S.vanBox===b.id&&lv("van")?" van":"");vt.textContent=lv("van")?"🚚":"";vt.classList.toggle("off",S.vanBox!==b.id);
     const s2=`${fmtN(S.opL[b.id]||0)} opened`;if(sm.textContent!==s2)sm.textContent=s2;const gv=isGiftBox(b.id)&&gift(),lab=gv?(gv.n>1?`${gv.n} free`:"Free"):money(p);if(bb.textContent!==lab)bb.textContent=lab;bb.className="bb"+(gv?" ok free":ok?" ok":"");el.classList.toggle("gift",!!gv);}
   // quick buy
   const ql=$("#quickList"),qp=ql?quickPicks(3):[],qk=qp.map(q=>q.u.id+lv(q.u.id)).join(",");
@@ -1156,7 +1192,7 @@ function render(){if(SIM)return;
   const rows=[   // the chain: each step is you until you automate it
     ["1","🚚","Buy",lv("van")?`Van ${BI[S.vanBox].e}${S.vanOn?"":" paused"}`:"You: shop",lv("van")&&S.vanOn,"buy","Buy boxes. The delivery van does it for you."],
     ["2","🙋","Load",lv("loader")?"Loader":"You: queue",lv("loader"),"buy","Put the next box on the mat. The loader does it for you."],
-    ["3","🔪","Open",(lv("autocut")?"Cutter":"You: cut")+(ns?` +${ns}🧑‍🔧`:"")+(mach?" +⚙":""),lv("autocut"),"open","Open the box on the mat. The auto-cutter does it; staff and machines open extra boxes from the queue."],
+    ["3","🔪","Open",(lv("autocut")?"Cutter":"You: cut")+(ns?` +${ns}🧑‍🔧`:"")+(mach?" +⚙":""),lv("autocut"),"open","Open the box on the mat. The box cutter does it; staff and machines open extra boxes from the queue."],
     ["4","💰","Sell",lv("sorter")?"Sorter":"You: finds",lv("sorter"),"sell","Sell, shelve, file or scrap your finds. The sorter does it by your rules."],
     ["5","🗑️","Bin",lv("baler")?"Baler":"You: heap",lv("baler"),"sell","Bin the empty boxes. The baler does it for you."],
   ];const bk=rows.map(r=>r.join()).join("|");const bl=$("#bizList");if(bl.dataset.k!==bk){bl.dataset.k=bk;bl.innerHTML="";for(const [n,i,step,t,on,tab,tip] of rows){const b=document.createElement("button");b.className="bz";
@@ -1178,7 +1214,7 @@ function shelfIncome(){return 0;let s=0;const inc=.004*(1+.12*lv("sign"))*(1+set
 function hint(){let h="";const pad=document.body.classList.contains("pad");
   if(G.st==="empty")h=heapFull()?"The empties heap is full! Click it to bin the boxes":(S.queue.length||S.spec.length)?(lv("loader")?"The loader is fetching the next box":"Click the queue (left) or the mat to put a box on the mat"):(broke()?"Short of cash? Cut up some free old cardboard (top of the shop)":S.cash<priceOf(BI[S.sel]||BI.parcel)?"Sell finds on the right to afford more boxes":"Buy boxes in the Box shop on the left");
   else if(G.st==="arrive")h=G.sp?"✨ A special box! Worth double when you open it":"Here it comes...";
-  else if(G.st==="closed"&&G.byAuto)h="The auto-cutter is opening it";
+  else if(G.st==="closed"&&G.byAuto)h="The box cutter is opening it";
   else if(G.st==="closed")h=pad?`Hold A to ${KINDS[G.box.kind].toLowerCase()}`:`Drag along the ${G.box.kind==="tape"?"tape":"line"}, or hold on the box`;
   else if(G.st==="reveal")h=pad?"Nice! Press A to keep it":"Nice! Click to keep it";
   const el=$("#hint");if(el.textContent!==h)el.textContent=h;}
@@ -1203,6 +1239,9 @@ function openShelfPop(k){const e=S.shelf[k];if(!e)return;const it=II[e.i],pop=$(
   add("💰 Sell now",money(itemVal(e)),"to a trader",()=>{const x=S.shelf.splice(k,1)[0];if(!x)return;const v=itemVal(x);addCash(v);const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);SFX.till();});
   add("↩️ Take it down","","",()=>{const x=S.shelf.splice(k,1)[0];if(x){S.tray.push(x);gain([],"");}},S.tray.length<TRAY);
   const p=shelfPos(k);pop.hidden=false;pop.style.left=clamp(p.x-70,136,340-138)+"px";pop.style.top=(p.y+12)+"px";}
+// bulk scrap (owner): everything in the tray except new album pieces
+function scrapAllTray(){let tot=0,n=0;for(let j=S.tray.length;j--;){if(needsAlbum(S.tray[j].i))continue;tot+=scrapAt(j);n++;}
+  if(!n){toast(S.tray.length?"Only new album pieces left: file them first":"Nothing to scrap");SFX.no();return;}SFX.buy();toast(`Scrapped ${n} thing${n>1?"s":""} for ⚙${fmtN(tot)}`);closePop();checkGoals();render();}
 function sellAllTray(junkOnly){let tot=0,n=0;for(let j=S.tray.length;j--;){if(junkOnly&&II[S.tray[j].i].r>1)continue;if(junkOnly&&needsAlbum(S.tray[j].i))continue;tot+=sellAt(j,true);n++;}
   if(!n){toast("Nothing to sell");SFX.no();return;}const p=stagePos($("#trayList"));coinsFrom(p.x,p.y,tot,Math.min(14,3+n));SFX.till();toast(`Sold ${n} thing${n>1?"s":""} for ${money(tot)}`);closePop();render();}
 
@@ -1236,7 +1275,7 @@ function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=up
 
 /* ---------- all upgrades modal (tabs) ---------- */
 const TABS=[["hands","✋ Hands"],["buy","🚚 Buy"],["open","🔪 Open"],["sell","💰 Sell"],["shop","🪟 Shop"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
-const TAB_INTRO={hands:"Your own tools: cut faster, find rarer things, pay less for boxes.",buy:"Step 1 and 2: get boxes bought and put on the mat without clicking.",open:"Step 3: open boxes. The auto-cutter opens the one on the mat; staff open extra boxes from the queue.",
+const TAB_INTRO={hands:"Your own tools: cut faster, find rarer things, pay less for boxes.",buy:"Step 1 and 2: get boxes bought and put on the mat without clicking.",open:"Step 3: open boxes. The box cutter opens the one on the mat; staff open extra boxes from the queue.",
   sell:"Step 4 and 5: the sorter handles your finds, the baler bins the empties.",shop:"Your shop window: shelved finds earn money every second until a customer buys them.",mach:"Machines open boxes too. They're paid for with ⚙ parts (scrap finds to get parts).",stars:"Permanent upgrades, paid for with ⭐ stars from selling the business. They stay forever."};
 const ORDER=["van","vanSpd","vanLoad","loader","loadSpd","bulk","autocut","autoSpd","staff","train","conv","sorter","sortSpd","baler","balSpd","heap"];
 let detU=null;
@@ -1330,7 +1369,7 @@ $("#upBtn").onclick=()=>{const gu=gift()&&gift().up;if(gu){detU=UI[gu];openUps(U
 $("#albBtn").onclick=openAlb;$("#albClose").onclick=()=>$("#albModal").hidden=true;
 $("#helpBtn").onclick=()=>{$("#helpModal").hidden=false;$("#helpClose").focus();};$("#helpClose").onclick=()=>{$("#helpModal").hidden=true;S.helped=true;save();};
 $("#awayClose").onclick=()=>$("#awayModal").hidden=true;
-$("#sellAll").onclick=()=>sellAllTray(false);$("#sellJunk").onclick=()=>sellAllTray(true);
+$("#sellAll").onclick=()=>sellAllTray(false);$("#scrapAll").onclick=scrapAllTray;$("#sellJunk").onclick=()=>sellAllTray(true);
 $("#cardX").onclick=closeCard;
 for(const b of document.querySelectorAll(".mx[data-x]"))b.onclick=()=>{const m=b.closest(".modal");if(m.id==="helpModal")$("#helpClose").click();else if(m.id==="aucModal")$("#aucNo").click();else m.hidden=true;};
 for(const m of document.querySelectorAll(".modal"))m.addEventListener("pointerdown",e=>{if(e.target===m)closeTop();});
@@ -1374,7 +1413,7 @@ const INTROS={
   shelf:["🪟","Your shop window",["Shelved finds sit on the wall and <b>earn money every second</b>.","Sooner or later a <b>customer buys it</b> at full price and the shelf frees up. You'll see SOLD and coins.","Want the money now? <b>Click it on the shelf</b> to sell it straight away."]],
   parts:["⚙️","Parts",["Scrapping breaks a find into <b>⚙ parts</b> (shown next to your cash).","Parts pay for <b>machines</b> (they open boxes) and some hand upgrades like Fast Hands.","Junk is worth more as parts than as cash, early on."]],
   heap:["🗑️","Empties pile up",["Every box you open leaves an <b>empty</b> on the heap (right of the mat).","If the heap gets <b>full, nothing can be opened</b>. Click it to bin the lot for a few pennies.","A <b>cardboard baler</b> bins them for you (Upgrades → Sell)."]],
-  chain:["🔁","Your business: 5 steps",["Every box goes: <b>1 Buy → 2 Load → 3 Open → 4 Sell → 5 Bin</b>.","Right now <b>you</b> do each step. The \"Your business\" panel (bottom right) shows which ones are automatic.","Automate them one by one in <b>🧰 All upgrades</b>: van, loader, auto-cutter, sorter, baler."]],
+  chain:["🔁","Your business: 5 steps",["Every box goes: <b>1 Buy → 2 Load → 3 Open → 4 Sell → 5 Bin</b>.","Right now <b>you</b> do each step. The \"Your business\" panel (bottom right) shows which ones are automatic.","Automate them one by one in <b>🧰 All upgrades</b>: van, loader, box cutter, sorter, baler."]],
   staff:["🧑‍🔧","Staff",["Staff stand at the front of the bench and <b>open boxes from the queue</b> on their own, alongside you.","They only open boxes they're <b>trained</b> for (Upgrades → Open → Staff Training).","Buy boxes in bulk (×5, ×10) or get the van so they always have work."]],
   unlock:["🔓","A new box is ready",["You've opened enough to unlock a <b>bigger box</b>. Pay its unlock price in the Box shop.","Bigger boxes cost more but hold <b>better finds</b>."]],
   stars:["🏷️","You can sell the business",["The <b>🏷️ Sell the business</b> button (left) trades everything for <b>⭐ stars</b>.","Stars buy <b>permanent upgrades</b>, and each sale unlocks new boxes. You start again faster.","There's no rush: the longer you go, the more stars you get."]],
@@ -1432,7 +1471,7 @@ addEventListener("keydown",e=>{audio();if(!$("#title").hidden){leaveTitle();retu
   if(topModal())return;
   if(k===" "){if(focusBtn())return;e.preventDefault();if(!e.repeat)benchAction();return;}
   if(k==="enter"&&!focusBtn()){benchAction();return;}
-  if(k==="b")buySel();else if(k==="s")sellAllTray(false);else if(k==="j")sellAllTray(true);else if(k==="f")toggleFS();else if(k==="c")openAlb();else if(k==="h"||k==="?")$("#helpBtn").click();
+  if(k==="b")buySel();else if(k==="s")sellAllTray(false);else if(k==="j")sellAllTray(true);else if(k==="k")scrapAllTray();else if(k==="f")toggleFS();else if(k==="c")openAlb();else if(k==="h"||k==="?")$("#helpBtn").click();
   else if(k==="u")openUps();else if(k==="e"&&EV.van>0)grabMysteryVan();else if(k==="x")binClick();});
 addEventListener("keyup",e=>{if(e.key===" "&&auto&&G.st==="closed"){}});
 
@@ -1505,7 +1544,7 @@ function sim(hours=10,opts={}){const keepS=S,keepFX=Object.assign({},FX),keepEV=
 // offline support + "Add to Home Screen" (only works over https, so not from a local file)
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
 // start
-load();if(!S.unl.parcel)S.unl.parcel=1;for(const e of S.shelf)delete e.rsv;checkUnlocks();fixGoalIdx();checkGoals(true);
+load();if(!S.unl.parcel)S.unl.parcel=1;for(const e of S.shelf){delete e.rsv;delete e.walk;}checkUnlocks();fixGoalIdx();checkGoals(true);
 liveFX();buildShop();fit();
 if(location.hash==="#debug")$("#title").hidden=true;
 if(matchMedia("(pointer:coarse)").matches)setMode("touch");
