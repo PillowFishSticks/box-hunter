@@ -69,6 +69,8 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #goalList .gl.now{background:#fff4dc;outline:1px solid var(--ink);font-weight:700}
 #goalList .gl.soon{opacity:.75}
 #goal.done{animation:gpop .5s steps(3)}
+#goalCel{position:absolute;inset:0;background:#ffe36b;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;font:700 8px/1.1 "Pix";text-align:center;z-index:2;animation:gpop .5s steps(3)}
+#goalCel[hidden]{display:none}#goalCel b{font:700 9px/1 "Silk"}#goalCel span{max-width:186px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @keyframes gpop{30%{transform:scale(1.06);background:#fff7c8}}
 /* left column */
 #left{position:absolute;left:6px;top:32px;width:122px;display:flex;flex-direction:column;gap:3px}
@@ -271,7 +273,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
 <div id="stage">
   <canvas id="cv" width="480" height="270"></canvas>
   <div class="ui panel" id="till"><span class="coin"></span><span id="cashV">£0</span><span id="subV"></span></div>
-  <div class="ui panel" id="goal"><span class="gi">🎯</span><div id="goalTxt"></div><button class="btn gold" id="goalBtn" hidden>🎁 Free</button><div id="goalRow"><div id="goalBar"><i></i></div><span id="goalN"></span><span id="goalRew"></span></div></div>
+  <div class="ui panel" id="goal"><span class="gi">🎯</span><div id="goalTxt"></div><button class="btn gold" id="goalBtn" hidden>🎁 Free</button><div id="goalRow"><div id="goalBar"><i></i></div><span id="goalN"></span><span id="goalRew"></span></div><div id="goalCel" hidden></div></div>
   <div class="ui" id="tools">
     <button class="btn" id="helpBtn">?</button>
     <button class="btn" id="albBtn">📖</button>
@@ -290,7 +292,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="ui panel" id="tray">
     <div id="trayHead"><h3>Your finds</h3><span id="trayN"></span></div>
     <div id="trayList"></div>
-    <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk</button><button class="btn" id="scrapAll">Scrap ⚙</button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
+    <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk <span class="k">J</span></button><button class="btn" id="scrapAll">Scrap ⚙ <span class="k">K</span></button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
   </div>
   <div class="ui panel" id="biz"><h3>Your business <span id="relics"></span></h3><div id="bizList"></div></div>
   <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div>
@@ -708,7 +710,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.2.2";
+const VERSION="1.2.3";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -729,10 +731,10 @@ function claimGoal(){const g=GOALS[S.goal];if(!goalClaimable(g))return false;con
   else if(v.lic){S.unl[v.lic]=1;FX.unlock(BI[v.lic]);}
   checkGoals();return true;}
 // every goal counts the moment you do it, even ahead of the current one; S.goal = the first one not done yet
-function checkGoals(silent){S.gdone=S.gdone||{};const cur=S.goal;let n=0,r=0,early=null;
-  for(let i=0;i<GOALS.length;i++){const g=GOALS[i];if(S.gdone[g.t]||!g.n||g.p()<g.n)continue;S.gdone[g.t]=1;n++;r+=g.rew||0;if(i>cur)early=g;}
+function checkGoals(silent){S.gdone=S.gdone||{};const cur=S.goal;let n=0,r=0,early=[];
+  for(let i=0;i<GOALS.length;i++){const g=GOALS[i];if(S.gdone[g.t]||!g.n||g.p()<g.n)continue;S.gdone[g.t]=1;n++;r+=g.rew||0;if(i>cur)early.push(g);}
   S.goal=0;while(S.gdone[GOALS[S.goal].t]&&S.goal<GOALS.length-1)S.goal++;
-  if(r)addCash(r);if(n&&!silent)FX.goal({rew:r,n,early:n===1?early:null});return n;}
+  if(r)addCash(r);if(n&&!silent)FX.goal({rew:r,n,early});return n;}
 
 /* =====================================================================
    SOUND
@@ -856,7 +858,7 @@ function binClick(){if(!S.emp){toast("The heap is empty");return;}const v=binEmp
 
 /* ---------- visuals of the core (FX) ---------- */
 const stations=[];   // staff stations: each shows a mini box being opened
-let vanAnim=null,goldVanX=0,sorterAnim=0,balerAnim=0,machAnim={slicer:0,arm:0,spinner:0},unlockGlow=[];
+let goalCelT=0,vanAnim=null,goldVanX=0,sorterAnim=0,balerAnim=0,machAnim={slicer:0,arm:0,spinner:0},unlockGlow=[];
 function liveFX(){Object.assign(FX,{
   toast:t=>toast(t),
   customer:e=>{if(custs.filter(c=>!c.browse).length>=6)return false;custs.push(newCust(e));return true;},
@@ -869,7 +871,10 @@ function liveFX(){Object.assign(FX,{
   shelfSold:(k,v)=>{const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);floatTxt(p.x,p.y-12,"SOLD "+money(v),"#ffe36b");SFX.till();},
   unlock:b=>{toast(`${b.e} ${b.n} unlocked!`);SFX.unlock();shake=2;S.sel=b.id;unlockGlow.push({id:b.id,t:3});},
   sound:k=>SFX[k]&&SFX[k](),
-  goal:g=>{coinsFrom(240,20,g.rew,6);SFX.goal();toast(`🎯 ${g.early?"Done early: "+g.early.t:(g.n>1?g.n+" goals":"Goal")+" done!"}${g.rew?` +${money(g.rew)}`:""}`);const el=$("#goal");el.classList.remove("done");void el.offsetWidth;el.classList.add("done");},
+  goal:g=>{coinsFrom(240,20,g.rew,6);SFX.goal();const rw=g.rew?` +${money(g.rew)}`:"",e=g.early||[];
+    // owner: a goal done ahead of time gets a proper "you did this" moment on the goal bar
+    const c=$("#goalCel");c.innerHTML=e.length===1&&g.n===1?`<b>✅ Done early!</b><span>${e[0].t}${rw}</span>`:e.length?`<b>✅ ${g.n} goals done!</b><span>${e.map(x=>x.t).join(" · ")}${rw}</span>`:`<b>✅ Goal done!${rw}</b>`;
+    c.hidden=false;clearTimeout(goalCelT);goalCelT=setTimeout(()=>c.hidden=true,e.length?3500:1600);const el=$("#goal");el.classList.remove("done");void el.offsetWidth;el.classList.add("done");},
   pallet:n=>{for(let i=0;i<Math.min(n,12);i++)flyers.push({x:BELT.x+180,y:BELT.y,tx:QS.x+11,ty:QS.y+90,t:-i*.05,k:"crate"});},
   bag:id=>{toast("👜 The Bottomless Bag found a box inside a box!");},
 });}
