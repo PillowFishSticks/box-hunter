@@ -303,7 +303,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="modal" id="awayModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>☕ While you were away</h2><div id="awayBody" class="stat"></div><div class="mrow"><button class="btn go" id="awayClose">Lovely</button></div></div></div>
   <div class="modal" id="aucModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>📦 Customs auction</h2><p id="aucTxt"></p><div class="mrow"><button class="btn" id="aucNo">Pass</button><button class="btn go" id="aucYes">Buy it</button></div></div></div>
   <div class="modal" id="introModal" hidden><div class="panel" style="width:270px"><button class="btn mx" data-x>✕</button><h2 id="inH"></h2><div id="inB" class="stat"></div><div class="mrow"><button class="btn go" id="inOk">Got it</button></div></div></div>
-  <div class="modal" id="goalModal" hidden><div class="panel" style="width:260px"><button class="btn mx" data-x>✕</button><h2>🎯 Goals</h2><p>Done one early? You still get the reward.</p><div id="goalList" class="scroll"></div></div></div>
+  <div class="modal" id="goalModal" hidden><div class="panel" style="width:260px"><button class="btn mx" data-x>✕</button><h2>🎯 Goals</h2><p>Do them in any order: each one pays as soon as you do it.</p><div id="goalList" class="scroll"></div></div></div>
   <div class="modal" id="askModal" hidden><div class="panel" style="width:230px"><h2 id="askH"></h2><p id="askP"></p><div class="mrow"><button class="btn" id="askNo">Cancel</button><button class="btn" id="askYes"></button></div></div></div>
   <div class="modal" id="credits" hidden><div class="panel"><button class="btn mx" data-x>✕</button><div id="crawl"></div><div class="mrow"><button class="btn go" id="credClose">Keep playing</button></div></div></div>
   <div class="modal" id="helpModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>How to play</h2>
@@ -469,7 +469,7 @@ const fresh=()=>({v:3,cash:15,parts:0,stars:0,starsEver:0,sales:0,earned:0,runEa
   lv:{},slv:{},op:{},opL:{},queue:[],spec:[],tray:[],shelf:[],emp:0,empV:0,
   rules:["sell","sell","shelve","shelve","shelve"],sortAlbum:true,vanBox:"parcel",vanOn:true,acctOn:true,
   album:{},found:{},relics:{},unl:{parcel:1},ready:{},seen:{},gifted:{},goal:0,buyN:1,sel:"parcel",helped:false,muted:false,music:true,oneClick:false,
-  streak:0,preCut:false,best:null,vaultDone:false,last:Date.now(),evT:200,gv:2,stats:{boxes:0,hand:0,sold:0,shelved:0,scrapped:0,multi:0,legend:0}});
+  streak:0,preCut:false,best:null,vaultDone:false,last:Date.now(),evT:200,gv:3,gdone:{},stats:{boxes:0,hand:0,sold:0,shelved:0,scrapped:0,multi:0,legend:0}});
 let S=fresh(),readOnly=false,loadedRaw=null;
 function load(){try{const raw=localStorage.getItem(KEY);if(!raw)return;loadedRaw=raw;localStorage.setItem(KEY+".backup",raw);migrate(JSON.parse(raw));}catch(e){console.warn("load failed",e);readOnly=true;}}
 function migrate(o){const f=fresh();
@@ -703,8 +703,9 @@ const GOALS=[
 ];
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Get the auto-cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
-function fixGoalIdx(){if(S.gv>=2)return;S.gv=2;if(S.goal<9)return;const k=S.goal-9;
-  if(k<GOALS_V1.length){const i=GOALS.findIndex(g=>g.t===GOALS_V1[k]);if(i>=0)S.goal=i;}else S.goal+=GOALS.length-(9+GOALS_V1.length+10);}
+function fixGoalIdx(){if(S.gv>=3)return;
+  if(S.gv<2&&S.goal>=9){const k=S.goal-9;if(k<GOALS_V1.length){const i=GOALS.findIndex(g=>g.t===GOALS_V1[k]);if(i>=0)S.goal=i;}else S.goal+=GOALS.length-(9+GOALS_V1.length+10);}
+  S.gdone={};for(let i=0;i<S.goal;i++)S.gdone[i]=1;S.gv=3;}
 // goals that say "get X" hand you X for free (owner: no grinding for something the game told you to do)
 const gift=()=>{const g=GOALS[S.goal];return goalClaimable(g)?g.give:null;};
 const isGiftUp=id=>{const v=gift();return !!v&&v.up===id;},isGiftBox=id=>{const v=gift();return !!v&&v.box===id;},isGiftLic=id=>{const v=gift();return !!v&&v.lic===id;};
@@ -714,7 +715,11 @@ function claimGoal(){const g=GOALS[S.goal];if(!goalClaimable(g))return false;con
   else if(v.box){for(let i=0;i<v.n;i++)S.queue.push({b:v.box,p:0});if(v.n>1)S.stats.multi++;FX.sound("buy");FX.toast(`🎁 Free: ${v.n} × ${BI[v.box].n.toLowerCase()}`);}
   else if(v.lic){S.unl[v.lic]=1;FX.unlock(BI[v.lic]);}
   checkGoals();return true;}
-function checkGoals(silent){let g=GOALS[S.goal],n=0,r=0;while(g&&g.n&&g.p()>=g.n){S.goal++;n++;r+=g.rew||0;g=GOALS[S.goal];}if(silent)return;if(r)addCash(r);if(n)FX.goal({rew:r,n});}
+// every goal counts the moment you do it, even ahead of the current one; S.goal = the first one not done yet
+function checkGoals(silent){S.gdone=S.gdone||{};const cur=S.goal;let n=0,r=0,early=null;
+  for(let i=0;i<GOALS.length;i++){const g=GOALS[i];if(S.gdone[i]||!g.n||g.p()<g.n)continue;S.gdone[i]=1;n++;r+=g.rew||0;if(i>cur)early=g;}
+  while(S.gdone[S.goal]&&S.goal<GOALS.length-1)S.goal++;
+  if(r)addCash(r);if(n&&!silent)FX.goal({rew:r,n,early:n===1?early:null});return n;}
 
 /* =====================================================================
    SOUND
@@ -851,7 +856,7 @@ function liveFX(){Object.assign(FX,{
   shelfSold:(k,v)=>{const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);floatTxt(p.x,p.y-12,"SOLD "+money(v),"#ffe36b");SFX.till();},
   unlock:b=>{toast(`${b.e} ${b.n} unlocked!`);SFX.unlock();shake=2;S.sel=b.id;unlockGlow.push({id:b.id,t:3});},
   sound:k=>SFX[k]&&SFX[k](),
-  goal:g=>{coinsFrom(240,20,g.rew,6);SFX.goal();toast(`🎯 ${g.n>1?g.n+" goals":"Goal"} done!${g.rew?` +${money(g.rew)}`:""}`);const el=$("#goal");el.classList.remove("done");void el.offsetWidth;el.classList.add("done");},
+  goal:g=>{coinsFrom(240,20,g.rew,6);SFX.goal();toast(`🎯 ${g.early?"Done early: "+g.early.t:(g.n>1?g.n+" goals":"Goal")+" done!"}${g.rew?` +${money(g.rew)}`:""}`);const el=$("#goal");el.classList.remove("done");void el.offsetWidth;el.classList.add("done");},
   pallet:n=>{for(let i=0;i<Math.min(n,12);i++)flyers.push({x:BELT.x+180,y:BELT.y,tx:QS.x+11,ty:QS.y+90,t:-i*.05,k:"crate"});},
   bag:id=>{toast("👜 The Bottomless Bag found a box inside a box!");},
 });}
@@ -1286,12 +1291,12 @@ function openBiz(){const st=starsNow();const nxt=Math.pow((st+1)/Math.pow(1.15,s
 $("#bizYes").onclick=()=>{const st=sellBusiness();$("#bizModal").hidden=true;if(st){G={st:"empty",t:0};flats.length=0;ROOM=null;toast(`🏷️ Sold! +${st}⭐. Spend them in All upgrades → Stars`);SFX.legend();checkGoals(true);save();openUps("stars");}};
 $("#bizNo").onclick=()=>$("#bizModal").hidden=true;
 $("#goal").onclick=e=>{if(e.target.closest("#goalBtn"))return;openGoals();};
-function openGoals(){const cur=Math.min(S.goal,GOALS.length-1);let h="";
-  for(let i=0;i<GOALS.length;i++){const g=GOALS[i];if(i>cur+4)break;const st=i<cur?"ok":i===cur?"now":"soon";
+function openGoals(){const cur=Math.min(S.goal,GOALS.length-1),D=S.gdone||{};let h="",shown=0;
+  for(let i=0;i<GOALS.length;i++){const g=GOALS[i],dn=!!D[i];if(i>cur&&!dn&&shown>=4)continue;if(i>cur&&!dn)shown++;const st=dn?"ok":i===cur?"now":"soon";
     const pr=i===cur&&g.n>1?` (${g.cash?money(Math.min(g.n,g.p())):fmtN(Math.min(g.n,g.p()))}/${g.cash?money(g.n):fmtN(g.n)})`:"";
-    const rw=g.give?(i<cur?"🎁 got":"🎁 free"):g.rew?(i<cur?"✓ ":"")+"+"+money(g.rew):(i<cur?"✓":"");
-    h+=`<div class="gl ${st}"><span>${i<cur?"✅":g.e}</span><span>${g.t}${pr}</span><b>${rw}</b></div>`;}
-  if(cur+5<GOALS.length)h+=`<div class="gl soon"><span>…</span><span>${GOALS.length-cur-5} more to come</span><b></b></div>`;
+    const rw=g.give?(dn?"🎁 got":"🎁 free"):g.rew?(dn?"✓ ":"")+"+"+money(g.rew):(dn?"✓":"");
+    h+=`<div class="gl ${st}"><span>${dn?"✅":g.e}</span><span>${g.t}${pr}</span><b>${rw}</b></div>`;}
+  const left=GOALS.slice(cur+1,-1).filter((g,k)=>!D[cur+1+k]).length-shown;if(left>0)h+=`<div class="gl soon"><span>…</span><span>${left} more to come</span><b></b></div>`;
   $("#goalList").innerHTML=h;$("#goalModal").hidden=false;$("#goalList").querySelector(".now")?.scrollIntoView({block:"center"});}
 $("#goalBtn").onclick=()=>{if(claimGoal())render();};
 $("#sellBiz").onclick=openBiz;
@@ -1447,7 +1452,7 @@ function frame(now){const rdt=Math.min(.05,(now-last)/1000);last=now;
   saveT-=rdt;if(saveT<=0){saveT=5;save();}
   requestAnimationFrame(frame);}
 // hidden tabs still get timers (throttled to ~1/s), so money keeps flowing at full rate
-setInterval(()=>{if(document.hidden||SIM)return;const g0=S.goal;checkGoals();if(S.goal!==g0)render();},1000);   // automation can finish goals too
+setInterval(()=>{if(document.hidden||SIM)return;if(checkGoals())render();},1000);   // automation can finish goals too
 setInterval(()=>{if(document.hidden){const now=performance.now();const cdt=(now-coreLast)/1000;coreLast=now;if(cdt>0)catchUp(cdt,1);save();}},1000);
 
 /* =====================================================================
