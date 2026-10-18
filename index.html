@@ -707,7 +707,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.2.0";
+const VERSION="1.2.1";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 function fixGoalIdx(){if(S.gv>=3)return;
@@ -1239,9 +1239,9 @@ function openShelfPop(k){const e=S.shelf[k];if(!e)return;const it=II[e.i],pop=$(
   add("💰 Sell now",money(itemVal(e)),"to a trader",()=>{const x=S.shelf.splice(k,1)[0];if(!x)return;const v=itemVal(x);addCash(v);const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);SFX.till();});
   add("↩️ Take it down","","",()=>{const x=S.shelf.splice(k,1)[0];if(x){S.tray.push(x);gain([],"");}},S.tray.length<TRAY);
   const p=shelfPos(k);pop.hidden=false;pop.style.left=clamp(p.x-70,136,340-138)+"px";pop.style.top=(p.y+12)+"px";}
-// bulk scrap (owner): everything in the tray except new album pieces
-function scrapAllTray(){let tot=0,n=0;for(let j=S.tray.length;j--;){if(needsAlbum(S.tray[j].i))continue;tot+=scrapAt(j);n++;}
-  if(!n){toast(S.tray.length?"Only new album pieces left: file them first":"Nothing to scrap");SFX.no();return;}SFX.buy();toast(`Scrapped ${n} thing${n>1?"s":""} for ⚙${fmtN(tot)}`);closePop();checkGoals();render();}
+// bulk scrap (owner): everything in the tray, like Sell all
+function scrapAllTray(){let tot=0,n=0;for(let j=S.tray.length;j--;){tot+=scrapAt(j);n++;}
+  if(!n){toast("Nothing to scrap");SFX.no();return;}SFX.buy();toast(`Scrapped ${n} thing${n>1?"s":""} for ⚙${fmtN(tot)}`);closePop();checkGoals();render();}
 function sellAllTray(junkOnly){let tot=0,n=0;for(let j=S.tray.length;j--;){if(junkOnly&&II[S.tray[j].i].r>1)continue;if(junkOnly&&needsAlbum(S.tray[j].i))continue;tot+=sellAt(j,true);n++;}
   if(!n){toast("Nothing to sell");SFX.no();return;}const p=stagePos($("#trayList"));coinsFrom(p.x,p.y,tot,Math.min(14,3+n));SFX.till();toast(`Sold ${n} thing${n>1?"s":""} for ${money(tot)}`);closePop();render();}
 
