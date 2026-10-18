@@ -12,7 +12,11 @@ Play: https://pillowfishsticks.github.io/box-hunter/
 4. Your finds land on the right. Sell them one at a time or all at once.
 5. Flatten the empty box for a bit of cardboard money, then buy the next one.
 6. Spend your money on upgrades: a sharper cutter, a sharper eye for rare finds, and haggling for cheaper boxes.
-7. Fill your collection book: 20 things to find in cardboard parcels.
+7. Follow the 🎯 goal at the top: it always says what to do next and pays a reward.
+8. Open 20 parcels to unlock padded envelopes (tear the red strip across the top): pricier, but with better finds.
+9. Fill your collection book: 34 things to find so far.
+
+Tip: hold the mouse (or Space, or A) on a closed box and the cutter slices it for you.
 
 Listen for the rattle: rarer boxes wobble more before you open them.
 
@@ -31,6 +35,6 @@ Progress saves by itself in your browser.
 
 ## Status
 
-This is phase 1 of 6 (see the design doc): one box type, opening by hand, 20 items, selling and three upgrades. Next up: shop shelves, scrapping for parts, more box types and the sim bot for balance.
+This is phase 1 of 6 (see the design doc): two box types, opening by hand, 34 items, goals, selling and three upgrades. Next up: shop shelves, scrapping for parts, more box types and the sim bot for balance.
 
 Fonts: Silkscreen and Pixelify Sans, both under the SIL Open Font License (see `fonts/`).
