@@ -61,6 +61,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #goalN,#goalRew{font:400 9px/1 "Num";white-space:nowrap}
 #goalRew{color:#2f6b24}
 *{font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0,"dlig" 0}
+#ver{position:absolute;right:30px;top:8px;font:400 9px/1 "Num";opacity:.7}
 #goal{cursor:pointer}
 #goalList .gl{display:grid;grid-template-columns:14px 1fr auto;gap:4px;align-items:center;padding:2px 3px;border-bottom:1px solid #0002;font:400 8px/1.2 "Pix"}
 #goalList .gl b{font:400 9px/1 "Num";white-space:nowrap}
@@ -296,7 +297,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="modal" id="upModal" hidden><div class="panel"><h2>🧰 Upgrades</h2><div class="tabs" id="upTabs"></div><div id="upBody"><div><div id="upList" class="scroll"></div></div><div id="upDet"></div></div><button class="btn mx" id="upClose">✕</button></div></div>
   <div class="modal" id="albModal" hidden><div class="panel"><h2>📖 Album</h2><div class="tabs" id="albTabs"></div><div id="albBody" class="scroll"></div><button class="btn mx" id="albClose">✕</button></div></div>
   <div class="modal" id="bizModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>🏷️ Sell the business?</h2><div id="bizBody" class="scroll"></div><div class="mrow"><button class="btn" id="bizNo">Not yet</button><button class="btn gold" id="bizYes">Sell it</button></div></div></div>
-  <div class="modal" id="saveModal" hidden><div class="panel"><h2>💾 Save, settings &amp; stats</h2><div id="statBox" class="stat scroll"></div>
+  <div class="modal" id="saveModal" hidden><div class="panel"><h2>💾 Save, settings &amp; stats</h2><div id="ver"></div><div id="statBox" class="stat scroll"></div>
     <div class="row2"><button class="btn" id="oneClick"></button><button class="btn" id="expBtn">Copy save code</button><button class="btn" id="impBtn">Load a save code</button><button class="btn" id="bakBtn">Restore backup</button><button class="btn red" id="rstBtn">Reset everything</button></div>
     <textarea id="saveTxt" placeholder="Save codes start with BH1: — paste one here and press Load"></textarea>
     <button class="btn mx" id="saveClose">✕</button></div></div>
@@ -701,6 +702,8 @@ const GOALS=[
  {t:"Open the Mystery Vault",e:"🔒",n:1,p:()=>S.vaultDone?1:0,rew:0},
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
+// bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
+const VERSION="1.1.0";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Get the auto-cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 function fixGoalIdx(){if(S.gv>=3)return;
@@ -1290,6 +1293,7 @@ function openBiz(){const st=starsNow();const nxt=Math.pow((st+1)/Math.pow(1.15,s
   <p>${UNLOCKS.filter(u=>u.n===S.sales+1).map(u=>"🔓 Selling now unlocks: <b>"+u.t+"</b>").join("")}</p>`;$("#bizModal").hidden=false;$("#bizNo").focus();}
 $("#bizYes").onclick=()=>{const st=sellBusiness();$("#bizModal").hidden=true;if(st){G={st:"empty",t:0};flats.length=0;ROOM=null;toast(`🏷️ Sold! +${st}⭐. Spend them in All upgrades → Stars`);SFX.legend();checkGoals(true);save();openUps("stars");}};
 $("#bizNo").onclick=()=>$("#bizModal").hidden=true;
+$("#ver").textContent="Version "+VERSION;
 $("#goal").onclick=e=>{if(e.target.closest("#goalBtn"))return;openGoals();};
 function openGoals(){const cur=Math.min(S.goal,GOALS.length-1),D=S.gdone||{};let h="",shown=0;
   for(let i=0;i<GOALS.length;i++){const g=GOALS[i],dn=!!D[i];if(i>cur&&!dn&&shown>=4)continue;if(i>cur&&!dn)shown++;const st=dn?"ok":i===cur?"now":"soon";

@@ -1,6 +1,6 @@
 # Box Hunter: notes for Claude
 
-The owner (PillowFishSticks) isn't a developer and wants Claude to own the code. Keep it simple and cheap to maintain: one HTML file, no frameworks, no build step, no runtime dependencies. **Don't ask before pushing: commit and push when checks pass** (owner's standing instruction).
+The owner (PillowFishSticks) isn't a developer and wants Claude to own the code. Keep it simple and cheap to maintain: one HTML file, no frameworks, no build step, no runtime dependencies. **Don't ask before pushing: commit and push when checks pass** (owner's standing instruction). **Bump `VERSION` in index.html on every push** (patch for fixes, minor for features); the owner checks it in the 💾 settings card to see an update landed.
 
 ## What it is
 A pixel-art incremental game about opening mystery boxes, in the spirit of Scritchy Scratchy (everything is an object on a desk/bench, a satisfying hand action you later automate, prestige) and Cookie Clicker (rising costs, milestones, surprise events). Sister project to Bulk Season (`PillowFishSticks/bulk-season`), whose save, input and sim-bot patterns are reused. Desktop-first (the owner plays fullscreen on a TV, with a mouse); landscape phones second.
