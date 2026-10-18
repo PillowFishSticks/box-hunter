@@ -27,7 +27,7 @@ Listen for the rattle: rarer boxes wobble more before you open them.
 | Slice / flatten / collect | Drag or click, or hold Space | Hold A | Drag or tap |
 | Buy a box | B | Y | Buy button |
 | Sell everything | S | X | Sell all button |
-| Upgrades | 1, 2, 3 | D-pad left/right, then B | Tap |
+| Upgrades | U (or 1, 2, 3 to buy) | RB, then d-pad and A | Upgrades button |
 | Collection | C | View / Back | 📖 button |
 | Fullscreen | F | | ⛶ button |
 
@@ -37,4 +37,4 @@ Progress saves by itself in your browser.
 
 This is phase 1 of 6 (see the design doc): two box types, opening by hand, 34 items, goals, selling and three upgrades. Next up: shop shelves, scrapping for parts, more box types and the sim bot for balance.
 
-Fonts: Silkscreen and Pixelify Sans, both under the SIL Open Font License (see `fonts/`).
+Fonts: Silkscreen, Pixelify Sans and Jersey 10, both under the SIL Open Font License (see `fonts/`).

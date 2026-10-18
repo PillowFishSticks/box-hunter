@@ -6,9 +6,13 @@
 <title>Box Hunter</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📦%3C/text%3E%3C/svg%3E">
 <style>
-@font-face{font-family:"Silk";src:url(fonts/Silkscreen-Regular.ttf) format("truetype");font-weight:400;font-display:block}
-@font-face{font-family:"Silk";src:url(fonts/Silkscreen-Bold.ttf) format("truetype");font-weight:700;font-display:block}
-@font-face{font-family:"Pix";src:url(fonts/PixelifySans.ttf) format("truetype");font-weight:400 700;font-display:block}
+@font-face{font-family:"Silk";src:url(fonts/Silkscreen-Regular.ttf) format("truetype");font-weight:400;font-display:block;unicode-range:U+0000-002A,U+002D,U+003A-00A2,U+00A4-00D6,U+00D8-FFFF}
+@font-face{font-family:"Silk";src:url(fonts/Silkscreen-Bold.ttf) format("truetype");font-weight:700;font-display:block;unicode-range:U+0000-002A,U+002D,U+003A-00A2,U+00A4-00D6,U+00D8-FFFF}
+@font-face{font-family:"Pix";src:url(fonts/PixelifySans.ttf) format("truetype");font-weight:400 700;font-display:block;unicode-range:U+0000-002A,U+002D,U+003A-00A2,U+00A4-00D6,U+00D8-FFFF}
+@font-face{font-family:"SilkC";src:url(fonts/Silkscreen-Regular.ttf) format("truetype");font-display:block}   /* canvas labels (no digits) */
+/* numbers: Jersey 10 digits are far clearer than either pixel font's (the owner couldn't tell 4 from 9) */
+@font-face{font-family:"Pix";src:url(fonts/Jersey10-Regular.ttf) format("truetype");font-weight:400 700;font-display:block;unicode-range:U+0030-0039,U+00A3,U+0025,U+002E,U+002C,U+002F,U+002B,U+00D7;size-adjust:125%}
+@font-face{font-family:"Silk";src:url(fonts/Jersey10-Regular.ttf) format("truetype");font-weight:400 700;font-display:block;unicode-range:U+0030-0039,U+00A3,U+0025,U+002E,U+002C,U+002F,U+002B,U+00D7;size-adjust:150%}
 :root{--ink:#2a1a12;--kraft:#e9d5ad;--kraft2:#d6bc8c;--cream:#fff4dc;--good:#5fbf4a;--gold:#f2c230;--red:#d8423a;--muted:#6b4a26}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overflow:hidden;background:#10201f;user-select:none;-webkit-user-select:none}
@@ -20,19 +24,19 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 /* pixel panels: square corners, 2px ink border, a light inner edge and a hard drop shadow */
 .panel{background:var(--kraft);border:2px solid var(--ink);box-shadow:inset -2px -2px 0 var(--kraft2),inset 2px 2px 0 #f6e6c4,0 2px 0 #0006;padding:4px}
 .panel h3{margin:0 0 3px;font:700 7px/1 "Silk";color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:3px}
-.btn{display:flex;align-items:center;justify-content:center;gap:3px;border:2px solid var(--ink);background:var(--cream);box-shadow:inset -2px -2px 0 var(--kraft2),0 2px 0 #0006;font:700 7px/1 "Silk";padding:3px 4px}
+.btn{display:flex;align-items:center;justify-content:center;gap:3px;border:2px solid var(--ink);background:var(--cream);box-shadow:inset -2px -2px 0 var(--kraft2),0 2px 0 #0006;font:700 8px/1 "Pix";padding:3px 4px}
 .btn:active{transform:translateY(1px);box-shadow:inset -2px -2px 0 var(--kraft2)}
 .btn.go{background:var(--good);color:#fff;text-shadow:1px 1px 0 #2f6b24;box-shadow:inset -2px -2px 0 #3d8a2e,0 2px 0 #0006}
 .btn.gold{background:var(--gold);box-shadow:inset -2px -2px 0 #c49512,0 2px 0 #0006}
 .btn:disabled{background:#c9bda3;color:#7a6a50;text-shadow:none;cursor:default;box-shadow:inset -2px -2px 0 #b2a68b,0 2px 0 #0004}
-.k{font:700 6px/1 "Silk";background:var(--ink);color:var(--cream);padding:1px 2px}
+.k{font:700 7px/1 "Pix";background:var(--ink);color:var(--cream);padding:1px 2px}
 body.pad .kb,body:not(.pad) .gp,body.touch .k{display:none}
 /* selection for keyboard/controller: a steady gold glow */
 .btn:focus-visible,.bx:focus-visible,.up:focus-visible,body.pad .sel{outline:none;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--gold)!important}
 /* top bar */
 #cash{left:6px;top:5px;padding:3px 8px 3px 5px;display:flex;align-items:center;gap:5px;height:22px}
 #cash .coin{width:12px;height:12px;background:var(--gold);border:2px solid var(--ink);box-shadow:inset -2px -2px 0 #c49512}
-#cashV{font:700 14px/1 "Silk"}
+#cashV{font:700 15px/1 "Pix";letter-spacing:.5px}
 #tools{right:6px;top:5px;display:flex;gap:3px}
 #tools .btn{padding:3px 4px;height:22px}
 /* the goal bar: always says what to do next */
@@ -42,8 +46,8 @@ body.pad .kb,body:not(.pad) .gp,body.touch .k{display:none}
 #goalRow{display:flex;align-items:center;gap:4px}
 #goalBar{flex:1;height:6px;background:#bfa676;border:1px solid var(--ink);position:relative;overflow:hidden}
 #goalBar i{position:absolute;left:0;top:0;bottom:0;background:var(--good);width:0}
-#goalN{font:700 6px/1 "Silk";white-space:nowrap}
-#goalRew{font:700 6px/1 "Silk";color:#2f6b24;white-space:nowrap}
+#goalN{font:700 8px/1 "Pix";white-space:nowrap}
+#goalRew{font:700 8px/1 "Pix";color:#2f6b24;white-space:nowrap}
 #goal.done{animation:gpop .5s steps(3)}
 @keyframes gpop{30%{transform:scale(1.06);background:#fff7c8}}
 /* left column: box shop */
@@ -51,7 +55,7 @@ body.pad .kb,body:not(.pad) .gp,body.touch .k{display:none}
 .bx{display:grid;grid-template-columns:16px 1fr auto;gap:1px 3px;align-items:center;width:100%;margin-top:3px;padding:3px;border:2px solid var(--ink);background:var(--cream);text-align:left}
 .bx .be{font-size:13px;line-height:1;text-align:center}
 .bx b{display:block;font:700 7px/1.1 "Pix"}
-.bx small{display:block;font:400 6px/1.15 "Pix";color:var(--muted)}
+.bx small{display:block;font:400 7px/1.15 "Pix";color:var(--muted)}
 .bx .bb .btn{padding:3px 3px}
 .bx.lock{background:#d8c8a6}
 .bx.lock .be{filter:grayscale(1) brightness(.8)}
@@ -60,42 +64,51 @@ body.pad .kb,body:not(.pad) .gp,body.touch .k{display:none}
 .mini i{position:absolute;left:0;top:0;bottom:0;background:#3f8fe0}
 /* upgrades */
 
-.up{display:grid;grid-template-columns:14px 1fr auto;gap:3px;align-items:center;margin-top:3px;padding:2px 3px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%}
-.up .ue{font-size:11px;line-height:1;text-align:center}
-.up b{display:block;font:700 7px/1.1 "Pix"}
-.up small{display:block;font:400 6px/1.1 "Pix";color:var(--muted)}
-.up .uc{font:700 7px/1 "Silk";color:#2f6b24;text-align:right}.up .uc i{display:block;font:400 6px/1 "Pix";font-style:normal;color:var(--muted);margin-top:1px}
-.up.no .uc{color:#9b3a2a}.up.max .uc{color:var(--muted)}
-.up.can{background:#f3ffe6;box-shadow:inset 0 0 0 1px var(--good)}
-#soon{margin-top:4px;padding:2px 3px;border:2px dashed #9b7c4c;font:400 6px/1.25 "Pix";color:#6b5236;background:#e2cba0}
-#soon b{font:700 6px/1 "Silk";display:block;margin-bottom:1px}
+#upBtn{position:relative;width:100%;padding:6px 4px;font-size:10px;gap:5px}
+#upBtn .ub{font-size:13px}
+#upBtn[data-n]:not([data-n="0"])::after{content:attr(data-n);position:absolute;right:-5px;top:-6px;min-width:13px;height:13px;padding:0 2px;background:var(--red);color:#fff;border:2px solid var(--ink);font:700 8px/9px "Pix";animation:bob 1s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-2px)}}
+#upModal .panel{width:360px}
+#upList{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px}
+.up{display:grid;grid-template-columns:20px 1fr;grid-template-rows:auto auto auto;gap:2px 4px;align-items:center;padding:4px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%}
+.up .ue{font-size:16px;line-height:1;text-align:center;grid-row:span 2}
+.up b{display:block;font:700 9px/1.1 "Pix"}
+.up b i{font:400 8px/1 "Pix";font-style:normal;color:var(--muted)}
+.up small{display:block;font:400 8px/1.2 "Pix";color:var(--muted)}
+.up .ux{grid-column:1/-1;font:700 8px/1.2 "Pix";color:var(--ink)}
+.up .uc{grid-column:1/-1;font:700 9px/1 "Pix";text-align:center;padding:3px;border:2px solid var(--ink);background:#c9bda3;color:#7a6a50}
+.up.can .uc{background:var(--good);color:#fff;text-shadow:1px 1px 0 #2f6b24}
+.up.can{background:#f3ffe6}
+.up.max{background:#e8dcc0}
+#soon{margin-top:4px;padding:2px 3px;border:2px dashed #9b7c4c;font:400 7px/1.25 "Pix";color:#6b5236;background:#e2cba0}
+#soon b{font:700 7px/1 "Pix";display:block;margin-bottom:1px}
 /* right column: the tray */
 #tray{right:6px;top:32px;width:122px;height:214px;display:flex;flex-direction:column}
 #trayList{flex:1;display:flex;flex-direction:column;gap:2px;overflow:hidden}
 .ti{display:grid;grid-template-columns:14px 1fr auto;gap:3px;align-items:center;padding:1px 2px;border:2px solid var(--ink);background:var(--cream);text-align:left;width:100%;font:400 7px/1.1 "Pix";border-left-width:4px}
 .ti .te{font-size:10px;line-height:1}
-.ti .tv{font:700 7px/1 "Silk"}
+.ti .tv{font:700 8px/1 "Pix"}
 .ti:hover{background:#fff}
 #trayEmpty{font:400 7px/1.3 "Pix";color:#7a5a30;padding:2px}
 #sellAll{margin-top:3px;width:100%}
 #trayHead{display:flex;justify-content:space-between;align-items:baseline}
-#trayN{font:700 7px/1 "Silk";color:var(--muted)}
+#trayN{font:700 8px/1 "Pix";color:var(--muted)}
 /* bench captions */
-#hint{left:134px;width:212px;bottom:5px;text-align:center;font:700 8px/1.2 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 1px 0 var(--ink),0 -1px 0 var(--ink)}
+#hint{left:134px;width:212px;bottom:4px;text-align:center;font:700 9px/1.2 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 1px 0 var(--ink),0 -1px 0 var(--ink)}
 #find{left:134px;width:212px;top:34px;text-align:center;pointer-events:none;opacity:0;transition:opacity .15s}
 #find.on{opacity:1}
 #findName{font:700 10px/1.1 "Silk";color:#fff;text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
-#findSub{font:700 8px/1.2 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
+#findSub{font:700 9px/1.2 "Pix";color:var(--cream);text-shadow:1px 1px 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),1px 0 0 var(--ink)}
 /* toast + modals */
-#toast{left:50%;top:32px;transform:translateX(-50%);padding:3px 6px;font:700 7px/1.1 "Silk";white-space:nowrap;z-index:5;display:none}
+#toast{left:50%;top:32px;transform:translateX(-50%);padding:3px 6px;font:700 9px/1.1 "Pix";white-space:nowrap;z-index:5;display:none}
 .modal{position:absolute;inset:0;background:#0009;display:grid;place-items:center;z-index:6}
 .modal[hidden]{display:none}
 .modal .panel{width:320px;max-height:250px;padding:6px;overflow:hidden}
 .modal h2{margin:0 0 4px;font:700 11px/1 "Silk"}
 .modal p{margin:0 0 4px;font:400 8px/1.3 "Pix"}
-.colH{font:700 7px/1 "Silk";color:var(--muted);margin:4px 0 2px}
+.colH{font:700 8px/1 "Pix";color:var(--muted);margin:4px 0 2px}
 .colG{display:grid;grid-template-columns:repeat(10,1fr);gap:2px}
-.ci{border:2px solid var(--ink);background:var(--cream);padding:1px;text-align:center;font:400 5px/1.05 "Pix";height:26px;border-bottom-width:3px;overflow:hidden}
+.ci{border:2px solid var(--ink);background:var(--cream);padding:1px;text-align:center;font:400 6px/1.05 "Pix";height:28px;border-bottom-width:3px;overflow:hidden}
 .ci .ce{font-size:11px;line-height:1.15;display:block}
 .ci.no{background:#cbbd9f;color:#7a6a50}.ci.no .ce{filter:brightness(0);opacity:.3}
 .mrow{display:flex;justify-content:flex-end;gap:4px;margin-top:5px}
@@ -126,7 +139,7 @@ body.pad .kb,body:not(.pad) .gp,body.touch .k{display:none}
     <button class="btn" id="fsBtn" title="Fullscreen (F)">⛶</button>
   </div>
   <div id="left"><div class="panel" id="shop"><h3>Box shop <span class="k kb">B</span><span class="k gp">Y</span></h3><div id="boxList"></div></div>
-  <div class="panel" id="ups"><h3>Upgrades <span class="k kb">1-3</span><span class="k gp">◀▶ then B</span></h3><div id="upList"></div></div></div>
+  <button class="btn gold" id="upBtn"><span class="ub">⬆️</span>Upgrades <span class="k kb">U</span><span class="k gp">RB</span></button></div>
   <div class="ui panel" id="tray">
     <div id="trayHead"><h3>Your finds</h3><span id="trayN"></span></div>
     <div id="trayList"></div>
@@ -136,6 +149,7 @@ body.pad .kb,body:not(.pad) .gp,body.touch .k{display:none}
   <div class="ui" id="find"><div id="findName"></div><div id="findSub"></div></div>
   <div class="ui" id="hint"></div>
   <div class="ui panel" id="toast"></div>
+  <div class="modal" id="upModal" hidden><div class="panel"><h2>⬆️ Upgrades</h2><p>Spend your money to get better at the job. Costs go up each level.</p><div id="upList"></div><div class="mrow"><button class="btn" id="upClose">Close <span class="k kb">Esc</span><span class="k gp">B</span></button></div></div></div>
   <div class="modal" id="colModal" hidden><div class="panel"><h2>📖 Collection</h2><p id="colTxt"></p><div id="colBody"></div><div class="mrow"><button class="btn" id="colClose">Close</button></div></div></div>
   <div class="modal" id="helpModal" hidden><div class="panel"><h2>How to play</h2>
     <div class="steps"><div><b>📦</b>Buy a box from the <b style="display:inline;font-size:inherit">Box shop</b> on the left.</div><div><b>🔪</b>Drag the cutter along the tape (or just hold on the box) to slice it open.</div><div><b>💰</b>Sell what you find on the right, then buy more boxes.</div></div>
@@ -229,7 +243,7 @@ const nFound=()=>Object.keys(S.found).length,nLv=()=>Object.values(S.lv).reduce(
 const GOALS=[
   {id:"cash",t:"Stomp old boxes to save £5",e:"🥾",n:5,p:()=>S.cash+opened("parcel")*5,rew:0},
   {t:"Buy and open your first parcel",e:"📦",n:1,p:()=>opened("parcel"),rew:1},
-  {t:"Buy an upgrade on the left",e:"⬆️",n:1,p:nLv,rew:3},
+  {t:"Open Upgrades (left) and buy one",e:"⬆️",n:1,p:nLv,rew:3},
   {t:"Find something Rare (blue) or better",e:"💎",n:1,p:()=>S.bestR>=2?1:0,rew:5},
   {t:"Open 20 parcels to unlock Padded envelopes",e:"✉️",n:20,p:()=>opened("parcel"),rew:10},
   {t:"Open your first padded envelope",e:"✉️",n:1,p:()=>opened("envelope"),rew:15},
@@ -276,6 +290,7 @@ const SFX={
   buy:()=>{tone(523,.08,"square",.05,1);tone(784,.12,"square",.05,1,.07);},
   goal:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,.18,"square",.05,1,i*.08));},
   no:()=>tone(160,.15,"square",.06,.8),
+  whoosh:()=>{if(!AC)return;const t=AC.currentTime+.1,s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noiseBuf();f.type="bandpass";f.Q.value=1.2;f.frequency.setValueAtTime(400,t);f.frequency.exponentialRampToValueAtTime(2600,t+.35);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.18,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+.4);s.connect(f);f.connect(g);g.connect(SG);s.start(t);s.stop(t+.45);},
   woof:()=>{tone(320,.09,"sawtooth",.08,.6);tone(290,.12,"sawtooth",.08,.55,.13);},
 };
 // lo-fi jazz: ii-V-I-vi in C, 76 bpm, swung, soft keys + walking bass + brushes + vinyl crackle
@@ -316,8 +331,10 @@ function buyBox(id){const b=BI[id||S.sel]||BI.parcel;
   addCash(-p);SFX.buy();const item=rollItem(b);
   G={st:"arrive",t:0,x:-70,box:b,item,seg:new Array(SEGN).fill(0),cut:0,wob:0,rattle:[.4,.6,1,1.5,2.2].at(item.r),paid:p,hintT:0};
   dog.sniff=1.2;save();render();}
+const flats=[];   // flattened boxes on their way off the bench
 function flatten(silent){const earn=Math.round((G.paid||5)*FLAT_K*100)/100;addCash(earn);S.flat++;
-  coinsFrom(BX,BY+10,earn,3);if(!silent){SFX.stomp();shake=Math.max(shake,2);}
+  flats.push({t:0,kind:G.box?G.box.kind:"tape"});
+  coinsFrom(BX,BY+10,earn,3);SFX.stomp();SFX.whoosh();if(!silent)shake=Math.max(shake,2);
   floatTxt(BX,BY-24,"+"+money(earn)+" cardboard","#fff4dc");for(let i=0;i<10;i++)parts.push({x:BX+rnd(-40,40),y:BY+rnd(0,20),vx:rnd(-40,40),vy:rnd(-60,-10),g:200,life:.6,c:"#d39a5b",s:2});
   G={st:"empty",t:0};render();save();}
 const PILE={x:BX,y:214};let pileSquash=0;
@@ -363,6 +380,7 @@ function update(dt){
   if(G.st==="reveal"&&G.t>2.4)collect();
   if(G.st==="fly"&&G.t>.45){G.st="opened";G.t=0;render();}
   for(const p of parts){p.vy+=(p.g||0)*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;}for(let i=parts.length;i--;)if(parts[i].life<=0)parts.splice(i,1);
+  for(const f of flats)f.t+=dt;for(let i=flats.length;i--;)if(flats[i].t>.75)flats.splice(i,1);
   for(const f of floats){f.y-=18*dt;f.life-=dt;}for(let i=floats.length;i--;)if(floats[i].life<=0)floats.splice(i,1);
   for(const c of coins){c.t+=dt;if(c.t<0)continue;if(c.t<.35){c.vy+=300*dt;c.x+=c.vx*dt;c.y+=c.vy*dt;}else{const k=1-Math.pow(.0001,dt);c.x=lerp(c.x,c.tx,k*1.6);c.y=lerp(c.y,c.ty,k*1.6);if(Math.hypot(c.x-c.tx,c.y-c.ty)<4)c.done=1;}}
   for(let i=coins.length;i--;)if(coins[i].done){coins.splice(i,1);SFX.coin(i%5);bump=1;}
@@ -399,6 +417,14 @@ function drawRoom(){
   for(let x=m.x+10;x<m.x+m.w;x+=10)R(x,m.y,1,m.h,PAL.mat2);for(let y=m.y+10;y<m.y+m.h;y+=10)R(m.x,y,m.w,1,PAL.mat2);
   for(let x=m.x+5;x<m.x+m.w;x+=5)R(x,m.y,1,x%10===5?2:4,"#cfe8d8");
   box1(m.x,m.y,m.w,m.h);}
+function drawFlats(){for(const f of flats){const t=f.t,sq=clamp(t/.12,0,1),go=Math.max(0,t-.12),env=f.kind==="strip";
+    // squash: the box's height drops to a flat sheet, then it whips off to the right with a little lift and tilt
+    const h=lerp(env?BHt:BHt+BD,8,sq*sq),w=lerp(BW,BW+24,sq),x=BX+go*go*1500,y=BY+BHt/2+(env?0:BD)-h/2-Math.sin(clamp(go/.6,0,1)*Math.PI)*14;
+    if(go>0&&Math.random()<.6)parts.push({x:x-w/2,y:y+rnd(-3,3),vx:rnd(-60,-20),vy:rnd(-10,10),g:0,life:.25,c:"#ffffff88",s:2});
+    ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.rotate(-go*.35);
+    R(-w/2+3,h/2,w,3,"#0004");
+    if(env){R(-w/2,-h/2,w,h,PAL.env);R(-w/2,-h/2,w,2,PAL.env3);}else{R(-w/2,-h/2,w,h,PAL.cb);R(-w/2,-h/2,w,2,PAL.cb3);R(-TAPE_W/2,-h/2,TAPE_W,h,PAL.tape);for(const fx of [-w/4,w/4])R(fx,-h/2,1,h,PAL.cb2);}
+    box1(-w/2,-h/2,w,h);ctx.restore();}}
 function drawPile(){const sq=Math.max(0,pileSquash),n=Math.min(9,4+Math.floor(S.flat/15));
   const x=PILE.x,y=PILE.y;ctx.save();ctx.translate(x,y);ctx.scale(1+sq*.15,1-sq*.3);
   R(-44,-2,88,6,"#0003");
@@ -406,7 +432,7 @@ function drawPile(){const sq=Math.max(0,pileSquash),n=Math.min(9,4+Math.floor(S.
   ctx.restore();
   // a bobbing boot icon so it's obvious you can stomp it
   if(G.st==="empty"&&S.flat<30){const b=Math.round(Math.sin(performance.now()/200)*2);txt("CLICK TO STOMP",x,y-40+b,"#fff4dc",8);}}
-function txt(s,x,y,c,size=8,align="center"){ctx.font=`${size}px "Silk"`;ctx.textAlign=align;ctx.textBaseline="middle";ctx.fillStyle=OUT;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1]])ctx.fillText(s,Math.round(x)+dx,Math.round(y)+dy);ctx.fillStyle=c;ctx.fillText(s,Math.round(x),Math.round(y));}
+function txt(s,x,y,c,size=8,align="center",font="SilkC"){ctx.font=`${font==="Pix"?"700 ":""}${size}px "${font}"`;ctx.textAlign=align;ctx.textBaseline="middle";ctx.fillStyle=OUT;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1]])ctx.fillText(s,Math.round(x)+dx,Math.round(y)+dy);ctx.fillStyle=c;ctx.fillText(s,Math.round(x),Math.round(y));}
 function drawBox(){const st=G.st,b=G.box;let x=st==="arrive"?G.x:BX,y=BY;const wob=G.wob>0?Math.sin(G.t*60)*G.wob*6:0;x+=wob;
   const L=x-BW/2,T=y-BHt/2,env=b.kind==="strip";
   R(L+3,T+BHt+(env?0:BD)+1,BW,5,"#0005");
@@ -470,7 +496,7 @@ function drawDog(){const d=dog,hop=d.hop>0?Math.sin((1-d.hop/.5)*Math.PI)*8:0,x=
   ctx.strokeStyle=OUT;ctx.lineWidth=1;ctx.strokeRect(x-10.5,y-2.5,19,13);ctx.strokeRect(x+3.5+lean,y-12.5,13,12);
   if(d.st==="happy")R(x+13+lean,y-3,3,3,"#e06070");
   if(d.bark>0){R(x+20,y-30,30,12,"#fff4dc");R(x+20,y-18,4,3,"#fff4dc");ctx.strokeRect(x+20.5,y-29.5,29,11);
-    ctx.fillStyle=OUT;ctx.font='8px "Silk"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("WOOF!",x+35,y-23);}}
+    ctx.fillStyle=OUT;ctx.font='8px "SilkC"';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("WOOF!",x+35,y-23);}}
 function drawCutter(){if(!P.over&&!auto)return;let x=P.x,y=P.y;if(auto){const L=auto.L;x=lerp(L.x0,L.x1,auto.t);y=lerp(L.y0,L.y1,auto.t);}
   // a chunky yellow box cutter: the blade tip is the hot spot
   ctx.save();ctx.translate(Math.round(x),Math.round(y));
@@ -478,18 +504,18 @@ function drawCutter(){if(!P.over&&!auto)return;let x=P.x,y=P.y;if(auto){const L=
   if(P.down||auto){R(-3,4,2,2,"#ffffffaa");R(-5,1,2,2,"#ffffff66");}ctx.restore();}
 function draw(){ctx.save();if(shake>0)ctx.translate(Math.round(rnd(-shake,shake)),Math.round(rnd(-shake,shake)));
   drawRoom();
-  if(G.st==="empty")drawPile();else drawBox();
-  drawDog();drawItem();
+  if(G.st==="empty"){if(!flats.length||flats.at(-1).t>.3)drawPile();}else drawBox();
+  drawFlats();drawDog();drawItem();
   for(const p of parts){ctx.globalAlpha=clamp(p.life*2,0,1);R(p.x,p.y,p.s||1,p.s||1,p.c);}ctx.globalAlpha=1;
   for(const c of coins){if(c.t<0)continue;R(c.x-2,c.y-2,5,5,OUT);R(c.x-1,c.y-1,3,3,"#f2c230");R(c.x-1,c.y-1,1,1,"#fff4a0");}
-  for(const f of floats){ctx.globalAlpha=clamp(f.life*2,0,1);txt(f.s,f.x,f.y,f.c,f.big?16:8);}ctx.globalAlpha=1;
+  for(const f of floats){ctx.globalAlpha=clamp(f.life*2,0,1);txt(f.s,f.x,f.y,f.c,f.big?16:10,"center","Pix");}ctx.globalAlpha=1;
   drawCutter();ctx.restore();}
 
 /* ---------- DOM panels ---------- */
 const upEls={},boxEls={};
 for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="be">${b.e}</span><span><b>${b.n}</b><small></small></span><span class="bb"></span>`;el.title=b.sub;
   el.onclick=()=>{if(unlocked(b)&&!b.soon)buyBox(b.id);else if(b.soon)toast("Coming in the next update!");else toast(`Open ${b.unlock.n} ${BI[b.unlock.box].n.toLowerCase()}s to unlock`);};$("#boxList").appendChild(el);boxEls[b.id]=el;}
-for(const u of UPG){const b=document.createElement("button");b.className="up";b.innerHTML=`<span class="ue">${u.e}</span><span><b></b><small></small></span><span class="uc"></span>`;b.title=u.d;
+for(const u of UPG){const b=document.createElement("button");b.className="up";b.innerHTML=`<span class="ue">${u.e}</span><b></b><small>${u.d}</small><span class="ux"></span><span class="uc"></span>`;
   b.onclick=()=>buyUp(u);$("#upList").appendChild(b);upEls[u.id]=b;}
 function buyUp(u){const L=lv(u.id);if(L>=u.max){toast("Maxed");return;}const c=ucost(u);if(S.cash<c-1e-9){toast(`Need ${money(c-S.cash)} more`);SFX.no();return;}
   addCash(-c);S.lv[u.id]=L+1;SFX.buy();toast(`${u.n} level ${L+1}!`);checkGoals();save();render();}
@@ -506,8 +532,9 @@ function render(){
     sm.textContent=`${opened(b.id)} opened`;
     const lab=money(p);if(bb.dataset.l!==lab+ok){bb.dataset.l=lab+ok;bb.innerHTML=`<span class="btn ${ok?"go":""}" style="${ok?"":"background:#c9bda3;color:#7a6a50"}">${lab}</span>`;}}
   for(const u of UPG){const b=upEls[u.id],L=lv(u.id),max=L>=u.max,c=ucost(u),ok=!max&&S.cash>=c-1e-9;
-    b.className="up"+(max?" max":ok?" can":" no")+(selUp===u.id?" sel":"");b.querySelector("b").textContent=u.n;
-    b.querySelector("small").textContent=u.f(L);b.querySelector(".uc").innerHTML=`${max?"MAX":money(c)}<i>${L}/${u.max}</i>`;}
+    b.className="up"+(max?" max":ok?" can":" no")+(selUp===u.id&&!$("#upModal").hidden?" sel":"");b.querySelector("b").innerHTML=`${u.n} <i>level ${L}/${u.max}</i>`;
+    b.querySelector(".ux").textContent=max?`Now: ${u.f(L)}`:`${u.f(L)} → ${u.f(L+1).replace(/^[a-z ]+(?=[×\d])/,"")}`;b.querySelector(".uc").textContent=max?"MAXED":`Buy ${money(c)}`;}
+  $("#upBtn").dataset.n=UPG.filter(u=>lv(u.id)<u.max&&S.cash>=ucost(u)-1e-9).length;
   const tk=S.tray.join(","),tl=$("#trayList");
   if(tl.dataset.k!==tk){tl.dataset.k=tk;tl.innerHTML="";if(!S.tray.length)tl.innerHTML=`<div id="trayEmpty">What you find lands here. Click a find to sell it, or sell the lot with the button below.</div>`;
     const shown=S.tray.slice(-10),off=S.tray.length-shown.length;
@@ -533,6 +560,9 @@ function openCol(){const body=$("#colBody");body.innerHTML="";
   for(const b of BOXES){if(!b.items)continue;const h=document.createElement("div");h.className="colH";const got=b.items.filter(i=>S.found[i.id]).length;h.textContent=`${b.e} ${b.n} · ${got}/${b.items.length}${unlocked(b)?"":" · locked"}`;body.appendChild(h);
     const g=document.createElement("div");g.className="colG";for(const item of b.items){const n=S.found[item.id]||0,d=document.createElement("div");d.className="ci"+(n?"":" no");d.style.borderBottomColor=RAR.at(item.r).c;d.innerHTML=`<span class="ce">${item.e}</span>${n?item.n:"???"}`;d.title=n?`${item.n} ×${n}: ${item.d}`:RAR.at(item.r).n;g.appendChild(d);}body.appendChild(g);}
   $("#colTxt").textContent=`You've found ${nFound()} of ${ITEMS.length} things. The coloured edge shows how rare each one is.`;$("#colModal").hidden=false;$("#colClose").focus();}
+function openUps(){selUp=selUp||UPG.at(0).id;$("#upModal").hidden=false;render();const el=upEls[selUp];el&&el.focus({preventScroll:true});}
+$("#upBtn").onclick=openUps;$("#upClose").onclick=()=>{$("#upModal").hidden=true;$("#upBtn").focus({preventScroll:true});render();};
+function upMove(dx,dy){const i=Math.max(0,UPG.findIndex(u=>u.id===selUp));let j=i+dx+dy*2;if(j<0||j>=UPG.length)return;selUp=UPG.at(j).id;upEls[selUp].focus({preventScroll:true});render();}
 $("#colBtn").onclick=openCol;$("#colClose").onclick=()=>$("#colModal").hidden=true;
 $("#helpBtn").onclick=()=>{$("#helpModal").hidden=false;$("#helpClose").focus();};$("#helpClose").onclick=()=>{$("#helpModal").hidden=true;S.helped=true;save();};
 $("#sellAll").onclick=sellAll;
@@ -554,25 +584,27 @@ cv.addEventListener("pointermove",e=>{const p=toStage(e);if(P.down){P.dragged+=M
 addEventListener("pointerup",()=>{P.down=false;P.lastX=P.lastY=null;});
 cv.addEventListener("pointerleave",()=>{if(!P.down)P.over=false;});
 function setMode(m){document.body.classList.toggle("pad",m==="pad");document.body.classList.toggle("touch",m==="touch");}
-const anyModal=()=>!$("#colModal").hidden||!$("#helpModal").hidden;
-function closeModals(){if(!$("#helpModal").hidden){$("#helpClose").click();}$("#colModal").hidden=true;}
+const anyModal=()=>!$("#colModal").hidden||!$("#helpModal").hidden||!$("#upModal").hidden;
+function closeModals(){if(!$("#helpModal").hidden){$("#helpClose").click();}if(!$("#upModal").hidden)$("#upClose").click();$("#colModal").hidden=true;}
 addEventListener("keydown",e=>{audio();if(!$("#title").hidden){leaveTitle();return;}const k=e.key.toLowerCase();setMode("key");
+  if(!$("#upModal").hidden){const m={arrowleft:[-1,0],arrowright:[1,0],arrowup:[0,-1],arrowdown:[0,1]}[k];
+    if(m){upMove(...m);e.preventDefault();}else if(k==="enter"||k===" "){e.preventDefault();buyUp(UPG.find(u=>u.id===selUp));}else if(k==="escape"||k==="u")closeModals();else if(k>="1"&&k<="3")buyUp(UPG.at(+k-1));return;}
   if(anyModal()){if(k==="escape"||k==="enter"||k===" "){closeModals();e.preventDefault();}return;}
   if(k===" "){e.preventDefault();if(!e.repeat)benchAction();}
-  else if(k==="b")buyBox();else if(k==="s")sellAll();else if(k==="f")toggleFS();else if(k==="c")openCol();else if(k==="h"||k==="?")$("#helpBtn").click();
+  else if(k==="b")buyBox();else if(k==="s")sellAll();else if(k==="f")toggleFS();else if(k==="c")openCol();else if(k==="h"||k==="?")$("#helpBtn").click();else if(k==="u")openUps();
   else if(k>="1"&&k<="3")buyUp(UPG.at(+k-1));});
 // controller: A = act / hold to cut, Y = buy, X = sell all, d-pad left/right + B = upgrades, View = collection, Menu = help
 let prevPad={},selUp=null;
-function pollPad(){const gp=[...(navigator.getGamepads?navigator.getGamepads():[])].find(g=>g);if(!gp)return;const b=i=>gp.buttons[i]&&gp.buttons[i].pressed,now={A:b(0),B:b(1),X:b(2),Y:b(3),L:b(14),Rt:b(15),U:b(12),D:b(13),BK:b(8),ST:b(9)};
+function pollPad(){const gp=[...(navigator.getGamepads?navigator.getGamepads():[])].find(g=>g);if(!gp)return;const b=i=>gp.buttons[i]&&gp.buttons[i].pressed,now={A:b(0),B:b(1),X:b(2),Y:b(3),RB:b(5),L:b(14),Rt:b(15),U:b(12),D:b(13),BK:b(8),ST:b(9)};
   const any=Object.values(now).some(Boolean);if(any){audio();if(!document.body.classList.contains("pad")){setMode("pad");render();}if(!$("#title").hidden){leaveTitle();prevPad=now;return;}}
   const pr=k=>now[k]&&!prevPad[k];
+  if(!$("#upModal").hidden){if(pr("L"))upMove(-1,0);if(pr("Rt"))upMove(1,0);if(pr("U"))upMove(0,-1);if(pr("D"))upMove(0,1);if(pr("A"))buyUp(UPG.find(u=>u.id===selUp));if(pr("B")||pr("RB")||pr("ST"))closeModals();prevPad=now;return;}
   if(anyModal()){if(pr("A")||pr("B")||pr("BK")||pr("ST"))closeModals();prevPad=now;return;}
   if(pr("A"))benchAction();
   if(now.A&&G.st==="closed")startAuto();
   if(pr("Y"))buyBox();if(pr("X"))sellAll();if(pr("BK"))openCol();if(pr("ST"))$("#helpBtn").click();
   if(pr("U")||pr("D")){const av=BOXES.filter(x=>unlocked(x));const i=av.findIndex(x=>x.id===S.sel);S.sel=av.at((i+(pr("D")?1:-1)+av.length)%av.length).id;render();}
-  if(pr("L")||pr("Rt")){const i=UPG.findIndex(u=>u.id===selUp);const j=selUp==null?0:(i+(pr("Rt")?1:-1)+UPG.length)%UPG.length;selUp=UPG.at(j).id;render();}
-  if(pr("B")&&selUp)buyUp(UPG.find(u=>u.id===selUp));
+  if(pr("RB"))openUps();
   prevPad=now;}
 addEventListener("gamepadconnected",()=>toast("Controller connected 🎮"));
 
@@ -592,7 +624,8 @@ function frame(now){const rdt=Math.min(.05,(now-last)/1000);last=now;pollPad();u
   if(bump>0){bump=0;$("#cash").animate([{transform:"scale(1.08)"},{transform:"scale(1)"}],{duration:120});}
   rT-=rdt;if(rT<=0){rT=.25;checkGoals();render();}
   requestAnimationFrame(frame);}
-document.fonts&&document.fonts.ready.then(()=>{SPR.clear();render();});
+// the canvas uses faces the DOM may never touch (regular Silkscreen, bold digits), so load them up front
+document.fonts&&Promise.all([...document.fonts].map(f=>f.load().catch(()=>{}))).then(()=>document.fonts.ready).then(()=>{SPR.clear();render();});
 checkGoals();render();requestAnimationFrame(frame);
 if(location.hash==="#debug")window.BH={get S(){return S;},set S(v){S=v;},get G(){return G;},buyBox,sellAll,buyUp,UPG,ITEMS,BOXES,render,stompPile,benchAction,collect,checkGoals};
 </script>
