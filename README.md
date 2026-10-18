@@ -6,35 +6,28 @@ Play: https://pillowfishsticks.github.io/box-hunter/
 
 ## How to play
 
-1. You start with nothing. Click the heap of old boxes on the bench to flatten them for pennies.
-2. At £5, buy your first cardboard parcel.
-3. Drag the box cutter down the tape to slice it open. The glow tells you how good the find is before you see it: grey, green, blue, purple or gold.
-4. Your finds land on the right. Sell them one at a time or all at once.
-5. Flatten the empty box for a bit of cardboard money, then buy the next one.
-6. Spend your money on upgrades: a sharper cutter, a sharper eye for rare finds, and haggling for cheaper boxes.
-7. Follow the 🎯 goal at the top: it always says what to do next and pays a reward.
-8. Open 20 parcels to unlock padded envelopes (tear the red strip across the top): pricier, but with better finds.
-9. Fill your collection book: 34 things to find so far.
+1. Buy boxes in the Box shop on the left (×1, ×5 or ×10 at once). They queue up next to the mat.
+2. Drag the cutter along the tape (or just hold the mouse on the box) to open it. The glow shows how good the find is: grey, green, blue, purple or gold.
+3. Click a find on the right to sell it, put it on a shop shelf (it earns money until a customer buys it), file it in the album, or scrap it for ⚙ parts.
+4. Empty boxes pile up in the corner. Click the heap to bin them before it fills up.
+5. Spend money in 🧰 All upgrades: better tools, shelves, staff who open boxes, a van that buys boxes, a sorter that sells, a baler that bins empties, and machines paid for with parts.
+6. Unlock bigger boxes: envelopes, post sacks, lost luggage, crates, storage units, haunted crates, pallets.
+7. When the 🏷️ sign appears, sell the business for ⭐ stars, spend them on permanent upgrades and start again stronger.
+8. The final goal: open the £1 trillion Mystery Vault.
 
-Tip: hold the mouse (or Space, or A) on a closed box and the cutter slices it for you.
-
-Listen for the rattle: rarer boxes wobble more before you open them.
+The 🎯 goal at the top always says what to do next.
 
 ## Controls
 
-| | Mouse / keyboard | Xbox controller | Touch |
-|---|---|---|---|
-| Slice / flatten / collect | Drag or click, or hold Space | Hold A | Drag or tap |
-| Buy a box | B | Y | Buy button |
-| Sell everything | S | X | Sell all button |
-| Upgrades | U (or 1, 2, 3 to buy) | RB, then d-pad and A | Upgrades button |
-| Collection | C | View / Back | 📖 button |
-| Fullscreen | F | | ⛶ button |
+| | Mouse / keyboard | Touch |
+|---|---|---|
+| Open a box | Drag or hold on it, or hold Space | Drag or hold |
+| Buy boxes | B, or the price button | Tap the price |
+| Sell everything / junk | S / J | Buttons |
+| Upgrades / album | U / C | Buttons |
+| Bin the empties | X, or click the heap | Tap the heap |
+| Fullscreen | F | ⛶ button |
 
-Progress saves by itself in your browser.
-
-## Status
-
-This is phase 1 of 6 (see the design doc): two box types, opening by hand, 34 items, goals, selling and three upgrades. Next up: shop shelves, scrapping for parts, more box types and the sim bot for balance.
+Progress saves by itself in your browser. Use 💾 to copy a save code and move it to another device.
 
 Fonts: Silkscreen, Pixelify Sans and Jersey 10, both under the SIL Open Font License (see `fonts/`).

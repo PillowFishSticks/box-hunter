@@ -984,7 +984,7 @@ function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){cons
     el.title=b.sub;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
 function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automation)");return;}if(!unlocked(b))return;S.vanBox=b.id;toast(`🚚 The van now buys ${b.n.toLowerCase()}s`);render();}
-function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-3:-4);if(next)show.push(next);return show;}
+function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-5:-6);if(next)show.push(next);return show;}
 let quickKey="";
 function render(){if(SIM)return;
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
