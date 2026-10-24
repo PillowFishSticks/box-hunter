@@ -46,7 +46,9 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 /* top bar */
 #till{left:6px;top:5px;width:122px;height:22px;padding:2px 4px;display:flex;align-items:center;gap:4px}
 #till .coin{width:11px;height:11px;flex:none;background:var(--gold);border:2px solid var(--ink);box-shadow:inset -2px -2px 0 #c49512}
-#cashV{font:400 17px/1 "Num";flex:1;white-space:nowrap;overflow:hidden}
+#cashCol{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+#cashV{font:400 14px/1 "Num";white-space:nowrap;overflow:hidden}
+#rateV{font:400 7px/8px "Num";color:#2f6b24;white-space:nowrap;height:8px}
 #subV{font:400 9px/1 "Num";text-align:right;white-space:nowrap;line-height:9px}
 #tools{right:6px;top:5px;display:flex;gap:2px}
 #tools .btn{padding:3px 3px;height:22px;position:relative}
@@ -219,7 +221,8 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #upDet .btn{margin-top:auto;font-size:9px;padding:4px}
 #rulesT{display:grid;grid-template-columns:auto repeat(4,1fr);gap:3px 4px;align-items:center;font:700 9px/1 "Pix"}
 #rulesT .rc{text-align:center;font-size:8px;color:#6b4a26}
-#rulesBtn{padding:1px 4px;font-size:7px;line-height:1;margin-left:auto;margin-right:4px;white-space:nowrap;flex:none}
+#rulesBtn{padding:0 4px;height:10px;font:700 7px/1 "Pix";border:1px solid var(--ink);box-shadow:none;background:#e2cba0;margin-left:auto;margin-right:5px;white-space:nowrap;flex:none}
+#albBtn.pulse{animation:gpop .6s steps(3) 2}
 #rulesT .rh{grid-column:1/-1;font-size:7.5px;margin-bottom:1px}
 #rulesT .rn{display:flex;align-items:center;gap:2px;white-space:nowrap}
 #rulesT .rn i{width:8px;height:8px;border:1px solid var(--ink);display:inline-block}
@@ -275,7 +278,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
 <body>
 <div id="stage">
   <canvas id="cv" width="480" height="270"></canvas>
-  <div class="ui panel" id="till"><span class="coin"></span><span id="cashV">£0</span><span id="subV"></span></div>
+  <div class="ui panel" id="till"><span class="coin"></span><span id="cashCol"><span id="cashV">£0</span><span id="rateV"></span></span><span id="subV"></span></div>
   <div class="ui panel" id="goal"><span class="gi">🎯</span><div id="goalTxt"></div><button class="btn gold" id="goalBtn" hidden>🎁 Free</button><div id="goalRow"><div id="goalBar"><i></i></div><span id="goalN"></span><span id="goalRew"></span></div><div id="goalCel" hidden></div></div>
   <div class="ui" id="tools">
     <button class="btn" id="helpBtn">?</button>
@@ -423,37 +426,37 @@ const bonusTxt=b=>({val:`+${b.a*100}% value on ${BI[b.box]&&BI[b.box].n.toLowerC
 const g15=(base,k)=>L=>base*Math.pow(k,L);
 const UPG=[
  // Hands
- {id:"cutter",g:"hands",e:"🔪",n:"Sharper Cutter",max:10,cost:g15(8,1.5),f:L=>`+${4*L}% value, cuts ${18*L}% faster`,d:"Cleaner cuts: everything opened on the mat (by you or your box cutter) is worth 4% more a level. It also cuts faster and the blade is wider."},
- {id:"eye",g:"hands",e:"🔍",n:"Sharp Eye",max:20,cost:g15(15,1.55),f:L=>`luck ×${(1+.03*L).toFixed(2)}`,d:"You learn which boxes rattle right. Fewer duds, more treasure."},
- {id:"haggle",g:"hands",e:"🤝",n:"Haggling",max:10,cost:g15(25,1.75),f:L=>`boxes −${3*L}%`,d:"Talk the depot down. Every box costs a bit less."},
- {id:"fast",g:"hands",e:"⚡",n:"Fast Hands",max:5,cur:"parts",cost:g15(15,2.2),f:L=>`animations −${12*L}%`,d:"Opening and reveals play faster, so you open more by hand."},
- {id:"lucky",g:"hands",e:"🍀",n:"Lucky Streak",max:5,cur:"parts",cost:g15(40,2.3),f:L=>`+${4*L}% luck per rare in a row (up to 5)`,d:"Each rare-or-better you open by hand, in a row, makes the next luckier."},
- {id:"xray",g:"hands",e:"🩻",n:"X-ray Scanner",max:2,cur:"parts",cost:L=>[60,600][L],f:L=>["off","see the glow of the box on the mat","see the glow of every queued box"][L],d:"Peek at a box's best find before you open it."},
+ {id:"cutter",g:"open",e:"🔪",n:"Sharper Cutter",max:10,cost:g15(8,1.5),f:L=>`finds worth +${4*L}%`,d:"Cleaner cuts, less damage: every box opened on the mat (by you or your box cutter) is worth 4% more per level. You see it as 🔪+% when a box opens. Also cuts faster."},
+ {id:"eye",g:"open",e:"🔍",n:"Sharp Eye",max:20,cost:g15(15,1.55),f:L=>`luck ×${(1+.03*L).toFixed(2)} for everyone`,d:"Everyone finds rarer things: you, your box cutter, staff and machines."},
+ {id:"haggle",g:"buy",e:"🤝",n:"Haggling",max:10,cost:g15(25,1.75),f:L=>`boxes −${3*L}%`,d:"Every box costs less, including the ones the van buys."},
+ {id:"fast",g:"open",e:"⚡",n:"Fast Hands",max:5,cur:"parts",cost:g15(15,2.2),f:L=>`mat ${12*L}% quicker`,d:"Everything on the mat moves faster: boxes arrive, open and clear quicker, for you and your crew."},
+ {id:"lucky",g:"open",e:"🍀",n:"Lucky Streak",max:5,cur:"parts",cost:g15(40,2.3),f:L=>`+${4*L}% luck per rare in a row (up to 5)`,d:"Each Rare or better opened on the mat (by you or the box cutter), in a row, makes the next box luckier."},
+ {id:"xray",g:"load",e:"🩻",n:"X-ray Scanner",max:2,cur:"parts",cost:L=>[60,600][L],f:L=>["off","see the best find's glow before cutting","the loader picks the priciest box first"][L],d:"Peek inside boxes. Level 2: the loader puts the priciest box in the queue on the mat first, where your knife bonus counts."},
  {id:"bulk",g:"buy",e:"📦",n:"Bulk Buy",max:3,cur:"parts",cost:L=>[30,300,3000][L],f:L=>["×1 ×5 ×10","adds ×25","adds ×100","adds Max"][L],d:"Buy bigger batches of boxes at once."},
  // Shop
- {id:"shelf",g:"shop",e:"🪟",n:"Extra Shelves",max:21,cost:g15(30,1.6),f:L=>`${3+L} shelf spaces`,d:"Customers buy shelved finds for the full shop price (more than selling them yourself)."},
- {id:"sign",g:"shop",e:"🪧",n:"Shop Sign",max:15,cost:g15(60,1.7),f:L=>`+${12*L}% customers`,d:"A proper sign brings in more customers, so shelves sell faster."},
- {id:"heap",g:"sell",e:"🗑️",n:"Bigger Corner",max:10,cost:g15(20,1.8),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
- {id:"till",g:"shop",e:"🧮",n:"Sharp Till",max:10,cost:g15(100,1.9),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
+ {id:"shelf",g:"sell",e:"🪟",n:"Extra Shelves",max:21,cost:g15(30,1.6),f:L=>`${3+L} shelf spaces`,d:"Customers buy shelved finds for the full shop price (more than selling them yourself)."},
+ {id:"sign",g:"sell",e:"🪧",n:"Shop Sign",max:15,cost:g15(60,1.7),f:L=>`+${12*L}% customers`,d:"A proper sign brings in more customers, so shelves sell faster."},
+ {id:"heap",g:"bin",e:"🗑️",n:"Bigger Corner",max:10,cost:g15(20,1.8),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
+ {id:"till",g:"sell",e:"🧮",n:"Sharp Till",max:10,cost:g15(100,1.9),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
  // Automation
- {id:"loader",g:"buy",e:"🙋",n:"Loader",max:1,cost:()=>15,f:L=>L?"puts the next box on the mat":"not hired",d:"Auto-load: puts the next box from the queue onto the mat, so you don't have to click the queue."},
- {id:"loadSpd",why:"Hire the loader first",g:"buy",e:"⏩",n:"Loader: quicker",max:8,cost:g15(40,1.8),f:L=>`a box on the mat ${loadDelayL(L).toFixed(1)}s after the last`,d:"The loader puts boxes down faster.",need:()=>lv("loader")>0},
+ {id:"loader",g:"load",e:"🙋",n:"Loader",max:1,cost:()=>15,f:L=>L?"puts the next box on the mat":"not hired",d:"Auto-load: puts the next box from the queue onto the mat, so you don't have to click the queue."},
+ {id:"loadSpd",why:"Hire the loader first",g:"load",e:"⏩",n:"Loader: quicker",max:8,cost:g15(40,1.8),f:L=>`a box on the mat ${loadDelayL(L).toFixed(1)}s after the last`,d:"The loader puts boxes down faster.",need:()=>lv("loader")>0},
  {id:"autocut",g:"open",e:"🧔",n:"Box cutter",max:1,cost:()=>60,f:L=>L?"cuts open the box on the mat":"not hired",d:"Auto-open: someone who cuts open the box on the mat for you. Boxes you cut yourself are still worth 20% more."},
  {id:"autoSpd",why:"Hire the box cutter first",g:"open",e:"⚡",n:"Box cutter: faster",max:10,cost:g15(90,1.7),f:L=>`starts cutting after ${autoDelayL(L).toFixed(1)}s`,d:"The box cutter gets going sooner and cuts faster.",need:()=>lv("autocut")>0},
- {id:"staff",g:"open",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>25*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
- {id:"train",why:"Hire some staff first",g:"open",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
- {id:"conv",why:"Hire some staff first",g:"open",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
+ {id:"staff",g:"bench",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>25*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
+ {id:"train",why:"Hire some staff first",g:"bench",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
+ {id:"conv",why:"Hire some staff first",g:"bench",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
  {id:"van",g:"buy",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
  {id:"vanSpd",why:"Get the delivery van first",g:"buy",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
  {id:"vanLoad",why:"Get the delivery van first",g:"buy",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
  {id:"sorter",g:"sell",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
  {id:"sortSpd",why:"Hire the sorter first",g:"sell",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
- {id:"baler",g:"sell",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
- {id:"balSpd",why:"Build the baler first",g:"sell",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
- {id:"acct",why:"Open a padded envelope first",g:"shop",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
- {id:"slicer",why:"Open a padded envelope first",g:"mach",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
- {id:"arm",why:"Unlock lost luggage first",g:"mach",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
- {id:"spinner",why:"Unlock pallets first",g:"mach",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
+ {id:"baler",g:"bin",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
+ {id:"balSpd",why:"Build the baler first",g:"bin",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
+ {id:"acct",why:"Open a padded envelope first",g:"buy",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
+ {id:"slicer",why:"Open a padded envelope first",g:"bench",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
+ {id:"arm",why:"Unlock lost luggage first",g:"bench",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
+ {id:"spinner",why:"Unlock pallets first",g:"bench",e:"🌀",n:"Cling-film spinner",max:15,cur:"parts",cost:g15(2500,1.5),f:L=>`unwraps pallets · ${fmtRate(L/8)}`,d:"Unwraps pallets into their boxes.",need:()=>S.unl.pallet},
 ];
 const UI=Object.fromEntries(UPG.map(u=>[u.id,u]));
 // star upgrades (kept forever)
@@ -541,7 +544,10 @@ const machineFor=b=>b.tier<=2?"slicer":b.tier<=6?"arm":b.id==="pallet"?"spinner"
    CORE (shared by the game and the sim bot; visuals go through FX)
    ===================================================================== */
 const FX={customer(){return false;},toast(){},coins(){},staff(){},van(){},sort(){},bale(){},shelfSold(){},machine(){},unlock(){},sound(){},goal(){},pallet(){},bag(){}};
-function addCash(n){S.cash+=n;if(n>0){S.earned+=n;S.runEarned+=n;}}
+// income over the last minute, shown under your cash (owner: see the money go up)
+const incLog=[];
+function addCash(n){S.cash+=n;if(n>0){S.earned+=n;S.runEarned+=n;if(!SIM)incLog.push([performance.now(),n]);}}
+function incomeRate(){const now=performance.now();while(incLog.length&&now-incLog[0][0]>60000)incLog.shift();if(!incLog.length)return 0;const span=Math.max(15000,now-incLog[0][0]);return incLog.reduce((a,x)=>a+x[1],0)*60000/span;}
 let EV={lucky:0,carboot:0,van:0,auction:null,ghostT:30,ballT:40,swap:0};
 const LUCKX=[-.4,0,.45,.6,.75];   // how strongly luck moves each rarity's weight
 function rollRar(b,lk,mn=0){const w=(b.w||RAR.map(r=>r.w)).slice();for(let r=0;r<5;r++)w[r]*=r<mn?0:Math.pow(lk,LUCKX[r]);let x=Math.random()*w.reduce((a,c)=>a+c,0),r=0;for(;r<4;r++){if((x-=w[r])<=0)break;}return r;}
@@ -562,6 +568,7 @@ function rollBox(id,opt={}){const b=BI[id];const out={items:[],boxes:[]};
 function gain(items,src){for(const e of items){const it=II[e.i];S.found[e.i]=(S.found[e.i]||0)+1;if(it.r===4)S.stats.legend++;
     if(e.relic){if(!S.relics[e.i]){S.relics[e.i]=1;FX.toast(`✨ RELIC: ${it.n}! ${it.d.replace("RELIC: ","")}`);FX.sound("legend");}continue;}
     if(!S.best||itemVal(e)>S.best.v)S.best={i:e.i,v:itemVal(e)};
+    if(needsAlbum(e.i)){fileNew(e.i,src);continue;}
     S.tray.push({i:e.i,m:e.m});}
   while(S.tray.length>TRAY){let j=0;for(let k=1;k<S.tray.length;k++)if(itemVal(S.tray[k])<itemVal(S.tray[j]))j=k;sellAt(j,true);}}
 function sellAt(j,quiet){const e=S.tray[j];if(!e)return 0;S.tray.splice(j,1);const v=itemVal(e);addCash(v);S.stats.sold++;if(!quiet)FX.coins("tray",v);return v;}
@@ -569,9 +576,13 @@ function shelveAt(j){const e=S.tray[j];if(!e||S.shelf.length>=shelfCap())return 
 function scrapAt(j){const e=S.tray[j];if(!e)return 0;S.tray.splice(j,1);const p=partsOf(e);S.parts+=p;S.stats.scrapped++;return p;}
 function fileAt(j){const e=S.tray[j];if(!e||!needsAlbum(e.i))return false;S.tray.splice(j,1);S.album[e.i]=1;const s=II[e.i].set;if(s&&setDone(s)){FX.toast(`📖 Set complete: ${SI[s].n}! ${bonusTxt(SI[s].b)}`);FX.sound("goal");}return true;}
 const needsAlbum=id=>{const it=II[id];return !!it.set&&!S.album[id];};
+// owner: the first copy of anything always goes into the album automatically, with a visible "📖 New!"
+function fileNew(id,src){S.album[id]=1;const s=II[id].set;if(s&&setDone(s)){FX.toast(`📖 Set complete: ${SI[s].n}! ${bonusTxt(SI[s].b)}`);FX.sound("goal");}else if(src!=="hand")FX.toast(`📖 New in your album: ${II[id].e} ${II[id].n}`);}
 // buying boxes: they join the queue
+const VAN_SHARE=.5;
 function buyBoxes(id,n,src){const b=BI[id];if(!b||!unlocked(b))return 0;const p=priceOf(b);const room=Math.max(0,queueCap()-S.queue.length);
-  n=Math.min(n,room,Math.floor(S.cash/p+1e-9));if(b.id==="vault")n=Math.min(n,1);if(n<=0)return 0;
+  // owner: the van never spends more than half your cash, so money keeps climbing
+  n=Math.min(n,room,Math.floor((src==="van"?S.cash*VAN_SHARE:S.cash)/p+1e-9));if(b.id==="vault")n=Math.min(n,1);if(n<=0)return 0;
   addCash(-p*n);for(let i=0;i<n;i++)S.queue.push({b:id,p});if(src!=="van"&&n>1)S.stats.multi++;return n;}
 // one box finished (by anyone): count it, make an empty, maybe a bonus box from the Bottomless Bag
 function boxDone(id,hand){const b=BI[id];S.op[id]=(S.op[id]||0)+1;S.opL[id]=(S.opL[id]||0)+1;S.stats.boxes++;if(hand)S.stats.hand++;
@@ -610,7 +621,7 @@ function coreTick(dt){S.runT+=dt;S.playT+=dt;
   // events
   eventsTick(dt);}
 // the sorter's rules, per rarity: keep / sell / shelve / scrap; plus "file new album pieces"
-function sortOne(){let j=0;if(S.sortAlbum){const a=S.tray.findIndex(e=>needsAlbum(e.i));if(a>=0){fileAt(a);FX.sort("album");return;}}
+function sortOne(){let j=0;{const a=S.tray.findIndex(e=>needsAlbum(e.i));if(a>=0){const it=II[S.tray[a].i];fileAt(a);FX.sort("album",0,it);return;}}
   // work on the oldest find that isn't marked keep
   j=S.tray.findIndex(e=>S.rules[II[e.i].r]!=="keep");if(j<0)return;const e=S.tray[j],rule=S.rules[II[e.i].r];
   if(rule==="sell"){const v=sellAt(j,true);FX.sort("sell",v);}
@@ -717,7 +728,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.4.0";
+const VERSION="1.5.0";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -830,7 +841,7 @@ let drawX=null;   // where the box is being drawn this frame (it slides in), so 
 function cutLine(){const b=G.box,R=boxRect(b.id,drawX??BX),{L,T,w,h,cx}=R;
   return({sheet:[L+4,T+h/2,L+w-4,T+h/2],tape:[cx,T,cx,T+h],strip:[L,T+10,L+w,T+10],knot:[cx,T+24,cx,T-2],zip:[L+8,T+h*.52,L+w-8,T+h*.52],prise:[L+4,T+6,L+w-4,T+6],padlock:[cx-16,T+h-22,cx+16,T+h-22],film:[L+8,T+6,L+w-8,T+h-6],safe:[cx-28,T+h/2,cx+28,T+h/2]})[b.kind];}
 function nextBox(){if(G.st!=="empty"||heapFull())return;let id=null,sp=false,p=0;
-  if(S.spec.length){id=S.spec.shift();sp=true;}else if(S.queue.length){const q=S.queue.shift();id=q.b;p=q.p;}else return;
+  if(S.spec.length){id=S.spec.shift();sp=true;}else if(S.queue.length){let qi=0;if(lv("xray")>=2)S.queue.forEach((x,i)=>{if(BI[x.b].price>BI[S.queue[qi].b].price)qi=i;});const q=S.queue.splice(qi,1)[0];id=q.b;p=q.p;}else return;
   const b=BI[id];S.stats.loaded=(S.stats.loaded||0)+1;G={st:"arrive",t:0,x:lv("loader")?QS.x+4+DIM[id][0]/2:-70,box:b,sp,paid:p,seg:new Array(SEGN).fill(0),cut:0,wob:0,res:null};
   G.res=rollBox(id,{hand:true,special:sp});const best=G.res.items.reduce((a,e)=>Math.max(a,II[e.i].r),0);G.best=best;
   G.rattle=cursedOn("ghost")?2.4:[.4,.6,1,1.5,2.2][best];dog.sniff=1.6;dog.tx=BX+(dog.x<BX?-74:72);dog.wait=3;}
@@ -877,7 +888,7 @@ function liveFX(){Object.assign(FX,{
   staff:(id,best)=>{const n=Math.min(lv("staff"),5);if(!n)return;let k=-1;for(let j=0;j<n;j++)if(!stations[j]||stations[j].t<=0){k=j;break;}const i=k>=0?k:ri(n);stations[i]={t:1.2,box:id,r:best};if(best>=2)SFX.glow(Math.min(best,3));},
   machine:(m,id,best)=>{machAnim[m]=.5;if(best>=3)SFX.reveal(best);},
   van:(id,n)=>{vanAnim={t:0,box:id,n};SFX.van();},
-  sort:(k,v)=>{sorterAnim=.4;if(k==="shelve")crewShelve();if(k==="sell"&&v)SFX.till();},
+  sort:(k,v,it)=>{sorterAnim=.4;if(k==="album"&&it){toast(`📖 New for your album: ${it.e} ${it.n} `);const ab=$("#albBtn");ab.classList.remove("pulse");void ab.offsetWidth;ab.classList.add("pulse");SFX.flap();}if(k==="shelve")crewShelve();if(k==="sell"&&v)SFX.till();},
   bale:v=>{balerAnim=.3;CREW.baler.anim=.35;if(Math.random()<.3)SFX.bale();},
   shelfSold:(k,v)=>{const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);floatTxt(p.x,p.y-12,"SOLD "+money(v),"#ffe36b");SFX.till();},
   unlock:b=>{toast(`${b.e} ${b.n} unlocked!`);SFX.unlock();shake=2;S.sel=b.id;unlockGlow.push({id:b.id,t:3});},
@@ -953,7 +964,9 @@ function reveal(){const r=G.res,items=r.items;let bi=0;items.forEach((e,k)=>{if(
   $("#findName").textContent=(top.relic?"✨ ":"")+it.n;$("#findName").style.color=R0.c;
   const tot=items.reduce((a,e)=>a+(e.relic?0:itemVal(e)),0);
   const nb=items.filter(e=>e.bonus).length;
-  $("#findSub").textContent=top.relic?"RELIC! "+it.d.replace("RELIC: ",""):items.length>1?`${R0.n} · ${items.length} things${nb?` (${nb} bonus!)`:""} · ${money(tot)} in all`:`${R0.n} · worth ${money(itemVal(top))}${top.m>1.2?" (special!)":""}`;
+  const ck=lv("cutter")?` · 🔪+${4*lv("cutter")}%`:"",nn=items.filter(e=>!e.relic&&needsAlbum(e.i)).length;G.newIds=new Set(items.filter(e=>!e.relic&&needsAlbum(e.i)).map(e=>e.i));
+  if(nn)$("#findName").textContent=(needsAlbum(top.i)?"📖 NEW! ":"")+$("#findName").textContent;
+  $("#findSub").textContent=top.relic?"RELIC! "+it.d.replace("RELIC: ",""):items.length>1?`${R0.n} · ${items.length} things${nb?` (${nb} bonus!)`:""} · ${money(tot)}${nn?` · 📖 ${nn} new for the album`:""}${ck}`:`${R0.n} · ${money(itemVal(top))}${G.sp?" (special!)":""}${nn?" · 📖 new for the album":""}${ck}`;
   $("#find").classList.add("on");SFX.reveal(it.r);if(it.r===0)SFX.junk();
   for(let i=0;i<8+it.r*10;i++){const a=rnd(0,Math.PI*2),v=rnd(30,90+it.r*30);parts.push({x:BX,y:BBOT-50,vx:Math.cos(a)*v,vy:Math.sin(a)*v-40,g:120,life:rnd(.5,1.1),c:Math.random()<.6?R0.c:"#fff",s:it.r>=3?2:1});}
   if(it.r>=2){dog.st="happy";dog.hop=.5;dog.tx=BX+(dog.x<BX?-74:72);setTimeout(()=>dog.st="idle",1600);}
@@ -1077,7 +1090,7 @@ function drawItems(){if(G.st!=="reveal"&&G.st!=="fly")return;const items=G.res.i
     // owner: every find in the box is shown, not just the best one: a row under it (two rows, or a fan for big hauls)
     const others=items.map((e,k)=>k).filter(k=>k!==G.bi).slice(0,24),no=others.length,per=no>12?12:no>6?Math.ceil(no/2):no,gap=no>12?13:20;
     others.forEach((k,j)=>{const row=Math.floor(j/per),col=j%per,cnt=Math.min(per,no-row*per);const x=BX+(col-(cnt-1)/2)*gap*up,y=cy+30+row*20;const e=items[k],sp=sprite(II[e.i].e);
-      ctx.save();ctx.translate(x,y);const s=lerp(.3,no>12?.75:1.1,up);ctx.scale(s,s);ctx.drawImage(sp,-9,-9);ctx.restore();R(x-4,y+10,8,2,rcol(II[e.i].r));if(e.bonus&&up>=1){R(x+5,y-13,5,5,OUT);R(x+6,y-12,3,3,"#ffe36b");}});
+      ctx.save();ctx.translate(x,y);const s=lerp(.3,no>12?.75:1.1,up);ctx.scale(s,s);ctx.drawImage(sp,-9,-9);ctx.restore();R(x-4,y+10,8,2,rcol(II[e.i].r));if(G.newIds&&G.newIds.has(e.i)&&up>=1){R(x-9,y-14,7,7,OUT);R(x-8,y-13,5,5,"#fff4dc");R(x-6,y-13,1,5,"#3f8fe0");}if(e.bonus&&up>=1){R(x+5,y-13,5,5,OUT);R(x+6,y-12,3,3,"#ffe36b");}});
     const top=items[G.bi],bounce=t<.3?-Math.sin(up*Math.PI)*16:0,y=cy-up*8+bounce+Math.sin(t*4)*2,s=t<.3?lerp(.4,2.4,up):2.2+Math.sin(t*5)*.08;
     ctx.globalAlpha=.4+.15*Math.sin(t*8);ctx.fillStyle=rcol(II[top.i].r);ctx.beginPath();ctx.arc(BX,y,20+II[top.i].r*3,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
     const sp=sprite(II[top.i].e),flip=t<.4?Math.cos(t*30):1;ctx.save();ctx.translate(BX,y);ctx.scale(s*flip,s);ctx.drawImage(sp,-9,-9);ctx.restore();}
@@ -1190,6 +1203,7 @@ function setVanBox(b){if(!lv("van")){toast("Get the delivery van first (Automati
 function visibleBoxes(){const un=BOXES.filter(b=>unlocked(b));const next=BOXES.find(b=>!unlocked(b));const show=un.slice(next?-3:-4);if(next)show.push(next);return show;}
 let quickKey="";
 function render(){if(SIM)return;
+  {const r=incomeRate(),t=r>0?`▲ ${money(r)}/min`:"";if($("#rateV").textContent!==t)$("#rateV").textContent=t;}
   const sub=[`⚙${fmtN(S.parts)}`];if(S.stars||S.sales)sub.push(`⭐${S.stars}`);$("#subV").innerHTML=sub.join("<br>");
   // shop
   const vis=visibleBoxes();for(const b of BOXES){const el=boxEls[b.id];if(!el)continue;el.hidden=!vis.includes(b);if(el.hidden)continue;const sm=el.querySelector("small"),bb=el.querySelector(".bb"),vt=el.querySelector(".vt");
@@ -1218,10 +1232,10 @@ function render(){if(SIM)return;
   const ns=lv("staff"),mach=lv("slicer")+lv("arm")+lv("spinner");
   const rows=[   // the chain: each step is you until you automate it
     ["1","🚚","Buy",lv("van")?`Van ${BI[S.vanBox].e}${S.vanOn?"":" paused"}`:"You: shop",lv("van")&&S.vanOn,"buy","Buy boxes. The delivery van does it for you."],
-    ["2","🙋","Load",lv("loader")?"Loader":"You: queue",lv("loader"),"buy","Put the next box on the mat. The loader does it for you."],
+    ["2","🙋","Load",lv("loader")?"Loader":"You: queue",lv("loader"),"load","Put the next box on the mat. The loader does it for you."],
     ["3","🔪","Open",(lv("autocut")?"Cutter":"You: cut")+(ns?` +${ns}🧑‍🔧`:"")+(mach?" +⚙":""),lv("autocut"),"open","Open the box on the mat. The box cutter does it; staff and machines open extra boxes from the queue."],
     ["4","💰","Sell",lv("sorter")?"Sorter":"You: finds",lv("sorter"),"sell","Sell, shelve, file or scrap your finds. The sorter does it by your rules."],
-    ["5","🗑️","Bin",lv("baler")?"Baler":"You: heap",lv("baler"),"sell","Bin the empty boxes. The baler does it for you."],
+    ["5","🗑️","Bin",lv("baler")?"Baler":"You: heap",lv("baler"),"bin","Bin the empty boxes. The baler does it for you."],
   ];const bk=rows.map(r=>r.join()).join("|");const bl=$("#bizList");if(bl.dataset.k!==bk){bl.dataset.k=bk;bl.innerHTML="";for(const [n,i,step,t,on,tab,tip] of rows){const b=document.createElement("button");b.className="bz";
       b.innerHTML=`<span class="bn">${n}</span><span class="bi">${i}</span><span class="bs">${step}</span><span class="bt">${t}</span>${on===null?"":`<em class="${on?"on":""}">${on?"AUTO":"YOU"}</em>`}`;b.onclick=()=>openUps(tab);bl.appendChild(b);}}
   const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span>${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
@@ -1283,8 +1297,8 @@ const CARDS={
   queue:{h:"📦 Box queue",p:"Boxes you buy wait here. You open the front one; staff and machines take the rest.",ups:["conv","bulk","haggle"]},
 };
 let cardObj=null;
-const CARD_TAB={shop:"shop",staff:"open",van:"buy",sorter:"sell",baler:"sell",machines:"mach",queue:"buy"};
-function openCard(obj){openUps(CARD_TAB[obj]||"hands");}
+const CARD_TAB={shop:"sell",staff:"bench",van:"buy",sorter:"sell",baler:"bin",machines:"bench",queue:"load"};
+function openCard(obj){openUps(CARD_TAB[obj]||"open");}
 function openCardOld(obj){cardObj=obj;$("#card").hidden=false;closePop();renderCard(true);const c=$("#card");c.style.left="150px";c.style.top="60px";if(document.body.classList.contains("pad")||document.body.classList.contains("key")){const b=c.querySelector(".up");b&&b.focus();}}
 function closeCard(){cardObj=null;$("#card").hidden=true;}
 function renderCard(force){const c=CARDS[cardObj];if(!c)return;$("#cardH").textContent=c.h;$("#cardP").textContent=c.p;const list=$("#cardList");
@@ -1301,10 +1315,10 @@ function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=up
   const ct=mx?(u.cap&&L>=u.cap()&&L<u.max?"room?":"MAX"):isGiftUp(u.id)?"Free":(u.cur==="parts"?"⚙"+fmtN(c):money(c));const ce=el.querySelector(".uc");if(ce.textContent!==ct)ce.textContent=ct;ce.classList.toggle("free",ct==="Free");el.classList.toggle("gift",ct==="Free");}
 
 /* ---------- all upgrades modal (tabs) ---------- */
-const TABS=[["hands","✋ Hands"],["buy","🚚 Buy"],["open","🔪 Open"],["sell","💰 Sell"],["shop","🪟 Shop"],["mach","⚙️ Machines"],["stars","⭐ Stars"]];let upTab="hands";
-const TAB_INTRO={hands:"Your own tools: cut faster, find rarer things, pay less for boxes.",buy:"Step 1 and 2: get boxes bought and put on the mat without clicking.",open:"Step 3: open boxes. The box cutter opens the one on the mat; staff open extra boxes from the queue.",
-  sell:"Step 4 and 5: the sorter handles your finds, the baler bins the empties.",shop:"Your shop window: shelved finds earn money every second until a customer buys them.",mach:"Machines open boxes too. They're paid for with ⚙ parts (scrap finds to get parts).",stars:"Permanent upgrades, paid for with ⭐ stars from selling the business. They stay forever."};
-const ORDER=["van","vanSpd","vanLoad","loader","loadSpd","bulk","autocut","autoSpd","staff","train","conv","sorter","sortSpd","baler","balSpd","heap"];
+// tabs follow the business chain (owner): 1 Buy, 2 Load, 3 Open (+ the bench staff and machines), 4 Sell, 5 Bin
+const TABS=[["buy","1 🚚 Buy"],["load","2 🙋 Load"],["open","3 🔪 Open"],["bench","🧑‍🔧 Bench"],["sell","4 💰 Sell"],["bin","5 🗑️ Bin"],["stars","⭐ Stars"]];let upTab="open";
+const TAB_INTRO={buy:"Step 1: buying boxes.",load:"Step 2: putting boxes on the mat.",open:"Step 3: cutting boxes open and what you find.",bench:"More opening: staff and machines open boxes from the queue.",sell:"Step 4: your finds and your shop shelves.",bin:"Step 5: the empty boxes.",stars:"Permanent upgrades from selling the business."};
+const ORDER=["van","vanSpd","vanLoad","bulk","haggle","acct","loader","loadSpd","xray","cutter","fast","autocut","autoSpd","eye","lucky","xray","sorter","sortSpd","shelf","sign","till","staff","train","conv","slicer","arm","spinner","autocut","autoSpd","staff","train","conv","sorter","sortSpd","baler","balSpd","heap"];
 let detU=null;
 function openUps(tab){if(tab)upTab=tab;$("#upModal").hidden=false;closePop();closeCard();buildUps();renderUps();const f=$("#upList .up");if(f&&(document.body.classList.contains("pad")||document.body.classList.contains("key")))f.focus();}
 function buildUps(){const t=$("#upTabs");t.innerHTML="";for(const [id,lab] of TABS){if(id==="stars"&&!S.sales&&starsNow()<1)continue;const b=document.createElement("button");b.textContent=lab;b.className=upTab===id?"on":"";b.dataset.tab=id;b.onclick=()=>{upTab=id;buildUps();renderUps();};t.appendChild(b);}
@@ -1339,7 +1353,7 @@ function renderRules(){const t=$("#rulesT");t.innerHTML="";const O=["keep","sell
     
     RAR.forEach((r,i)=>{const n=document.createElement("span");n.className="rn";n.innerHTML=`<i style="background:${r.c}"></i>${r.n}`;t.appendChild(n);
       for(const o of O){const b=document.createElement("button");b.textContent=o==="shelve"?"shelf":o;b.className=S.rules[i]===o?"on":"";b.onclick=()=>{S.rules[i]=o;renderRules();save();};t.appendChild(b);}});
-    const a=document.createElement("div");a.className="ra";a.innerHTML=`<span>📖 New album pieces:</span>`;const ab=document.createElement("button");ab.textContent=S.sortAlbum?"file them first":"treat like the rest";ab.className=S.sortAlbum?"on":"";ab.onclick=()=>{S.sortAlbum=!S.sortAlbum;renderRules();save();};a.appendChild(ab);t.appendChild(a);}
+    const a=document.createElement("div");a.className="ra";a.innerHTML=`<span>📖 The first one of anything new always goes into your album.</span>`;t.appendChild(a);}
 function renderUps(){renderDet();for(const el of $("#upList").querySelectorAll(".up[data-u]"))fillUp(el);for(const el of $("#upList").querySelectorAll(".up[data-s]"))fillStar(el);
   for(const b of $("#upTabs").children){const id=b.dataset.tab;b.dataset.n=id==="stars"?STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;}}
 
@@ -1525,7 +1539,7 @@ function frame(now){const rdt=Math.min(.05,(now-last)/1000);last=now;
   saveT-=rdt;if(saveT<=0){saveT=5;save();}
   requestAnimationFrame(frame);}
 // hidden tabs still get timers (throttled to ~1/s), so money keeps flowing at full rate
-setInterval(()=>{if(document.hidden||SIM)return;if(checkGoals())render();},1000);   // automation can finish goals too
+setInterval(()=>{if(document.hidden||SIM)return;if(checkGoals())render();const r=incomeRate(),t=r>0?`▲ ${money(r)}/min`:"";if($("#rateV").textContent!==t)$("#rateV").textContent=t;},1000);   // automation can finish goals too
 setInterval(()=>{if(document.hidden){const now=performance.now();const cdt=(now-coreLast)/1000;coreLast=now;if(cdt>0)catchUp(cdt,1);save();}},1000);
 
 /* =====================================================================
@@ -1574,7 +1588,7 @@ function sim(hours=10,opts={}){const keepS=S,keepFX=Object.assign({},FX),keepEV=
 // offline support + "Add to Home Screen" (only works over https, so not from a local file)
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
 // start
-load();if(!S.unl.parcel)S.unl.parcel=1;for(const e of S.shelf){delete e.rsv;delete e.walk;}checkUnlocks();fixGoalIdx();checkGoals(true);
+load();if(!S.unl.parcel)S.unl.parcel=1;for(const e of S.shelf){delete e.rsv;delete e.walk;}for(let j=S.tray.length;j--;)if(needsAlbum(S.tray[j].i)){S.album[S.tray[j].i]=1;S.tray.splice(j,1);}checkUnlocks();fixGoalIdx();checkGoals(true);
 liveFX();buildShop();fit();
 if(location.hash==="#debug")$("#title").hidden=true;
 if(matchMedia("(pointer:coarse)").matches)setMode("touch");
