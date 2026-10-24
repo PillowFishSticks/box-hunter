@@ -37,7 +37,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .btn.gold{background:var(--gold);box-shadow:inset -2px -2px 0 #c49512,0 2px 0 #0006}
 .btn.red{background:var(--red);color:#fff;box-shadow:inset -2px -2px 0 #9b2a24,0 2px 0 #0006}
 .btn.off,.btn:disabled{background:#c9bda3;color:#7a6a50;text-shadow:none;cursor:default;box-shadow:inset -2px -2px 0 #b2a68b,0 2px 0 #0004}
-.k{font:700 7px/1 "Pix";background:var(--ink);color:var(--cream);padding:1px 2px}
+.k{display:none!important;font:700 7px/1 "Pix";background:var(--ink);color:var(--cream);padding:1px 2px}
 body.touch .k{display:none}
 button:focus{outline:none}
 body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--gold)!important;position:relative;z-index:2}
@@ -47,8 +47,8 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 #till{left:6px;top:5px;width:122px;height:22px;padding:2px 4px;display:flex;align-items:center;gap:4px}
 #till .coin{width:11px;height:11px;flex:none;background:var(--gold);border:2px solid var(--ink);box-shadow:inset -2px -2px 0 #c49512}
 #cashCol{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
-#cashV{font:400 14px/1 "Num";white-space:nowrap;overflow:hidden}
-#rateV{font:400 7px/8px "Num";color:#2f6b24;white-space:nowrap;height:8px}
+#cashV{font:400 17px/1 "Num";white-space:nowrap;overflow:hidden}
+#rateV{display:none}
 #subV{font:400 9px/1 "Num";text-align:right;white-space:nowrap;line-height:9px}
 #tools{right:6px;top:5px;display:flex;gap:2px}
 #tools .btn{padding:3px 3px;height:22px;position:relative}
@@ -282,7 +282,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="ui panel" id="goal"><span class="gi">🎯</span><div id="goalTxt"></div><button class="btn gold" id="goalBtn" hidden>🎁 Free</button><div id="goalRow"><div id="goalBar"><i></i></div><span id="goalN"></span><span id="goalRew"></span></div><div id="goalCel" hidden></div></div>
   <div class="ui" id="tools">
     <button class="btn" id="helpBtn">?</button>
-    <button class="btn" id="albBtn">📖</button>
+    <button class="btn" id="albBtn" hidden>📖</button>
     <button class="btn" id="sndBtn">🔊</button>
     <button class="btn" id="musBtn">🎵</button>
     <button class="btn" id="saveBtn">💾</button>
@@ -298,7 +298,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="ui panel" id="tray">
     <div id="trayHead"><h3>Your finds</h3><button class="btn" id="rulesBtn" hidden>🧹 Rules</button><span id="trayN"></span></div>
     <div id="trayList"></div>
-    <div id="trayBtns"><button class="btn" id="sellJunk">Sell junk <span class="k">J</span></button><button class="btn" id="scrapAll">Scrap ⚙ <span class="k">K</span></button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
+    <div id="trayBtns"><button class="btn" id="shelveAll">Shelve all</button><button class="btn" id="scrapAll">Scrap ⚙ <span class="k">K</span></button><button class="btn gold" id="sellAll">Sell all <span class="k">S</span></button></div>
   </div>
   <div class="ui panel" id="biz"><h3>Your business <span id="relics"></span></h3><div id="bizList"></div></div>
   <div class="ui tag" id="qTag"></div><div class="ui tag" id="hTag"></div>
@@ -322,7 +322,7 @@ textarea{width:100%;height:34px;font:400 7px/1.2 monospace;border:2px solid var(
   <div class="modal" id="askModal" hidden><div class="panel" style="width:230px"><h2 id="askH"></h2><p id="askP"></p><div class="mrow"><button class="btn" id="askNo">Cancel</button><button class="btn" id="askYes"></button></div></div></div>
   <div class="modal" id="credits" hidden><div class="panel"><button class="btn mx" data-x>✕</button><div id="crawl"></div><div class="mrow"><button class="btn go" id="credClose">Keep playing</button></div></div></div>
   <div class="modal" id="helpModal" hidden><div class="panel"><button class="btn mx" data-x>✕</button><h2>How to play</h2>
-    <div class="steps"><div><b>📦</b>Buy boxes in the <b style="display:inline;font-size:inherit">Box shop</b> (×1, ×5, ×10 at once). They queue by the mat.</div><div><b>🔪</b>Drag the cutter along the tape, or just hold on the box. Boxes you open yourself are worth 20% more.</div><div><b>💰</b>Click a find on the right to sell, shelve, file in the album or scrap for ⚙ parts.</div></div>
+    <div class="steps"><div><b>📦</b>Buy boxes in the <b style="display:inline;font-size:inherit">Box shop</b> (×1, ×5, ×10 at once). They queue by the mat.</div><div><b>🔪</b>Drag the cutter along the tape, or just hold on the box. Boxes you open yourself are worth 20% more.</div><div><b>💰</b>Click a find on the right to sell, shelve or scrap for ⚙ parts.</div></div>
     <p>The glow shows how good a find is: grey junk, green common, blue rare, purple epic, gold legendary. Empty boxes go on the heap in the corner: click it to bin them, or it fills up and stops everything.</p>
     <p>Hire staff to open boxes, a van to buy them, a sorter to sell and a baler to bin empties. Click things on the bench to upgrade them. When the 🏷️ sign appears you can sell the business for ⭐ stars and start again stronger. The 🎯 goal always says what to do next.</p>
     <div class="mrow"><button class="btn go" id="helpClose">Let's go!</button></div></div></div>
@@ -392,8 +392,8 @@ const BOXES=[
  {id:"crate",e:"🪵",n:"Wooden crate",price:20000,kind:"prise",cnt:1,bonus:[.35],min:2,ev:1.0,w:[36,43,15,5,1],sub:"Heavy. Always one Rare or better.",unlock:{box:"luggage",n:25,lic:4e5}},
  {id:"storage",e:"🚪",n:"Storage unit",price:200000,kind:"padlock",cnt:12,bonus:[.5,.5,.5,.5,.5,.5,.5,.5],min:2,ev:1.0,sub:"A whole unit: 12 things or more, one always Rare.",unlock:{box:"crate",n:10,sales:1,lic:2e8}},
  {id:"haunted",e:"⚰️",n:"Haunted antique crate",sn:"Haunted crate",price:2e6,kind:"prise",cnt:2,bonus:[.3],min:3,ev:.98,w:[32,40,18,8,2],sub:"Cursed things. Always one Epic or better.",unlock:{box:"storage",n:5,sales:2,lic:5e8}},
- {id:"pallet",e:"🎁",n:"Pallet",price:1e7,kind:"film",cnt:0,ev:.97,sub:"12 to 36 sealed boxes, wrapped in cling film.",unlock:{box:"haunted",n:8,sales:3,lic:8e9}},
- {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:2e11,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:4},hand:1},
+ {id:"pallet",e:"🎁",n:"Pallet",price:1e7,kind:"film",cnt:0,ev:.97,sub:"12 to 36 sealed boxes, wrapped in cling film.",unlock:{box:"haunted",n:8,sales:3,lic:5e9}},
+ {id:"vault",e:"🔒",n:"The Mystery Vault",sn:"Mystery Vault",price:5e10,kind:"safe",cnt:1,ev:1,sub:"Nobody knows what's inside. The final box.",unlock:{box:"pallet",n:3,sales:4},hand:1},
 ];
 const BI=Object.fromEntries(BOXES.map((b,i)=>[b.id,Object.assign(b,{tier:i})]));
 // when you can't afford a parcel: free old cardboard to cut up for pennies (not a real box type)
@@ -511,7 +511,7 @@ const fmtN=n=>n<1000?String(Math.floor(n)):money(n).slice(1);
 const fmtRate=r=>r>=1?`${r.toFixed(1)} boxes a second`:r>0?`a box every ${(1/r).toFixed(1)}s`:"idle";
 const startCash=L=>L?100*Math.pow(10,L-1):15;
 const setDone=id=>SI[id].items.every(i=>S.album[i]);
-function setBonus(k,box){let a=0;for(const s of SETS)if(s.b.k===k&&(!box||s.b.box===box)&&setDone(s.id))a+=s.b.a;return a;}
+function setBonus(k,box){return 0;let a=0;for(const s of SETS)if(s.b.k===k&&(!box||s.b.box===box)&&setDone(s.id))a+=s.b.a;return a;}
 const luck=()=>(1+.03*lv("eye"))*(1+.1*slv("odds"))*(1+setBonus("luck"))*(EV.lucky>0?2:1);
 const priceOf=b=>b.id==="vault"?b.price:b.price*(1-.03*lv("haggle"))*(1-.04*slv("cheap"));
 const valMult=box=>(1+.1*slv("val"))*(1+.01*S.starsEver)*(1+setBonus("val",box)+setBonus("all"))*(1+.03*lv("till"));
@@ -575,7 +575,7 @@ function sellAt(j,quiet){const e=S.tray[j];if(!e)return 0;S.tray.splice(j,1);con
 function shelveAt(j){const e=S.tray[j];if(!e||S.shelf.length>=shelfCap())return false;S.tray.splice(j,1);S.shelf.push({i:e.i,m:e.m});S.stats.shelved++;return true;}
 function scrapAt(j){const e=S.tray[j];if(!e)return 0;S.tray.splice(j,1);const p=partsOf(e);S.parts+=p;S.stats.scrapped++;return p;}
 function fileAt(j){const e=S.tray[j];if(!e||!needsAlbum(e.i))return false;S.tray.splice(j,1);S.album[e.i]=1;const s=II[e.i].set;if(s&&setDone(s)){FX.toast(`📖 Set complete: ${SI[s].n}! ${bonusTxt(SI[s].b)}`);FX.sound("goal");}return true;}
-const needsAlbum=id=>{const it=II[id];return !!it.set&&!S.album[id];};
+const needsAlbum=id=>false;   // the album was removed (owner)
 // owner: the first copy of anything always goes into the album automatically, with a visible "📖 New!"
 function fileNew(id,src){S.album[id]=1;const s=II[id].set;if(s&&setDone(s)){FX.toast(`📖 Set complete: ${SI[s].n}! ${bonusTxt(SI[s].b)}`);FX.sound("goal");}else if(src!=="hand")FX.toast(`📖 New in your album: ${II[id].e} ${II[id].n}`);}
 // buying boxes: they join the queue
@@ -710,7 +710,6 @@ const GOALS=[
  {t:"Sell 3 things off your shelves",e:"🪟",n:3,p:()=>S.stats.shelfSold||0,rew:75},
  {t:"Get a tape slicer machine",e:"✂️",n:1,p:()=>lv("slicer"),rew:100},
  {t:"Unlock sacks (open 20 ✉️)",e:"👝",n:1,p:()=>S.unl.sack?1:0,rew:150},
- {t:"Complete an album set (📖)",e:"📖",n:1,p:()=>SETS.filter(s=>setDone(s.id)).length,rew:300},
  {t:"Scrap 10 finds for parts",e:"⚙️",n:10,p:()=>S.stats.scrapped,rew:500},
  {t:"Unlock luggage (open 20 👝)",e:"🧳",n:1,p:()=>S.unl.luggage?1:0,rew:1500},
  {t:"Lay a conveyor belt",e:"🛤️",n:1,p:()=>lv("conv"),rew:1000},
@@ -723,12 +722,11 @@ const GOALS=[
  {t:"Find a relic (5 to find)",e:"✨",n:1,p:()=>Object.keys(S.relics).length,rew:0},
  {t:"Open a haunted crate",e:"⚰️",n:1,p:()=>S.opL.haunted||0,rew:0},
  {t:"Open a pallet",e:"🎁",n:1,p:()=>S.opL.pallet||0,rew:0},
- {t:"Complete 10 album sets",e:"📖",n:10,p:()=>SETS.filter(s=>setDone(s.id)).length,rew:0},
  {t:"Open the Mystery Vault",e:"🔒",n:1,p:()=>S.vaultDone?1:0,rew:0},
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.5.0";
+const VERSION="1.6.0";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -1194,7 +1192,7 @@ const lockTxt=b=>{const u=b.unlock;const s=(u.sales||0)>S.sales?`sell the busine
 const boxEls={};
 function buildShop(){const q=$("#qty");q.innerHTML="";for(const n of QTY()){const b=document.createElement("button");b.textContent=n==="Max"?"Max":"×"+n;b.className=S.buyN===n?"on":"";b.onclick=e=>{e.stopPropagation();S.buyN=n;buildShop();render();};q.appendChild(b);}
   const list=$("#boxList");list.innerHTML="";
-  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">+50p</span>`;el.dataset.box="scrap";el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
+  {const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">♻️</span><span><b>Old cardboard</b><small>Cut it up for pennies</small></span><span class="bb ok">Free</span>`;el.dataset.box="scrap";el.onclick=takeScrap;list.appendChild(el);boxEls.scrap=el;}
   for(const b of BOXES){const el=document.createElement("button");el.className="bx";el.innerHTML=`<span class="vt"></span><span class="be">${b.e}</span><span><b>${b.sn||b.n}</b><small></small></span><span class="bb"></span>`;
     el.dataset.box=b.id;el.onclick=()=>buySel(b.id);el.oncontextmenu=e=>{e.preventDefault();setVanBox(b);};list.appendChild(el);boxEls[b.id]=el;
     const v=el.querySelector(".vt");v.onclick=e=>{e.stopPropagation();setVanBox(b);};}}
@@ -1220,7 +1218,7 @@ function render(){if(SIM)return;
   const st=starsNow();const sb=$("#sellBiz");sb.hidden=st<1;if(!sb.hidden)sb.textContent=`🏷️ Sell the business: +${st}⭐`;
   // tray
   const tk=S.tray.map(e=>e.i).join(",")+"|"+(popIdx??"");const tl=$("#trayList");
-  if(tl.dataset.k!==tk){tl.dataset.k=tk;tl.innerHTML="";if(!S.tray.length)tl.innerHTML=`<div id="trayEmpty">Finds land here. Click one to sell it, shelve it, file it in the album or scrap it for parts.</div>`;
+  if(tl.dataset.k!==tk){tl.dataset.k=tk;tl.innerHTML="";if(!S.tray.length)tl.innerHTML=`<div id="trayEmpty">Finds land here. Click one to sell it, shelve it or scrap it for parts.</div>`;
     // owner: one list, priciest first (j stays the real tray index for the pop-up)
     S.tray.map((e,j)=>[e,j]).sort((A,B)=>itemVal(B[0])-itemVal(A[0])).forEach(([e,j])=>{const it=II[e.i],b=document.createElement("button");b.className="ti"+(popIdx===j?" sel":"");b.style.borderLeftColor=RAR[it.r].c;
       b.innerHTML=`<span class="te">${it.e}</span><span>${needsAlbum(e.i)?"📖 ":""}${it.n}</span><span class="tv">${money(itemVal(e))}</span>`;b.onclick=()=>openPop(j,b);tl.appendChild(b);});}
@@ -1268,7 +1266,6 @@ function openPop(j,el){popIdx=j;const e=S.tray[j];if(!e)return closePop();const 
   const first=add("💰 Sell",money(itemVal(e)),"to a trader, now",()=>{const v=sellAt(j);SFX.till();});
   const free=S.shelf.length<shelfCap();
   add("🪟 Shelve",free?money(shelfPay(e)):"full",free?"when a customer buys it":"",()=>{shelveAt(j);SFX.buy();intro("shelf");},free);
-  if(it.set){const st=SI[it.set],got=st.items.filter(i=>S.album[i]).length;add("📖 Album",S.album[e.i]?"got it":`${got}/${st.items.length}`,st.n,()=>{fileAt(j);SFX.buy();},needsAlbum(e.i));}
   add("⚙️ Scrap","+"+partsOf(e)+" ⚙","",()=>{const p=scrapAt(j);SFX.bale();floatTxt(BX,BBOT-60,"+"+p+" ⚙","#cfe8ff");intro("parts");});
   const s=stagePos(el);pop.hidden=false;pop.style.left=(350-122)+"px";pop.style.top=clamp(s.y-10,30,270-pop.offsetHeight-4)+"px";
   if(document.body.classList.contains("pad")||document.body.classList.contains("key"))first.focus();render();}
@@ -1280,6 +1277,10 @@ function openShelfPop(k){const e=S.shelf[k];if(!e)return;const it=II[e.i],pop=$(
   add("💰 Sell now",money(itemVal(e)),"to a trader",()=>{const x=S.shelf.splice(k,1)[0];if(!x)return;const v=itemVal(x);addCash(v);const p=shelfPos(k);coinsFrom(p.x,p.y,v,3);SFX.till();});
   add("↩️ Take it down","","",()=>{const x=S.shelf.splice(k,1)[0];if(x){S.tray.push(x);gain([],"");}},S.tray.length<TRAY);
   const p=shelfPos(k);pop.hidden=false;pop.style.left=clamp(p.x-70,136,340-138)+"px";pop.style.top=(p.y+12)+"px";}
+// shelve all (owner): the priciest finds go on the free shelf spaces
+function shelveAllTray(){let free=shelfCap()-S.shelf.length;if(!S.tray.length){toast("Nothing to shelve");SFX.no();return;}if(free<=0){toast("Your shelves are full. Get Extra Shelves in Upgrades → Sell");SFX.no();return;}
+  const order=S.tray.map((e,j)=>[itemVal(e),e]).sort((a,b)=>b[0]-a[0]).slice(0,free).map(x=>x[1]);let n=0;for(const e of order){const j=S.tray.indexOf(e);if(j>=0&&shelveAt(j))n++;}
+  SFX.buy();toast(`Shelved ${n} thing${n>1?"s":""}${S.tray.length?`. ${S.tray.length} left: shelves are full`:""}`);closePop();checkGoals();render();}
 // bulk scrap (owner): everything in the tray, like Sell all
 function scrapAllTray(){let tot=0,n=0;for(let j=S.tray.length;j--;){tot+=scrapAt(j);n++;}
   if(!n){toast("Nothing to scrap");SFX.no();return;}SFX.buy();toast(`Scrapped ${n} thing${n>1?"s":""} for ⚙${fmtN(tot)}`);closePop();checkGoals();render();}
@@ -1316,7 +1317,7 @@ function fillUp(el){const u=UI[el.dataset.u];if(!u)return;const L=lv(u.id),av=up
 
 /* ---------- all upgrades modal (tabs) ---------- */
 // tabs follow the business chain (owner): 1 Buy, 2 Load, 3 Open (+ the bench staff and machines), 4 Sell, 5 Bin
-const TABS=[["buy","1 🚚 Buy"],["load","2 🙋 Load"],["open","3 🔪 Open"],["bench","🧑‍🔧 Bench"],["sell","4 💰 Sell"],["bin","5 🗑️ Bin"],["stars","⭐ Stars"]];let upTab="open";
+const TABS=[["buy","🚚 Buy"],["load","🙋 Load"],["open","🔪 Open"],["bench","🧑‍🔧 Bench"],["sell","💰 Sell"],["bin","🗑️ Bin"],["stars","⭐ Stars"]];let upTab="open";
 const TAB_INTRO={buy:"Step 1: buying boxes.",load:"Step 2: putting boxes on the mat.",open:"Step 3: cutting boxes open and what you find.",bench:"More opening: staff and machines open boxes from the queue.",sell:"Step 4: your finds and your shop shelves.",bin:"Step 5: the empty boxes.",stars:"Permanent upgrades from selling the business."};
 const ORDER=["van","vanSpd","vanLoad","bulk","haggle","acct","loader","loadSpd","xray","cutter","fast","autocut","autoSpd","eye","lucky","xray","sorter","sortSpd","shelf","sign","till","staff","train","conv","slicer","arm","spinner","autocut","autoSpd","staff","train","conv","sorter","sortSpd","baler","balSpd","heap"];
 let detU=null;
@@ -1353,7 +1354,7 @@ function renderRules(){const t=$("#rulesT");t.innerHTML="";const O=["keep","sell
     
     RAR.forEach((r,i)=>{const n=document.createElement("span");n.className="rn";n.innerHTML=`<i style="background:${r.c}"></i>${r.n}`;t.appendChild(n);
       for(const o of O){const b=document.createElement("button");b.textContent=o==="shelve"?"shelf":o;b.className=S.rules[i]===o?"on":"";b.onclick=()=>{S.rules[i]=o;renderRules();save();};t.appendChild(b);}});
-    const a=document.createElement("div");a.className="ra";a.innerHTML=`<span>📖 The first one of anything new always goes into your album.</span>`;t.appendChild(a);}
+    const a=document.createElement("div");a.className="ra";}
 function renderUps(){renderDet();for(const el of $("#upList").querySelectorAll(".up[data-u]"))fillUp(el);for(const el of $("#upList").querySelectorAll(".up[data-s]"))fillStar(el);
   for(const b of $("#upTabs").children){const id=b.dataset.tab;b.dataset.n=id==="stars"?STARU.filter(u=>slv(u.id)<u.max&&S.stars>=u.cost(slv(u.id))).length:UPG.filter(u=>u.g===id&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;}}
 
@@ -1372,7 +1373,7 @@ function buildAlb(){const t=$("#albTabs");t.innerHTML="";for(const [id,lab] of [
 /* ---------- sell the business ---------- */
 function openBiz(){const st=starsNow();const nxt=Math.pow((st+1)/Math.pow(1.15,slv("fast")),2.5)*1e7;
   $("#bizBody").innerHTML=`<p><b>Big Box Ltd.</b>, the national chain, wants to buy you out. You'd get <b style="font:400 12px Num">${st}⭐</b> reputation stars (next star at ${money(nxt)} earned this run; you're on ${money(S.runEarned)}).</p>
-  <p>You keep: stars, star upgrades, the album and its bonuses, relics, unlocked box types and stats. You lose: cash, parts, boxes, staff, machines, shelves and upgrades. Then you start again in a new lock-up, faster and with new boxes to unlock.</p>
+  <p>You keep: stars, star upgrades, relics, unlocked box types and stats. You lose: cash, parts, boxes, staff, machines, shelves and upgrades. Then you start again in a new lock-up, faster and with new boxes to unlock.</p>
   <p>${UNLOCKS.filter(u=>u.n===S.sales+1).map(u=>"🔓 Selling now unlocks: <b>"+u.t+"</b>").join("")}</p>`;$("#bizModal").hidden=false;$("#bizNo").focus();}
 $("#bizYes").onclick=()=>{const st=sellBusiness();$("#bizModal").hidden=true;if(st){G={st:"empty",t:0};flats.length=0;ROOM=null;toast(`🏷️ Sold! +${st}⭐. Spend them in All upgrades → Stars`);SFX.legend();checkGoals(true);save();openUps("stars");}};
 $("#bizNo").onclick=()=>$("#bizModal").hidden=true;
@@ -1399,7 +1400,7 @@ $("#impBtn").onclick=()=>{const v=$("#saveTxt").value.trim();if(!v.startsWith("B
 let askFn=null;function ask(h,p,yes,danger,fn){$("#askH").textContent=h;$("#askP").textContent=p;const y=$("#askYes");y.textContent=yes;y.className="btn "+(danger?"red":"go");askFn=fn;$("#askModal").hidden=false;$("#askNo").focus();}
 $("#askNo").onclick=()=>{$("#askModal").hidden=true;askFn=null;};$("#askYes").onclick=()=>{$("#askModal").hidden=true;const f=askFn;askFn=null;f&&f();};
 $("#bakBtn").onclick=()=>{const b=localStorage.getItem(KEY+".backup");if(!b){toast("No backup yet");return;}ask("Restore the backup?","This goes back to your save from when the game was last opened. Anything since then is lost.","Restore",false,()=>{localStorage.setItem(KEY,b);readOnly=true;location.reload();});};
-$("#rstBtn").onclick=()=>ask("Delete everything?","All your progress, stars, album and relics will be gone for good. This can't be undone.","Delete everything",true,()=>{localStorage.removeItem(KEY);readOnly=true;location.reload();});
+$("#rstBtn").onclick=()=>ask("Delete everything?","All your progress, stars and relics will be gone for good. This can't be undone.","Delete everything",true,()=>{localStorage.removeItem(KEY);readOnly=true;location.reload();});
 function showCredits(){$("#crawl").innerHTML=`<div><h3>BOX HUNTER</h3>You opened the Mystery Vault.<br>Inside: the Box Hunter's Star.<br><br><h3>Made by</h3>PillowFishSticks<br>and Claude<br><br><h3>Starring</h3>The shop dog<br>${fmtN(S.stats.boxes)} boxes<br>${fmtN(S.stats.sold)} finds sold<br>${S.sales} businesses sold<br><br><h3>Special thanks</h3>Second Class Post Co.<br>Big Dave (name badge)<br>Gerald (headstone)<br><br>Thanks for playing!<br>Keep hunting: every find and relic is still out there.</div>`;$("#credits").hidden=false;$("#credClose").focus();}
 $("#credClose").onclick=()=>$("#credits").hidden=true;
 
@@ -1413,7 +1414,7 @@ $("#upBtn").onclick=()=>{const gu=gift()&&gift().up;if(gu){detU=UI[gu];openUps(U
 $("#albBtn").onclick=openAlb;$("#albClose").onclick=()=>$("#albModal").hidden=true;
 $("#helpBtn").onclick=()=>{$("#helpModal").hidden=false;$("#helpClose").focus();};$("#helpClose").onclick=()=>{$("#helpModal").hidden=true;S.helped=true;save();};
 $("#awayClose").onclick=()=>$("#awayModal").hidden=true;
-$("#sellAll").onclick=()=>sellAllTray(false);$("#scrapAll").onclick=scrapAllTray;$("#rulesBtn").onclick=openRules;$("#sellJunk").onclick=()=>sellAllTray(true);
+$("#sellAll").onclick=()=>sellAllTray(false);$("#shelveAll").onclick=shelveAllTray;$("#scrapAll").onclick=scrapAllTray;$("#rulesBtn").onclick=openRules;
 $("#cardX").onclick=closeCard;
 for(const b of document.querySelectorAll(".mx[data-x]"))b.onclick=()=>{const m=b.closest(".modal");if(m.id==="helpModal")$("#helpClose").click();else if(m.id==="aucModal")$("#aucNo").click();else m.hidden=true;};
 for(const m of document.querySelectorAll(".modal"))m.addEventListener("pointerdown",e=>{if(e.target===m)closeTop();});
@@ -1515,7 +1516,7 @@ addEventListener("keydown",e=>{audio();if(!$("#title").hidden){leaveTitle();retu
   if(topModal())return;
   if(k===" "){if(focusBtn())return;e.preventDefault();if(!e.repeat)benchAction();return;}
   if(k==="enter"&&!focusBtn()){benchAction();return;}
-  if(k==="b")buySel();else if(k==="s")sellAllTray(false);else if(k==="j")sellAllTray(true);else if(k==="k")scrapAllTray();else if(k==="f")toggleFS();else if(k==="c")openAlb();else if(k==="h"||k==="?")$("#helpBtn").click();
+  if(k==="b")buySel();else if(k==="s")sellAllTray(false);else if(k==="j")shelveAllTray();else if(k==="k")scrapAllTray();else if(k==="f")toggleFS();else if(k==="h"||k==="?")$("#helpBtn").click();
   else if(k==="u")openUps();else if(k==="e"&&EV.van>0)grabMysteryVan();else if(k==="x")binClick();});
 addEventListener("keyup",e=>{if(e.key===" "&&auto&&G.st==="closed"){}});
 
@@ -1593,7 +1594,7 @@ liveFX();buildShop();fit();
 if(location.hash==="#debug")$("#title").hidden=true;
 if(matchMedia("(pointer:coarse)").matches)setMode("touch");
 // offline earnings: half rate, up to 8 hours
-(function(){const away=(Date.now()-(S.last||Date.now()))/1000;if(away>60&&(lv("staff")||lv("van")||S.shelf.length||lv("slicer"))){const r=catchUp(Math.min(away,8*3600),.5);
+(function(){const away=(Date.now()-(S.last||Date.now()))/1000;if(false&&away>60&&(lv("staff")||lv("van")||S.shelf.length||lv("slicer"))){const r=catchUp(Math.min(away,8*3600),.5);
   $("#awayBody").innerHTML=`You were away for <b>${Math.floor(away/3600)}h ${Math.floor(away/60)%60}m</b>. Your business kept going at half speed:<br>Cash: <b>${money(r.cash)}</b> · Boxes opened: <b>${fmtN(r.boxes)}</b> · Finds sold: <b>${fmtN(r.sold)}</b> · Parts: <b>${fmtN(r.parts)}</b>`;$("#awayModal").hidden=false;}})();
 shownCash=S.cash;
 document.fonts&&Promise.all([...document.fonts].map(f=>f.load().catch(()=>{}))).then(()=>document.fonts.ready).then(()=>{SPR.clear();render();});
