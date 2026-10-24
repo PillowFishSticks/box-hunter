@@ -84,7 +84,7 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .bx>span:nth-child(3){min-width:0}
 .bx b{display:block;font:700 7px/1.05 "Pix";white-space:nowrap;overflow:hidden}
 .bx small{display:block;font:400 6px/1.1 "Pix";color:var(--muted);white-space:nowrap}
-.bx .bb{font:400 9px/1 "Num";padding:2px 3px;border:2px solid var(--ink);background:#c9bda3;color:#7a6a50;white-space:nowrap}
+.bx .bb{font:400 9px/1 "Num";padding:2px 0;width:28px;flex:none;text-align:center;box-sizing:border-box;overflow:hidden;border:2px solid var(--ink);background:#c9bda3;color:#7a6a50;white-space:nowrap}
 .bx .bb.ok{background:var(--good);color:#fff}
 .bx .bb.free{background:var(--gold);color:var(--ink);animation:shine 1s steps(2) infinite}
 .bx.gift{box-shadow:0 0 0 2px var(--gold),0 0 6px 2px #f2c230aa;animation:glow 1.2s ease-in-out infinite}
@@ -131,6 +131,9 @@ body.pad button:focus,body.key button:focus{box-shadow:0 0 0 2px #fff,0 0 0 4px 
 .bz span{white-space:nowrap;overflow:hidden}
 .bz em{font-style:normal;margin-left:auto;font:700 6px/1 "Pix";padding:1px 2px;background:#c9bda3;color:#5a4a30;border:1px solid var(--ink);flex:none}
 .bz em.on{background:var(--good);color:#fff}
+.bz em{width:44px;height:10px;box-sizing:border-box;text-align:center;overflow:visible;white-space:nowrap;position:relative}
+.bz em.upg{background:#d8c8a6;color:var(--ink)}
+.bz em.upg[data-n]:not([data-n="0"])::after{right:-4px;top:-5px;min-width:9px;height:9px;font-size:6px;line-height:6px;padding:0 1px;border-width:1px}
 .bz em.hire{background:#e2cba0;color:#6b4a26}.bz em.hire.ok{background:#f2c230;color:var(--ink);animation:shine 1s steps(2) infinite}
 .bz .bn{font:400 8px/1 "Num";width:5px;color:var(--muted);flex:none}
 .bz .bs{font-weight:700;width:20px;flex:none}
@@ -429,33 +432,33 @@ const g15=(base,k)=>L=>base*Math.pow(k,L);
 const HIRES=["van","loader","autocut","sorter","baler"];
 const UPG=[
  // Hands
- {id:"cutter",g:"open",e:"🔪",n:"Sharper Cutter",max:10,cost:g15(8,1.5),f:L=>`finds worth +${4*L}%`,d:"Cleaner cuts, less damage: every box opened on the mat (by you or your box cutter) is worth 4% more per level. You see it as 🔪+% when a box opens. Also cuts faster."},
- {id:"eye",g:"open",e:"🔍",n:"Sharp Eye",max:20,cost:g15(15,1.55),f:L=>`luck ×${(1+.03*L).toFixed(2)} for everyone`,d:"Everyone finds rarer things: you, your box cutter, staff and machines."},
+ {id:"cutter",g:"open",e:"🔪",n:"Sharper Cutter",max:10,cur:"parts",cost:g15(3,1.5),f:L=>`finds worth +${4*L}%`,d:"Cleaner cuts, less damage: every box opened on the mat (by you or your box cutter) is worth 4% more per level. You see it as 🔪+% when a box opens. Also cuts faster."},
+ {id:"eye",g:"open",e:"🔍",n:"Sharp Eye",max:20,cur:"parts",cost:g15(5,1.4),f:L=>`luck ×${(1+.03*L).toFixed(2)} for everyone`,d:"Everyone finds rarer things: you, your box cutter, staff and machines."},
  {id:"haggle",g:"buy",e:"🤝",n:"Haggling",max:10,cost:g15(25,1.75),f:L=>`boxes −${3*L}%`,d:"Every box costs less, including the ones the van buys."},
  {id:"fast",g:"open",e:"⚡",n:"Fast Hands",max:5,cur:"parts",cost:g15(15,2.2),f:L=>`mat ${12*L}% quicker`,d:"Everything on the mat moves faster: boxes arrive, open and clear quicker, for you and your crew."},
  {id:"lucky",g:"open",e:"🍀",n:"Lucky Streak",max:5,cur:"parts",cost:g15(40,2.3),f:L=>`+${4*L}% luck per rare in a row (up to 5)`,d:"Each Rare or better opened on the mat (by you or the box cutter), in a row, makes the next box luckier."},
  {id:"xray",g:"load",e:"🩻",n:"X-ray Scanner",max:2,cur:"parts",cost:L=>[60,600][L],f:L=>["off","see the best find's glow before cutting","the loader picks the priciest box first"][L],d:"Peek inside boxes. Level 2: the loader puts the priciest box in the queue on the mat first, where your knife bonus counts."},
  {id:"bulk",g:"buy",e:"📦",n:"Bulk Buy",max:3,cur:"parts",cost:L=>[30,300,3000][L],f:L=>["×1 ×5 ×10","adds ×25","adds ×100","adds Max"][L],d:"Buy bigger batches of boxes at once."},
  // Shop
- {id:"shelf",g:"sell",e:"🪟",n:"Extra Shelves",max:21,cost:g15(30,1.6),f:L=>`${3+L} shelf spaces`,d:"Customers buy shelved finds for the full shop price (more than selling them yourself)."},
- {id:"sign",g:"sell",e:"🪧",n:"Shop Sign",max:15,cost:g15(60,1.7),f:L=>`+${12*L}% customers`,d:"A proper sign brings in more customers, so shelves sell faster."},
- {id:"heap",g:"bin",e:"🗑️",n:"Bigger Corner",max:10,cost:g15(20,1.8),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
- {id:"till",g:"sell",e:"🧮",n:"Sharp Till",max:10,cost:g15(100,1.9),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
+ {id:"shelf",g:"sell",e:"🪟",n:"Extra Shelves",max:21,cur:"parts",cost:g15(8,1.45),f:L=>`${3+L} shelf spaces`,d:"Customers buy shelved finds for the full shop price (more than selling them yourself)."},
+ {id:"sign",g:"sell",e:"🪧",n:"Shop Sign",max:15,cur:"parts",cost:g15(15,1.5),f:L=>`+${12*L}% customers`,d:"A proper sign brings in more customers, so shelves sell faster."},
+ {id:"heap",g:"bin",e:"🗑️",n:"Bigger Corner",max:10,cur:"parts",cost:g15(5,1.6),f:L=>`heap holds ${heapCapL(L)} empties`,d:"Room for more empty boxes before the bench grinds to a halt."},
+ {id:"till",g:"sell",e:"🧮",n:"Sharp Till",max:10,cur:"parts",cost:g15(25,1.6),f:L=>`finds sell for +${3*L}%`,d:"You sell everything for a little more."},
  // Automation
  {id:"loader",g:"load",e:"🙋",n:"Loader",max:1,cost:()=>15,f:L=>L?"puts the next box on the mat":"not hired",d:"Auto-load: puts the next box from the queue onto the mat, so you don't have to click the queue."},
- {id:"loadSpd",why:"Hire the loader first",g:"load",e:"⏩",n:"Loader: quicker",max:8,cur:"parts",cost:g15(8,1.45),f:L=>`a box on the mat ${loadDelayL(L).toFixed(1)}s after the last`,d:"The loader puts boxes down faster.",need:()=>lv("loader")>0},
+ {id:"loadSpd",why:"Hire the loader first",g:"load",e:"⏩",n:"Loader: quicker",max:8,cost:g15(40,1.8),f:L=>`a box on the mat ${loadDelayL(L).toFixed(1)}s after the last`,d:"The loader puts boxes down faster.",need:()=>lv("loader")>0},
  {id:"autocut",g:"open",e:"🧔",n:"Box cutter",max:1,cost:()=>60,f:L=>L?"cuts open the box on the mat":"not hired",d:"Auto-open: someone who cuts open the box on the mat for you. Boxes you cut yourself are still worth 20% more."},
- {id:"autoSpd",why:"Hire the box cutter first",g:"open",e:"⚡",n:"Box cutter: faster",max:10,cur:"parts",cost:g15(10,1.45),f:L=>`starts cutting after ${autoDelayL(L).toFixed(1)}s`,d:"The box cutter gets going sooner and cuts faster.",need:()=>lv("autocut")>0},
+ {id:"autoSpd",why:"Hire the box cutter first",g:"open",e:"⚡",n:"Box cutter: faster",max:10,cost:g15(90,1.7),f:L=>`starts cutting after ${autoDelayL(L).toFixed(1)}s`,d:"The box cutter gets going sooner and cuts faster.",need:()=>lv("autocut")>0},
  {id:"staff",g:"bench",e:"🧑‍🔧",n:"Hire staff",max:99,cost:L=>25*Math.pow(1.15,L),f:L=>`${L} staff · ${fmtRate(staffRate()*L)}`,d:"Staff open queued boxes for you, one every 6 seconds each. ×1.5 speed at 10, 25 and 40 staff.",cap:()=>staffCap()},
  {id:"train",why:"Hire some staff first",g:"bench",e:"🎓",n:"Staff Training",max:6,cost:L=>[250,3000,40000,6e5,2e7,5e8][L],f:L=>`staff open: ${BOXES.slice(0,L+1).map(b=>b.e).join("")}`,d:"Staff only open boxes they're trained for. The rest wait for you or a machine.",need:()=>lv("staff")>0},
- {id:"conv",why:"Hire some staff first",g:"bench",e:"🛤️",n:"Conveyor belt",max:10,cost:g15(300,2.15),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
+ {id:"conv",why:"Hire some staff first",g:"bench",e:"🛤️",n:"Conveyor belt",max:10,cur:"parts",cost:g15(60,1.8),f:L=>`room for ${3+3*L} staff · queue ${queueCapL(L)}`,d:"Each segment fits 3 more staff and 4 more queued boxes, and boxes reach staff faster.",need:()=>lv("staff")>0},
  {id:"van",g:"buy",e:"🚚",n:"Delivery van",max:1,cost:()=>100,f:L=>L?"auto-buys your 🚚 box":"not hired",d:"Auto-buy: pulls up and buys boxes for you. Pick which box with the 🚚 button in the shop."},
- {id:"vanSpd",why:"Get the delivery van first",g:"buy",e:"⏱️",n:"Van: faster runs",max:12,cur:"parts",cost:g15(12,1.45),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
- {id:"vanLoad",why:"Get the delivery van first",g:"buy",e:"📦",n:"Van: bigger loads",max:12,cur:"parts",cost:g15(12,1.5),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
+ {id:"vanSpd",why:"Get the delivery van first",g:"buy",e:"⏱️",n:"Van: faster runs",max:12,cost:g15(150,1.65),f:L=>`a drop every ${vanTimeL(L).toFixed(1)}s`,d:"The van comes round more often.",need:()=>lv("van")>0},
+ {id:"vanLoad",why:"Get the delivery van first",g:"buy",e:"📦",n:"Van: bigger loads",max:12,cost:g15(120,1.7),f:L=>`${vanLoadL(L)} boxes a drop`,d:"Each drop brings more boxes.",need:()=>lv("van")>0},
  {id:"sorter",g:"sell",e:"🧹",n:"Sorter",max:1,cost:()=>300,f:L=>L?"sorts by your rules":"not hired",d:"Auto-sell: sells, shelves, scraps or files finds by the rules you set below."},
- {id:"sortSpd",why:"Hire the sorter first",g:"sell",e:"🏃",n:"Sorter: quicker",max:10,cur:"parts",cost:g15(15,1.45),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
+ {id:"sortSpd",why:"Hire the sorter first",g:"sell",e:"🏃",n:"Sorter: quicker",max:10,cost:g15(250,1.7),f:L=>`a find every ${sortTimeL(L).toFixed(2)}s`,d:"The sorter works faster.",need:()=>lv("sorter")>0},
  {id:"baler",g:"bin",e:"🗜️",n:"Cardboard baler",max:1,cost:()=>80,f:L=>L?"bins empties for you":"not built",d:"Auto-bin: squashes the empties heap and sells the cardboard."},
- {id:"balSpd",why:"Build the baler first",g:"bin",e:"💨",n:"Baler: faster",max:12,cur:"parts",cost:g15(10,1.42),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
+ {id:"balSpd",why:"Build the baler first",g:"bin",e:"💨",n:"Baler: faster",max:12,cost:g15(120,1.6),f:L=>`an empty every ${balTimeL(L).toFixed(2)}s`,d:"The baler squashes boxes faster.",need:()=>lv("baler")>0},
  {id:"acct",why:"Open a padded envelope first",g:"buy",e:"🧾",n:"Accountant",max:1,cost:()=>5000,f:L=>L?"auto-buys cheap upgrades":"not hired",d:"Auto-upgrade: buys the cheapest upgrade whenever it costs less than half your cash.",need:()=>S.opL.envelope>0},
  {id:"slicer",why:"Open a padded envelope first",g:"bench",e:"✂️",n:"Tape slicer",max:15,cur:"parts",cost:g15(80,1.55),f:L=>`opens parcels, envelopes, sacks · ${fmtRate(L/2.5)}`,d:"A machine that opens the small stuff, no training needed.",need:()=>S.opL.envelope>0},
  {id:"arm",why:"Unlock lost luggage first",g:"bench",e:"🦾",n:"Crowbar arm",max:15,cur:"parts",cost:g15(400,1.5),f:L=>`opens luggage, crates, units, haunted · ${fmtRate(L/4)}`,d:"Prises, unzips and snips the big boxes.",need:()=>S.unl.luggage},
@@ -731,7 +734,7 @@ const GOALS=[
  {t:"You beat Box Hunter! Keep hunting.",e:"🏆",n:0,p:()=>0,rew:0},
 ];
 // bump VERSION with every pushed change (owner wants to see that an update landed): shown in the 💾 settings card
-const VERSION="1.7.0";
+const VERSION="1.8.0";
 // v2 goal list: old saves map their goal index by title
 const GOALS_V1=["Hire the loader","Hire the box cutter","Hire your first staff","Get the cardboard baler","Get the delivery van","Unlock envelopes (open 20 📦)","Hire the sorter","Get a tape slicer machine","Unlock sacks (open 20 ✉️)","Complete an album set (📖)","Unlock luggage (open 20 👝)","Lay a conveyor belt","Unlock crates (open 25 🧳)"];
 // v4: goal progress and freebies are kept by title, so goals can be reordered
@@ -1243,7 +1246,9 @@ function render(){if(SIM)return;
       b.innerHTML=`<span class="bn">${n}</span><span class="bi">${i}</span><span class="bs">${step}</span><span class="bt">${t}</span>`;const hu=UI[HR[tab]];
       if(hu&&!lv(hu.id)){const c=upCost(hu),ok=S.cash>=c;const h=document.createElement("em");h.className="hire"+(ok?" ok":"");h.textContent=`Hire ${money(c)}`;b.appendChild(h);
         b.onclick=()=>{if(buyUp(hu)){SFX.buy();toast(`${hu.e} ${hu.n} hired!`);checkGoals();render();}else{toast(`Hiring costs ${money(c)}`);SFX.no();}};}
-      else{const e=document.createElement("em");e.className="on";e.textContent="AUTO";b.appendChild(e);b.onclick=()=>openUps(tab);}bl.appendChild(b);}}
+      else{const e=document.createElement("em");e.className="upg";e.textContent="Upgrade";e.dataset.tab=tab;b.appendChild(e);b.onclick=()=>openUps(tab);}bl.appendChild(b);}}
+  // red counts: upgrades you can afford for each hired job
+  for(const e of bl.querySelectorAll("em.upg")){const n=UPG.filter(u=>u.g===e.dataset.tab&&!HIRES.includes(u.id)&&upAvail(u)&&!upMaxed(u)&&canAfford(u)).length;if(e.dataset.n!==String(n))e.dataset.n=n;}
   const rk=Object.keys(S.relics).join();const rel=$("#relics");if(rel.dataset.k!==rk){rel.dataset.k=rk;rel.innerHTML=Object.keys(S.relics).map(id=>`<span>${II[id].e}</span>`).join("")||"";rel.hidden=!rk;}
   // goal
   const g=GOALS[S.goal]||GOALS.at(-1),gp=g.n?Math.min(g.n,g.p()):0;if($("#goalTxt").textContent!==g.t){$("#goalTxt").textContent=g.t;$("#goal .gi").textContent=g.e;}
